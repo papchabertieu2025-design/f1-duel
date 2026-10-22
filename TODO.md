@@ -39,10 +39,10 @@ Local test: `make site`, then open http://127.0.0.1:5050
 5. Next race: same with round 19 (copy the template to `2026_r19.csv`; the line-up is usually the same).
 
 ## §4 Progress report (Sun 25 Oct) — steps
-1. In Overleaf, make a copy of the course's BAM project (it contains `bam-proposal.cls`), then upload the contents of `reports/1_progress_report_25oct/` (main.tex, references.bib, figures/, tables/), replacing its main.tex.
+1. Overleaf → **New Project → Upload Project** → choose `reports/progress_report_overleaf.zip` (it contains the official BAM class, the logo, main.tex, references.bib and the tables). Compile. `PREVIEW_with_fact_boxes.pdf` shows what you should see.
 2. For each yellow box: write the paragraph in your own words, delete the box.
 3. Fill the AI declaration and contributions; add the GitHub link.
-4. Check: **2 pages maximum**, no yellow box left.
+4. Check: **2 pages maximum**, no yellow box left. Keep each paragraph about as long as its box: with the boxes, sections 1–6 fill exactly 2 pages; references and the AI declaration fall on page 3 (ask the professor whether they count; the final report excludes the bibliography).
 5. It answers the professor's feedback: predictors listed (Table 1), grid is a predictor *and* the baseline, Monaco (Table 3), "better cars" (PCA + k-means).
 
 ## Checked / fixed on 22 Oct by Claude (for the AI declaration)
