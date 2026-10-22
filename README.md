@@ -20,7 +20,7 @@ Against the professor's grid baseline (2020–2025): 7.92 vs 7.71 of 10 points s
 **Question.** Before a Grand Prix starts, can we predict who will finish ahead of whom better than the
 starting grid does, and will the model be right on the races still to come?
 
-Paul, Luis, Eugenio — Machine Learning (BAM, IE University), Fall 2026.
+Paul Chabert, Luis Díez, Eugenio Galdón Serrano — Machine Learning (BAM, IE University), Fall 2026.
 Live website: **https://paulchabert.pythonanywhere.com** · Code: https://github.com/papchabertieu2025-design/f1-duel
 
 ## The answer so far
