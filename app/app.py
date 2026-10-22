@@ -83,7 +83,8 @@ def api_ask():
     if body.get("a") in ids and body.get("b") in ids and body["a"] != body["b"]:
         context["current_duel"] = duel(m, body["a"], body["b"])
     from openai import OpenAI, OpenAIError                       # as in the GenAI tutorial
-    client = OpenAI(api_key=key)
+    # gzip only: brotli/zstd decoding crashes with the httpx version installed on PythonAnywhere
+    client = OpenAI(api_key=key, default_headers={"Accept-Encoding": "gzip"})
     try:
         reply = client.chat.completions.create(
             model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
@@ -95,7 +96,7 @@ def api_ask():
                        + json.dumps(context)},
                       {"role": "user", "content": question}],
             temperature=0.3, max_tokens=300)
-    except OpenAIError:
+    except (OpenAIError, TypeError, ValueError):
         return jsonify({"error": "The AI box is unavailable right now (check the OpenAI key on the server)."}), 503
     return jsonify({"answer": reply.choices[0].message.content})
 
