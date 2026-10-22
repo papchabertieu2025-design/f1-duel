@@ -185,7 +185,7 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 3
     <div class="stats" id="stats"></div>
     <div class="panel" style="overflow-x:auto">
       <table class="scores">
-        <thead><tr><th>Round</th><th>Grand Prix</th><th class="num">Points scorers found: grid</th><th class="num">Model</th><th>Model's favourite</th><th>Winner</th></tr></thead>
+        <thead><tr><th>Round</th><th>Grand Prix</th><th class="num">Points scorers found: grid</th><th class="num">One model</th><th class="num">Two models</th><th>Model's favourite</th><th>Winner</th></tr></thead>
         <tbody id="scores"></tbody>
       </table>
     </div>
@@ -195,7 +195,7 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 3
 <section style="padding-top:0">
   <div class="wrap">
     <h2>One model or two?</h2>
-    <p class="lede">At Monaco nobody can overtake, so should those tracks get their own model? We trained two logistic regressions with the same predictors: one on normal tracks, one on the tracks where overtaking is hardest. Each gets its own weights &theta;.</p>
+    <p class="lede">At Monaco nobody can overtake, so those tracks get their own model. We now use two logistic regressions with the same predictors: one trained on the tracks where overtaking is hardest, one on all the others. Each has its own weights &theta;, and the next race is forecast with the model of its type. The single model is kept alongside, and the table above compares both on every race (&#9679; = hard-to-overtake track).</p>
     <div class="panel" style="overflow-x:auto">
       <p id="trackType" class="small"></p>
       <table class="scores">
@@ -331,8 +331,8 @@ $("stats").innerHTML = (M.mode === "after_quali" ? [
   [`${Math.round(ev["2020-2025"].duel_accuracy*100)}%`, `of duels called right after qualifying, 2020–2025 (grid rule: ${Math.round(ev["2020-2025"].duel_grid_rule*100)}%)`],
   [`${Math.round(ev["2026"].duel_accuracy*100)}%`, `after qualifying in 2026 (grid rule: ${Math.round(ev["2026"].duel_grid_rule*100)}%)`]
 ]).map(([n, t]) => `<div class="panel"><div class="big">${n}</div><div class="small">${t}</div></div>`).join("");
-$("scores").innerHTML = M.scoreboard.slice().reverse().map(s => `<tr><td>${s.round}</td><td>${s.gp}</td>
-  <td class="num">${s.grid_hits}</td><td class="num">${s.model_hits}</td>
+$("scores").innerHTML = M.scoreboard.slice().reverse().map(s => `<tr><td>${s.round}</td><td>${s.gp}${s.hard_track ? " &#9679;" : ""}</td>
+  <td class="num">${s.grid_hits}</td><td class="num">${s.model_hits}</td><td class="num">${s.two_model_hits ?? "—"}</td>
   <td class="${s.favourite === s.winner ? "win" : ""}">${s.favourite} (${pct(s.favourite_p)})</td><td>${s.winner || "—"}</td></tr>`).join("");
 
 runDuel(); $("fav").value = M.drivers[0].id; runCall();
@@ -340,12 +340,12 @@ runDuel(); $("fav").value = M.drivers[0].id; runCall();
 // one model or two?
 if (M.tracks) {
   const T = M.tracks, a = T.thetas["Normal track"], b = T.thetas["Hard-to-overtake track"];
-  $("trackType").innerHTML = `Next race, ${M.race.name}: <b>${T.next_race_type.toLowerCase()}</b>. Weights per standard deviation; positive = more likely to score.`;
+  $("trackType").innerHTML = `Next race, ${M.race.name}: <b>${T.next_race_type.toLowerCase()}</b>, so the forecast uses the ${M.model_used.toLowerCase()} model (trained on ${M.training_races} past races of that type). Weights per standard deviation; positive = more likely to score.`;
   const f = x => (x > 0 ? "+" : "") + x.toFixed(2);
   $("thetas").innerHTML = Object.keys(a).filter(k => k !== "intercept").map(k =>
     `<tr><td>${M.labels[k] || k}</td><td class="num">${f(a[k])}</td><td class="num">${f(b[k])}</td></tr>`).join("");
   const t = T.test.all, h = T.test.hard;
-  $("trackVerdict").innerHTML = `<b>Test on races the models never saw (2020&ndash;2025).</b> All ${t.races} races: one model names ${t.named_one.toFixed(2)} of the 10 points scorers, two models ${t.named_two.toFixed(2)} (grid rule ${t.named_grid.toFixed(2)}). On the ${h.races} hard-to-overtake races: one model ${h.named_one.toFixed(2)}, two models ${h.named_two.toFixed(2)}. The separate model learns from only these few circuits, so its weights are noisy and it predicts no better: the forecast keeps one model for every track.`;
+  $("trackVerdict").innerHTML = `<b>Test on races the models never saw (2020&ndash;2025).</b> All ${t.races} races: one model names ${t.named_one.toFixed(2)} of the 10 points scorers, two models ${t.named_two.toFixed(2)} (grid rule ${t.named_grid.toFixed(2)}). On the ${h.races} hard-to-overtake races: one model ${h.named_one.toFixed(2)}, two models ${h.named_two.toFixed(2)}. So far two models do as well as one overall, and not yet better on the hard tracks, whose model learns from only about 50 races. The remaining 2026 races will decide between them.`;
   $("trackList").textContent = "Hard-to-overtake tracks: " + T.hard_tracks.join(", ") + ".";
 }
 </script>

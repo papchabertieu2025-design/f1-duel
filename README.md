@@ -12,7 +12,7 @@ H3 live forecasts match the simulation. Code for the reset analysis: `f1duel/res
 | Full model | 0.146 / 0.140 | 0.173 / 0.148 |
 
 H1 and H2 supported in both resets; the new power-unit variables do not improve the full model.
-Two models (normal vs hard-to-overtake tracks: Monaco, Zandvoort, Hungaroring, Marina Bay, Madring; `f1duel/tracks.py`): each has its own θ, but the hard-track model learns from ~50 races and names fewer scorers on those tracks (7.85 vs 7.95), so one model is kept; shown on the website.
+Two models (decision of the progress report): one for hard-to-overtake tracks (Monaco, Zandvoort, Hungaroring, Marina Bay, Madring) and one for the others, each with its own θ; the next race is forecast with the model of its type (`f1duel/tracks.py`, `f1duel/forecast.py`). On 2020–2025 it performs like the single model (7.86 vs 7.87 scorers), not yet better on hard tracks (7.85 vs 7.95, 20 races); the single model is kept alongside and both are compared on the live races (website table).
 Against the professor's grid baseline (2020–2025): 7.92 vs 7.71 of 10 points scorers (+0.21, 95% CI +0.06 to +0.35).
 
 ## F1 Duel (the website built on the same models): can a model beat the starting grid?

@@ -26,7 +26,7 @@ Read this first. It summarises everything decided in the earlier Claude conversa
 | IV | k-means (k=3, elbow + silhouette) | car families: top / midfield / back (top-10 rate 84/55/20%) | 04 |
 | V | logistic regression + softmax | P(top 10), P(A ahead of B) (logistic on differences, no intercept), P(win) (softmax over drivers, hand-written gradient) | 05 |
 | VI | verdict | 2026 race by race, then live races | 06 |
-| — | two models (tracks.py) | normal vs hard-to-overtake tracks (Paul's list: Monaco, Zandvoort, Hungaroring, Marina Bay, Madring): own θ each, no gain (hard tracks 7.85 vs 7.95 one model); one model kept; shown on website | 06 |
+| — | two models (tracks.py, forecast.py) | Paul's decision (Option A, 22 Oct): forecast uses the model of the next race's track type (hard-to-overtake list: Monaco, Zandvoort, Hungaroring, Marina Bay, Madring, vs normal). Honest numbers: 7.86 vs 7.87 overall, 7.85 vs 7.95 on hard tracks; single model kept alongside, both compared live (website table) | 06 |
 | VII | reset (proposal question) | past results vs weekend pace, 2014 and 2026 resets, power-unit variables | 07 |
 
 Final model after qualifying: 8 features (grid, log grid, quali_gap, practice_gap, car_perf, car_rel, tier_top, tier_back). Before qualifying: 6 features (4 car features + driver form).

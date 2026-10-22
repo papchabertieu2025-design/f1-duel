@@ -168,6 +168,8 @@ def main():
     d, P = run()
     S = summarise(P)
     S["final"] = final_fit(d)
+    P[["test", "raceId", "year", "round", "gp_name", "circuitId", "driverId", "driver_name", "grid", "top10",
+       "track_type", "p_one", "p_two"]].to_csv(ROOT / "results" / "tracks_predictions.csv", index=False)
     (ROOT / "results" / "tracks_summary.json").write_text(json.dumps(S, indent=1))
     figure(S["final"])
     for test in ("2020-2025", "2026"):
