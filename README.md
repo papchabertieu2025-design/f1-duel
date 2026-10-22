@@ -3,8 +3,7 @@
 **Question (proposal, 11 Oct 2026).** Can a pre-race model predict which drivers score points (top ten)
 through a regulation reset, and should it rely on past results or on the current weekend's pace?
 H1 weekend pace beats past results after a reset · H2 past results regain value during the season ·
-H3 live forecasts match the simulation. Progress report: `reports/Progress_Report_25oct.pdf`;
-code for the reset analysis: `f1duel/reset.py`, notebook `07_reset`.
+H3 live forecasts match the simulation. Code for the reset analysis: `f1duel/reset.py`, notebook `07_reset`.
 
 | Brier score (lower = better) | 2014 reset, rounds 1–5 / 6–19 | 2026 reset, rounds 1–5 / 6–17 |
 |---|---|---|
@@ -90,6 +89,6 @@ the model is exported as plain numbers in `app/model.json`.
 f1duel/      data.py (Part I) · model.py (Parts II-VI) · evaluate.py (VII) · forecast.py (live) · plots.py
 notebooks/   01 ... 07, one per part, executed with outputs; build_notebooks.py rebuilds them
 app/         Flask website: app.py, templates/index.html, model.json
-results/     summary.json, predictions.csv, duels.csv      reports/   LaTeX tables + deliverable plans      figures/   every figure of the notebooks
+results/     summary.json, predictions.csv, duels.csv      figures/   every figure of the notebooks
 forecasts/   one file per race, committed before the start
 ```

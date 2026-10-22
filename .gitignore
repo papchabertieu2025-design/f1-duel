@@ -8,3 +8,6 @@ data/raw/f1db/
 .claude/
 *.aux
 *.log
+
+# reports stay local (not on GitHub)
+reports/
