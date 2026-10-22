@@ -11,3 +11,7 @@ data/raw/f1db/
 
 # reports stay local (not on GitHub)
 reports/
+
+# local only (not on GitHub)
+docs/
+.backup_before_history_rewrite/
