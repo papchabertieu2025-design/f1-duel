@@ -378,19 +378,20 @@ title(ax, 'The model beats the grid on grid-dependent tracks, but not at Monaco'
 **Reading.** At **Monaco the grid wins** (5 races): it names 9.2 of the 10 scorers against 8.0 for the model. Overtaking is almost impossible there, so any change the model makes to the grid order is a mistake. But Monaco is an exception, not a family: on the **third of tracks that depended most on the grid in 2010–2019** and on **street circuits**, the model still beats the grid. Monaco itself was *not* unusually grid-dependent in 2010–2019; it became so after 2021 (bigger cars), which is why a rule learnt from the past could not anticipate it.
 """),
     md("""
-### One model or two? (normal tracks vs grid-dependent tracks)
-Instead of one logistic regression for every track, we train **two**: one on normal tracks and one on grid-dependent tracks (the top third of circuits by share of top-10 finishers who started in the top 10, measured on past races only). Each has its own weights $\\theta$. Code: `f1duel/tracks.py`.
+### One model or two? (normal tracks vs hard-to-overtake tracks)
+Instead of one logistic regression for every track, we train **two**: one on normal tracks and one on the tracks where overtaking is hardest (Monaco, Zandvoort, Hungaroring, Marina Bay, Madring). Each has its own weights $\\theta$. For comparison, a second split defined from the data (top third of circuits by share of top-10 finishers who started in the top 10) gives the same conclusion. Code: `f1duel/tracks.py`.
 """),
     code("""
 T = json.load(open('../results/tracks_summary.json'))
 th = pd.DataFrame(T['final']['thetas']); display(th.round(2))
-rows = [{'Test': t, 'Races': v['races'], 'Grid rule': v['named_grid'], 'One model': v['named_one'], 'Two models': v['named_two'],
-         'Cross-entropy one': v['ce_one'], 'Cross-entropy two': v['ce_two']} for t in ('2020-2025', '2026') for v in [T[t]['All races']]]
-display(pd.DataFrame(rows).set_index('Test').round(3))
-print('Grid-dependent tracks:', ', '.join(x['gp'] for x in T['final']['grid_dependent_tracks']))
+rows = [{'Test': t, 'Races': g, 'n': v['races'], 'Grid rule': v['named_grid'], 'One model': v['named_one'], 'Two models': v['named_two'],
+         'Two models (data split)': v['named_two_data'], 'Cross-entropy one': v['ce_one'], 'Cross-entropy two': v['ce_two']}
+        for t in ('2020-2025', '2026') for g, v in T[t].items()]
+display(pd.DataFrame(rows).set_index(['Test', 'Races']).round(3))
+print('Hard-to-overtake tracks:', ', '.join(x['name'] for x in T['final']['hard_tracks']))
 from IPython.display import Image; display(Image('../figures/06_two_models.png', width=650))"""),
     md("""
-**Reading.** The weights really differ: on grid-dependent tracks the grid and the car performance weigh more. But each model learns from only part of the races, so its weights are noisier (bias–variance trade-off, session 4), and two models do not name more points scorers than one. We keep one model for the forecasts.
+**Reading.** The weights differ, but the hard-to-overtake model learns from only about 50 races at 5 circuits, so its weights are noisy (bias–variance trade-off, session 4): on the 20 hard-to-overtake test races it names fewer points scorers than the single model (7.85 vs 7.95). Two models do not predict better than one, so we keep one model for the forecasts.
 """),
     md("### The answer to our question"),
     code("""

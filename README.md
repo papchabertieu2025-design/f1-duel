@@ -13,7 +13,7 @@ code for the reset analysis: `f1duel/reset.py`, notebook `07_reset`.
 | Full model | 0.146 / 0.140 | 0.173 / 0.148 |
 
 H1 and H2 supported in both resets; the new power-unit variables do not improve the full model.
-Two models (normal vs grid-dependent tracks, `f1duel/tracks.py`): different weights θ (grid −1.31 vs −0.96) but no gain in prediction (7.87 vs 7.87 scorers), so one model is kept; shown on the website.
+Two models (normal vs hard-to-overtake tracks: Monaco, Zandvoort, Hungaroring, Marina Bay, Madring; `f1duel/tracks.py`): each has its own θ, but the hard-track model learns from ~50 races and names fewer scorers on those tracks (7.85 vs 7.95), so one model is kept; shown on the website.
 Against the professor's grid baseline (2020–2025): 7.92 vs 7.71 of 10 points scorers (+0.21, 95% CI +0.06 to +0.35).
 
 ## F1 Duel (the website built on the same models): can a model beat the starting grid?

@@ -84,11 +84,11 @@ def main(year, rnd):
     tracks = None
     if tracks_path.exists():                              # one model or two? (f1duel.tracks)
         T = json.loads(tracks_path.read_text())
-        gd = {t["circuit"] for t in T["final"]["grid_dependent_tracks"]}
-        tracks = {"next_race_type": "Grid-dependent track" if race.circuitId in gd else "Normal track",
-                  "thetas": T["final"]["thetas"], "grid_dependent_tracks": [t["gp"] for t in T["final"]["grid_dependent_tracks"]],
-                  "test": {k: {m: T[k]["All races"][m] for m in ("races", "named_grid", "named_one", "named_two", "ce_one", "ce_two")}
-                           for k in ("2020-2025", "2026")}}
+        hard = {t["circuit"] for t in T["final"]["hard_tracks"]}
+        tracks = {"next_race_type": "Hard-to-overtake track" if race.circuitId in hard else "Normal track",
+                  "thetas": T["final"]["thetas"], "hard_tracks": [t["name"] for t in T["final"]["hard_tracks"]],
+                  "test": {key: {m: T["2020-2025"][group][m] for m in ("races", "named_grid", "named_one", "named_two")}
+                           for key, group in [("all", "All races"), ("hard", "Hard-to-overtake track")]}}
     model = {
         "generated": stamp, "race": {"year": year, "round": rnd, "name": race.gp_name,
                                      "date": str(race.date)[:10], "circuit": race.circuitId},
