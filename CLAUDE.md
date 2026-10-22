@@ -26,6 +26,7 @@ Read this first. It summarises everything decided in the earlier Claude conversa
 | IV | k-means (k=3, elbow + silhouette) | car families: top / midfield / back (top-10 rate 84/55/20%) | 04 |
 | V | logistic regression + softmax | P(top 10), P(A ahead of B) (logistic on differences, no intercept), P(win) (softmax over drivers, hand-written gradient) | 05 |
 | VI | verdict | 2026 race by race, then live races | 06 |
+| — | two models (tracks.py) | normal vs grid-dependent tracks: θ differ (grid −1.31 vs −0.96) but no predictive gain (7.87 vs 7.87); one model kept; shown on website | 06 |
 | VII | reset (proposal question) | past results vs weekend pace, 2014 and 2026 resets, power-unit variables | 07 |
 
 Final model after qualifying: 8 features (grid, log grid, quali_gap, practice_gap, car_perf, car_rel, tier_top, tier_back). Before qualifying: 6 features (4 car features + driver form).

@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-22 18:37 UTC",
+ "generated": "2026-10-22 19:28 UTC",
  "race": {
   "year": 2026,
   "round": 18,
@@ -696,5 +696,63 @@
    "winner": "Max Verstappen"
   }
  ],
+ "tracks": {
+  "next_race_type": "Normal track",
+  "thetas": {
+   "Normal track": {
+    "grid": -0.958,
+    "log_grid": 0.229,
+    "quali_gap": -0.04,
+    "practice_gap": -0.281,
+    "car_perf": 0.644,
+    "car_rel": -0.108,
+    "tier_top": -0.078,
+    "tier_back": -0.302,
+    "intercept": -0.202
+   },
+   "Grid-dependent track": {
+    "grid": -1.31,
+    "log_grid": 0.235,
+    "quali_gap": -0.001,
+    "practice_gap": -0.274,
+    "car_perf": 0.95,
+    "car_rel": -0.185,
+    "tier_top": -0.152,
+    "tier_back": -0.102,
+    "intercept": -0.165
+   }
+  },
+  "grid_dependent_tracks": [
+   "Spain",
+   "Hungary",
+   "Saudi Arabia",
+   "Mexico",
+   "Miami",
+   "Monaco",
+   "Italy",
+   "France",
+   "China",
+   "Japan",
+   "Abu Dhabi"
+  ],
+  "test": {
+   "2020-2025": {
+    "races": 131,
+    "named_grid": 7.709923664122138,
+    "named_one": 7.870229007633588,
+    "named_two": 7.870229007633588,
+    "ce_one": 0.4822132675608279,
+    "ce_two": 0.4852057060057081
+   },
+   "2026": {
+    "races": 17,
+    "named_grid": 7.529411764705882,
+    "named_one": 7.823529411764706,
+    "named_two": 7.764705882352941,
+    "ce_one": 0.4762565126390222,
+    "ce_two": 0.4801898898889261
+   }
+  }
+ },
  "source": "Official Formula 1 race results via F1DB (github.com/f1db/f1db), snapshot 2026-10-21T08:14:19Z"
 }

@@ -1,0 +1,191 @@
+{
+ "2020-2025": {
+  "All races": {
+   "races": 131,
+   "named_grid": 7.709923664122138,
+   "named_one": 7.870229007633588,
+   "named_two": 7.870229007633588,
+   "named_inter": 7.877862595419847,
+   "ce_inter": 0.4835889395891106,
+   "ce_one": 0.4822132675608279,
+   "ce_two": 0.4852057060057081,
+   "gain_two_vs_one": [
+    0.0,
+    -0.04580152671755725,
+    0.04580152671755725
+   ]
+  },
+  "Normal track": {
+   "races": 88,
+   "named_grid": 7.681818181818182,
+   "named_one": 7.863636363636363,
+   "named_two": 7.875,
+   "named_inter": 7.909090909090909,
+   "ce_inter": 0.48848019697059597,
+   "ce_one": 0.48373392631375334,
+   "ce_two": 0.49050291823859365,
+   "gain_two_vs_one": [
+    0.011363636363636364,
+    -0.03409090909090909,
+    0.06818181818181818
+   ]
+  },
+  "Grid-dependent track": {
+   "races": 43,
+   "named_grid": 7.767441860465116,
+   "named_one": 7.883720930232558,
+   "named_two": 7.8604651162790695,
+   "named_inter": 7.813953488372093,
+   "ce_inter": 0.4736061979157864,
+   "ce_one": 0.47910970086626053,
+   "ce_two": 0.474394436594731,
+   "gain_two_vs_one": [
+    -0.023255813953488372,
+    -0.13953488372093023,
+    0.06976744186046512
+   ]
+  }
+ },
+ "2026": {
+  "All races": {
+   "races": 17,
+   "named_grid": 7.529411764705882,
+   "named_one": 7.823529411764706,
+   "named_two": 7.764705882352941,
+   "named_inter": 7.705882352941177,
+   "ce_inter": 0.47630993312266945,
+   "ce_one": 0.4762565126390222,
+   "ce_two": 0.4801898898889261,
+   "gain_two_vs_one": [
+    -0.058823529411764705,
+    -0.17647058823529413,
+    0.0
+   ]
+  },
+  "Normal track": {
+   "races": 11,
+   "named_grid": 7.636363636363637,
+   "named_one": 7.818181818181818,
+   "named_two": 7.818181818181818,
+   "named_inter": 7.818181818181818,
+   "ce_inter": 0.46632485596221673,
+   "ce_one": 0.469646783661248,
+   "ce_two": 0.46764652392235534,
+   "gain_two_vs_one": [
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  "Grid-dependent track": {
+   "races": 6,
+   "named_grid": 7.333333333333333,
+   "named_one": 7.833333333333333,
+   "named_two": 7.666666666666667,
+   "named_inter": 7.5,
+   "ce_inter": 0.4949539443832024,
+   "ce_one": 0.48859811596471,
+   "ce_two": 0.5036107060296324,
+   "gain_two_vs_one": [
+    -0.16666666666666666,
+    -0.5,
+    0.0
+   ]
+  }
+ },
+ "final": {
+  "thetas": {
+   "Normal track": {
+    "grid": -0.958,
+    "log_grid": 0.229,
+    "quali_gap": -0.04,
+    "practice_gap": -0.281,
+    "car_perf": 0.644,
+    "car_rel": -0.108,
+    "tier_top": -0.078,
+    "tier_back": -0.302,
+    "intercept": -0.202
+   },
+   "Grid-dependent track": {
+    "grid": -1.31,
+    "log_grid": 0.235,
+    "quali_gap": -0.001,
+    "practice_gap": -0.274,
+    "car_perf": 0.95,
+    "car_rel": -0.185,
+    "tier_top": -0.152,
+    "tier_back": -0.102,
+    "intercept": -0.165
+   }
+  },
+  "cutoff": 0.7754901960784314,
+  "grid_dependent_tracks": [
+   {
+    "circuit": "catalunya",
+    "gp": "Spain",
+    "dependence": 0.776,
+    "races": 17
+   },
+   {
+    "circuit": "hungaroring",
+    "gp": "Hungary",
+    "dependence": 0.776,
+    "races": 17
+   },
+   {
+    "circuit": "jeddah",
+    "gp": "Saudi Arabia",
+    "dependence": 0.78,
+    "races": 5
+   },
+   {
+    "circuit": "mexico-city",
+    "gp": "Mexico",
+    "dependence": 0.81,
+    "races": 10
+   },
+   {
+    "circuit": "miami",
+    "gp": "Miami",
+    "dependence": 0.8,
+    "races": 5
+   },
+   {
+    "circuit": "monaco",
+    "gp": "Monaco",
+    "dependence": 0.781,
+    "races": 16
+   },
+   {
+    "circuit": "monza",
+    "gp": "Italy",
+    "dependence": 0.8,
+    "races": 17
+   },
+   {
+    "circuit": "paul-ricard",
+    "gp": "France",
+    "dependence": 0.825,
+    "races": 4
+   },
+   {
+    "circuit": "shanghai",
+    "gp": "China",
+    "dependence": 0.777,
+    "races": 13
+   },
+   {
+    "circuit": "suzuka",
+    "gp": "Japan",
+    "dependence": 0.793,
+    "races": 15
+   },
+   {
+    "circuit": "yas-marina",
+    "gp": "Abu Dhabi",
+    "dependence": 0.788,
+    "races": 16
+   }
+  ]
+ }
+}

@@ -80,6 +80,15 @@ def main(year, rnd):
     nxt[["driver_name", "team_name", "grid", "tier_name", "p_top10", "p_win"]].round(3).to_csv(out_csv, index=False)
 
     S = json.loads((ROOT / "results" / "summary.json").read_text())
+    tracks_path = ROOT / "results" / "tracks_summary.json"
+    tracks = None
+    if tracks_path.exists():                              # one model or two? (f1duel.tracks)
+        T = json.loads(tracks_path.read_text())
+        gd = {t["circuit"] for t in T["final"]["grid_dependent_tracks"]}
+        tracks = {"next_race_type": "Grid-dependent track" if race.circuitId in gd else "Normal track",
+                  "thetas": T["final"]["thetas"], "grid_dependent_tracks": [t["gp"] for t in T["final"]["grid_dependent_tracks"]],
+                  "test": {k: {m: T[k]["All races"][m] for m in ("races", "named_grid", "named_one", "named_two", "ce_one", "ce_two")}
+                           for k in ("2020-2025", "2026")}}
     model = {
         "generated": stamp, "race": {"year": year, "round": rnd, "name": race.gp_name,
                                      "date": str(race.date)[:10], "circuit": race.circuitId},
@@ -99,6 +108,7 @@ def main(year, rnd):
                          "scorers_grid": S[t]["scorers_named"]["Grid rule"],
                          "races": S[t]["races"]} for t in ("2020-2025", "2026")},
         "scoreboard": scoreboard(),
+        "tracks": tracks,
         "source": "Official Formula 1 race results via F1DB (github.com/f1db/f1db), snapshot "
                   + (ROOT / "data" / "raw" / "RETRIEVED_AT.txt").read_text().strip(),
     }

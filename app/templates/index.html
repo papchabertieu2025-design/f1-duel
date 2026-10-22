@@ -194,6 +194,22 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 3
 
 <section style="padding-top:0">
   <div class="wrap">
+    <h2>One model or two?</h2>
+    <p class="lede">At Monaco nobody can overtake, so should those tracks get their own model? We trained two logistic regressions with the same predictors: one on normal tracks, one on grid-dependent tracks (where most top-ten finishers started in the top ten). Each gets its own weights &theta;.</p>
+    <div class="panel" style="overflow-x:auto">
+      <p id="trackType" class="small"></p>
+      <table class="scores">
+        <thead><tr><th>Predictor</th><th class="num">&theta; normal tracks</th><th class="num">&theta; grid-dependent tracks</th></tr></thead>
+        <tbody id="thetas"></tbody>
+      </table>
+      <p id="trackVerdict" class="small" style="margin-top:12px"></p>
+      <p id="trackList" class="small"></p>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
     <h2>How the model is built</h2>
     <p class="lede">Five steps, one method from the course for each, every step feeding the next.</p>
     <ol class="steps">
@@ -320,6 +336,18 @@ $("scores").innerHTML = M.scoreboard.slice().reverse().map(s => `<tr><td>${s.rou
   <td class="${s.favourite === s.winner ? "win" : ""}">${s.favourite} (${pct(s.favourite_p)})</td><td>${s.winner || "—"}</td></tr>`).join("");
 
 runDuel(); $("fav").value = M.drivers[0].id; runCall();
+
+// one model or two?
+if (M.tracks) {
+  const T = M.tracks, a = T.thetas["Normal track"], b = T.thetas["Grid-dependent track"];
+  $("trackType").innerHTML = `Next race, ${M.race.name}: <b>${T.next_race_type.toLowerCase()}</b>. Weights per standard deviation; positive = more likely to score.`;
+  const f = x => (x > 0 ? "+" : "") + x.toFixed(2);
+  $("thetas").innerHTML = Object.keys(a).filter(k => k !== "intercept").map(k =>
+    `<tr><td>${M.labels[k] || k}</td><td class="num">${f(a[k])}</td><td class="num">${f(b[k])}</td></tr>`).join("");
+  const t = T.test["2020-2025"];
+  $("trackVerdict").innerHTML = `<b>Test on ${t.races} races (2020&ndash;2025):</b> one model names ${t.named_one.toFixed(2)} of the 10 points scorers, two models ${t.named_two.toFixed(2)} (grid rule ${t.named_grid.toFixed(2)}). The weights differ (the grid and the car count more on grid-dependent tracks), but each model learns from fewer races, so there is no gain: the forecast keeps one model for every track.`;
+  $("trackList").textContent = "Grid-dependent tracks: " + T.grid_dependent_tracks.join(", ") + ".";
+}
 </script>
 </body>
 </html>
