@@ -56,7 +56,7 @@ A static demo was also published as a claude.ai artifact (private).
 3. After each race: download the new F1DB release (github.com/f1db/f1db/releases/latest, f1db-csv.zip) into data/raw/, update the sha256 file, `make all`.
 4. Next races: Mexico City (r19, 1 Nov), São Paulo (r20, 8 Nov), Las Vegas (r21, 22 Nov), Qatar (r22, 29 Nov), Abu Dhabi (r23, 6 Dec).
 5. Create the public GitHub repo and commit in several steps, each member under their own name (brief requires credible history).
-6. Progress report due Sun 25 Oct (2 pages): reports/1_progress_report_25oct/progress_report.tex (structure + generated tables + yellow fact boxes; the team writes the prose). Master checklist: TODO.md. Guide: GUIDE.md. Plans: reports/2_…, 3_…, 4_presentation/.
+6. Progress report due Sun 25 Oct (2 pages): reports/1_progress_report_25oct/main.tex (structure + generated tables + yellow fact boxes; the team writes the prose). Master checklist: TODO.md. Guide: GUIDE.md. Plans: reports/2_…, 3_…, 4_presentation/.
 7. Upcoming deliverables: sentence outline (15 Nov, 2 pages), final report (25 Nov, 10–12 pages, official BAM LaTeX template, two columns, MLA, GitHub link), presentation (ML sessions 27–28, 10 min + 10 min Q&A).
 
 ## Rules to respect

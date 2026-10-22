@@ -7,7 +7,7 @@ Today: Thursday 22 October 2026. All written deliverables: **LaTeX → PDF, uplo
 | ~~11 Oct~~ | ~~Proposal~~ (grade 7) | 5% ML, 20% CS | done |
 | **Thu 22 – Fri 23 Oct** | Public GitHub repo + website online | (required) | §1 and §2 |
 | **Sat 24 Oct** (after Austin qualifying) | Live forecast #1, committed **before** the race | (proof) | §3 |
-| **Sun 25 Oct** | **Progress report** (max 2 pages) | 5% ML | `reports/1_progress_report_25oct/progress_report.tex` |
+| **Sun 25 Oct** | **Progress report** (max 2 pages) | 5% ML | `reports/1_progress_report_25oct/main.tex` |
 | 31 Oct / 1 Nov | Mexico City forecast (round 19) | | §3 |
 | 7 / 8 Nov | São Paulo forecast (round 20) | | §3 |
 | **Sun 15 Nov** | **Sentence outline** (max 2 pages) | **20% ML, 40% CS** | `reports/2_sentence_outline_15nov/` |
@@ -38,7 +38,7 @@ Local test: `make site`, then open http://127.0.0.1:5050
 5. Next race: same with round 19 (copy the template to `2026_r19.csv`; the line-up is usually the same).
 
 ## §4 Progress report (Sun 25 Oct) — steps
-1. In Overleaf, upload `reports/` and `figures/` keeping the folder structure; open `reports/1_progress_report_25oct/progress_report.tex`.
+1. In Overleaf, make a copy of the course's BAM project (it contains `bam-proposal.cls`), then upload the contents of `reports/1_progress_report_25oct/` (main.tex, references.bib, figures/, tables/), replacing its main.tex.
 2. For each yellow box: write the paragraph in your own words, delete the box.
 3. Fill the AI declaration and contributions; add the GitHub link.
 4. Check: **2 pages maximum**, no yellow box left.

@@ -12,9 +12,13 @@ evaluate: data
 notebooks: evaluate
 	$(PY) notebooks/build_notebooks.py
 
-# LaTeX tables for the reports, from results/summary.json
+PR = reports/1_progress_report_25oct
+# LaTeX tables for the reports (copied into the progress report folder for Overleaf), from results/summary.json
 tables:
 	$(PY) -m f1duel.report_tables
+	mkdir -p $(PR)/tables $(PR)/figures
+	cp reports/tables/*.tex $(PR)/tables/
+	cp figures/02_win_by_grid.png figures/05_duel_weights.png $(PR)/figures/
 
 # next race: make forecast YEAR=2026 ROUND=18
 YEAR ?= 2026
