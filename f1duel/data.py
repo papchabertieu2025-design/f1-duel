@@ -32,7 +32,7 @@ WORKS = {("mercedes", "mercedes"), ("ferrari", "ferrari"), ("renault", "renault"
 # Power-unit variables (Part I, added for the 2026 reset: the new engines are 50% electric)
 PU_FEATURES = ["pu_form", "pu_works", "pu_change", "prev_season_fade"]
 
-# Team statistics summarised by PCA in Part III (rolling, previous 5 races, both cars)
+# Team statistics (rolling, previous races, both cars); the car profile uses team_points and team_mech_dnf
 TEAM_STATS = ["team_points", "team_top10", "team_podium", "team_avg_finish",
               "team_avg_grid", "team_quali_gap", "team_mech_dnf"]
 

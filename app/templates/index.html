@@ -211,13 +211,12 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 3
 <section style="padding-top:0">
   <div class="wrap">
     <h2>How the model is built</h2>
-    <p class="lede">Five steps, one method from the course for each, every step feeding the next.</p>
+    <p class="lede">Four steps, every step feeding the next.</p>
     <ol class="steps">
       <li><div class="n">1</div><h3>Official results</h3><p>Every Grand Prix since 2010: 7,231 starts. Only information known before the race is used.</p></li>
       <li><div class="n">2</div><h3>Linear regression</h3><p>One grid place is worth about 0.65 finishing places, and the front rows count more.</p></li>
-      <li><div class="n">3</div><h3>PCA</h3><p>Seven team statistics become two axes: car performance and reliability.</p></li>
-      <li><div class="n">4</div><h3>k-means</h3><p>Cars fall into three families: top, midfield and back of the grid.</p></li>
-      <li><div class="n">5</div><h3>Logistic regression</h3><p>Turns everything into probabilities: points, duels, and the winner (softmax).</p></li>
+      <li><div class="n">3</div><h3>k-means</h3><p>Each car is described by its team's recent points and reliability, and falls into one of three families: top, midfield and back of the grid.</p></li>
+      <li><div class="n">4</div><h3>Logistic regression</h3><p>Turns everything into probabilities: points, duels, and the winner (softmax).</p></li>
     </ol>
   </div>
 </section>
@@ -345,7 +344,7 @@ if (M.tracks) {
   $("thetas").innerHTML = Object.keys(a).filter(k => k !== "intercept").map(k =>
     `<tr><td>${M.labels[k] || k}</td><td class="num">${f(a[k])}</td><td class="num">${f(b[k])}</td></tr>`).join("");
   const t = T.test.all, h = T.test.hard;
-  $("trackVerdict").innerHTML = `<b>Test on races the models never saw (2020&ndash;2025).</b> All ${t.races} races: one model names ${t.named_one.toFixed(2)} of the 10 points scorers, two models ${t.named_two.toFixed(2)} (grid rule ${t.named_grid.toFixed(2)}). On the ${h.races} hard-to-overtake races: one model ${h.named_one.toFixed(2)}, two models ${h.named_two.toFixed(2)}. So far two models do as well as one overall, and not yet better on the hard tracks, whose model learns from only about 50 races. The remaining 2026 races will decide between them.`;
+  $("trackVerdict").innerHTML = `<b>Test on races the models never saw (2020&ndash;2025).</b> All ${t.races} races: one model names ${t.named_one.toFixed(2)} of the 10 points scorers, two models ${t.named_two.toFixed(2)} (grid rule ${t.named_grid.toFixed(2)}). On the ${h.races} hard-to-overtake races: one model ${h.named_one.toFixed(2)}, two models ${h.named_two.toFixed(2)}. ${h.named_two > h.named_one ? 'Two models are slightly better on the hard tracks, but over only ' + h.races + ' races the gain is not yet significant (that model learns from about 50 races).' : 'Two models are not yet better on the hard tracks, whose model learns from only about 50 races.'} The remaining 2026 races will decide between them.`;
   $("trackList").textContent = "Hard-to-overtake tracks: " + T.hard_tracks.join(", ") + ".";
 }
 </script>

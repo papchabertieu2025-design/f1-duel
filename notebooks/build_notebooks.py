@@ -1,4 +1,4 @@
-"""Writes the 7 project notebooks (one per part) and executes them so every output is saved.
+"""Writes the 6 project notebooks (one per part) and executes them so every output is saved.
 Usage (from the project root):  python notebooks/build_notebooks.py
 """
 from pathlib import Path
@@ -150,58 +150,33 @@ for f in (['grid'], ['grid', 'log_grid']):
 2. **Adding car and qualifying information lowers the error** below the "finish = grid" baseline on both test seasons.
 3. **Ridge and Lasso keep almost the same coefficients:** with 8 features and thousands of rows, there is little overfitting to fix.
 4. **The grid effect bends:** pole wins 53% of races, 2nd 25%, 3rd 10%. Each place at the front halves the chance of winning, which no straight line can follow. Adding `log(grid)` next to `grid` captures this curve (R² 0.550 → 0.561 for finishing position, and much more for the winner in Part V), so from now on every model gets both.
-5. **The car matters:** team strength features are among the largest coefficients. Part III summarises them properly.
+5. **The car matters:** team strength features are among the largest coefficients. Part III turns them into car families.
 """),
 ]
 
 # ----------------------------------------------------------------------------- Part III
-NB["03_pca"] = [
+NB["03_kmeans"] = [
     md("""
-# Part III — PCA: what makes a good car?
-**Method (session 9):** Principal Component Analysis.
-**Why:** we track 7 statistics per team (points, top-10 rate, podiums, average finish, average grid, qualifying gap, mechanical failures). They overlap heavily. PCA turns them into a few independent axes, which we can read and plot.
-**Answer in one sentence:** two axes are enough: **car performance** (77% of the information) and **reliability** (12%).
+# Part III — k-means: the three families of cars
+**Method (sessions 10–11):** k-means clustering, elbow plot and silhouette score.
+**Why:** the professor noted that *"some teams simply have better cars"*. We describe each car with two simple team statistics:
+- **car performance** = the team's points per race over its last 5 races,
+- **reliability** = minus the team's mechanical-failure rate over its last 10 races,
+
+both standardised (mean 0, standard deviation 1). On this map, cars form groups; k-means finds them automatically, and the group becomes a feature: **top car / midfield car / unreliable car**.
 """),
     code(SETUP + """
 from f1duel.model import CarProfile
-train = d[d.year <= 2024]
-prof = CarProfile().fit(train)
-ev = prof.pca.explained_variance_ratio_
-fig, ax = plt.subplots(figsize=(6.4, 3.2))
-ax.bar(range(1, 8), ev, color=[BLUE, BLUE] + [GREY] * 5); ax.plot(range(1, 8), np.cumsum(ev), 'o-', color=INK)
-ax.set_xlabel('Principal component'); ax.set_ylabel('Share of variance'); ax.yaxis.set_major_formatter(lambda v, _: f'{v:.0%}')
-title(ax, 'Explained variance: 2 components keep 89%'); save(fig, '03_variance'); plt.show()
-print('Explained variance:', (ev * 100).round(1), '%')"""),
-    code("""
-prof.loadings().round(2)"""),
-    md("""
-**Reading the loadings:**
-- **PC1 = car performance.** Points, top-10 and podium rates load positively; average finish, average grid and qualifying gap load negatively (smaller is better). One number now summarises "how fast is this car".
-- **PC2 = reliability.** Almost only the mechanical failure rate (oriented so that higher = fewer failures).
-"""),
-    code("""
+prof = CarProfile().fit(d[d.year <= 2024])
 dd = prof.transform(d)
 season = dd[dd.year == 2026].groupby('team_name')[['car_perf', 'car_rel']].mean()
 fig, ax = plt.subplots(figsize=(7, 4.4))
 ax.scatter(season.car_perf, season.car_rel, s=60, color=BLUE)
 for t, r in season.iterrows(): ax.annotate(t, (r.car_perf, r.car_rel), xytext=(5, 3), textcoords='offset points', fontsize=10)
 ax.axhline(0, color=MUTED, lw=0.6); ax.axvline(0, color=MUTED, lw=0.6)
-ax.set_xlabel('PC1  car performance  (→ faster)'); ax.set_ylabel('PC2  reliability  (↑ fewer failures)')
-title(ax, 'The 2026 teams on the PCA map (season average)'); save(fig, '03_map_2026'); plt.show()"""),
-    md("""
-**Limitation:** PCA is linear and the axes are fitted on 2010–2024. It works because team strength really is mostly one-dimensional. In later parts, the PCA is re-fitted before every prediction, using only past races.
-"""),
-]
-
-# ----------------------------------------------------------------------------- Part IV
-NB["04_kmeans"] = [
-    md("""
-# Part IV — k-means: the three families of cars
-**Method (sessions 10–11):** k-means clustering, elbow plot and silhouette score.
-**Why:** the professor noted that *"some teams simply have better cars"*. On the PCA map, cars form groups. k-means finds them automatically, and the group becomes a feature: **top car / midfield car / back-of-grid car**.
-"""),
-    code(SETUP + """
-from f1duel.model import CarProfile
+ax.set_xlabel('car performance: team points per race (standardised, → faster)'); ax.set_ylabel('reliability (standardised, ↑ fewer failures)')
+title(ax, 'The 2026 teams (season average)'); save(fig, '03_map_2026'); plt.show()"""),
+    code("""
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 train = d[d.year <= 2024]
@@ -214,32 +189,32 @@ fig, ax = plt.subplots(1, 2, figsize=(10, 3.4))
 ax[0].plot(ks, inertia, 'o-', color=BLUE); ax[0].set_xlabel('k'); ax[0].set_ylabel('Inertia'); title(ax[0], '(a) Elbow plot')
 ax[1].plot(ks, sil, 'o-', color=BLUE); ax[1].set_xlabel('k'); ax[1].set_ylabel('Silhouette'); title(ax[1], '(b) Silhouette score')
 for a in ax: a.axvline(3, color=ORANGE, ls='--', lw=1)
-fig.tight_layout(); save(fig, '04_choose_k'); plt.show()
+fig.tight_layout(); save(fig, '03_choose_k'); plt.show()
 pd.DataFrame({'k': list(ks), 'inertia': np.round(inertia), 'silhouette': np.round(sil, 3)}).set_index('k').T"""),
     md("""
-**Choice: k = 3.** The elbow bends at 3. The silhouette is highest at k = 2 (it only splits "top" from "the rest"), but k = 3 keeps a similar score and gives the three groups every F1 fan recognises. We choose meaning plus a good score, and say so.
+**Choice: k = 3.** The elbow bends at 3 and the silhouette score is highest at k = 3: both criteria agree.
 """),
     code("""
 dd = prof.transform(d)
 summary = dd.groupby('tier').agg(starts=('top10', 'size'), scored=('top10', 'mean'), podium=('podium', 'mean'),
                                  avg_grid=('grid', 'mean'), car_perf=('car_perf', 'mean'))
-summary.index = ['Top car', 'Midfield car', 'Back-of-grid car']; summary.round(2)"""),
+summary.index = ['Top car', 'Midfield car', 'Unreliable car']; summary.round(2)"""),
     code("""
 pts = dd[dd.year <= 2024].drop_duplicates(['raceId', 'team'])
 fig, ax = plt.subplots(figsize=(7, 4.2))
-for t, name in enumerate(['Top car', 'Midfield car', 'Back-of-grid car']):
+for t, name in enumerate(['Top car', 'Midfield car', 'Unreliable car']):
     p = pts[pts.tier == t]; ax.scatter(p.car_perf, p.car_rel, s=8, alpha=0.5, color=TIER_COLORS[t], label=name)
-ax.set_xlabel('PC1  car performance'); ax.set_ylabel('PC2  reliability'); ax.legend(markerscale=3)
-title(ax, 'k-means on the PCA map (each dot = one team at one race)'); save(fig, '04_clusters'); plt.show()"""),
+ax.set_xlabel('car performance (standardised team points)'); ax.set_ylabel('reliability (standardised)'); ax.legend(markerscale=3)
+title(ax, 'k-means on the two team statistics (each dot = one team at one race)'); save(fig, '03_clusters'); plt.show()"""),
     md("""
-**Reading:** a top car scores points in about 82% of its starts, a midfield car in about 45%, a back-of-grid car in about 12%. In Part V, these groups help the model see a fast car stuck at the back of the grid.
+**Reading:** the three families are not simply fast / medium / slow. A **top car** (high points, few failures) scores in about 83% of its starts. The two others score about as many points per race, but differ in reliability: **midfield cars** break down in about 5% of races and score in 37% of their starts, **unreliable cars** break down in about 22% and score in 28%. In 2026, Aston Martin (new Honda engine) and Cadillac (new team) are unreliable cars. In Part IV, these groups help the model see a fast car stuck at the back of the grid, or a car likely to break down.
 """),
 ]
 
-# ----------------------------------------------------------------------------- Part V
-NB["05_logistic_regression"] = [
+# ----------------------------------------------------------------------------- Part IV
+NB["04_logistic_regression"] = [
     md("""
-# Part V — Logistic regression: the main model
+# Part IV — Logistic regression: the main model
 **Method (sessions 6–8):** logistic regression (sigmoid, cross-entropy, ROC/AUC), and its multiclass version, softmax.
 **Why:** our questions are probabilities. One family of models answers all three:
 
@@ -249,7 +224,7 @@ NB["05_logistic_regression"] = [
 | Will A finish ahead of B? | logistic regression on differences x_A − x_B | P(A ahead of B) → **the duel of the website** |
 | Who wins? | softmax over the 20 drivers of the race | P(win) for each driver |
 
-**Features (8, known on Saturday night):** grid, log(grid), qualifying gap, practice gap, car performance (PC1), reliability (PC2), top-car and back-of-grid flags (k-means).
+**Features (8, known on Saturday night):** grid, log(grid), qualifying gap, practice gap, car performance (team points), reliability (mechanical failures), top-car and unreliable-car flags (k-means).
 **Honest test:** each season 2020–2025 is predicted by a model trained only on earlier seasons; 2026 (new rules) is re-trained before every race. All results come from `python -m f1duel.evaluate`.
 """),
     code(SETUP + """
@@ -278,7 +253,7 @@ for col, lab, c in [('p_top10_logit', 'Logistic, after qualifying', BLUE), ('p_t
     q = P[P.test == '2020-2025']; fpr, tpr, _ = roc_curve(q.top10, q[col]); ax.plot(fpr, tpr, color=c, label=lab)
 q = P[P.test == '2020-2025']; fpr, tpr, _ = roc_curve(q.top10, -q.grid); ax.plot(fpr, tpr, color=GREY, ls='--', label='Grid order')
 ax.plot([0, 1], [0, 1], ':', color=MUTED); ax.set_xlabel('False positive rate'); ax.set_ylabel('True positive rate'); ax.legend(loc='lower right')
-title(ax, 'ROC curves, 2020–2025'); save(fig, '05_roc'); plt.show()"""),
+title(ax, 'ROC curves, 2020–2025'); save(fig, '04_roc'); plt.show()"""),
     md("### Question 2 — The duel: will A finish ahead of B?"),
     code("""
 rows = []
@@ -300,7 +275,7 @@ w = pd.Series(duel.lr.coef_[0], index=AFTER_QUALI).sort_values()
 fig, ax = plt.subplots(figsize=(6.4, 3.6))
 ax.barh(w.index, w.values, color=[ORANGE if v < 0 else BLUE for v in w.values]); ax.axvline(0, color=MUTED, lw=0.6)
 ax.set_xlabel('Weight per standard deviation (positive = helps finish ahead)'); title(ax, 'Duel model: what makes a driver finish ahead')
-save(fig, '05_duel_weights'); plt.show(); w.round(3)"""),
+save(fig, '04_duel_weights'); plt.show(); w.round(3)"""),
     md("""
 **How to read a weight:** P(A ahead of B) = sigmoid(w · (x_A − x_B)). A positive weight means more of that feature helps. Grid and log(grid) are negative (starting further back hurts); car performance is positive.
 """),
@@ -320,7 +295,7 @@ for a, key, name in [(ax[0], 'p_win', 'P(win)'), (ax[1], 'p_top10_logit', 'P(top
     a.plot([0, 1], [0, 1], ':', color=MUTED); a.plot(c.predicted, c.observed, 'o-', color=BLUE)
     for _, r in c.iterrows(): a.annotate(f"n={int(r.n)}", (r.predicted, r.observed), xytext=(4, -12), textcoords='offset points', fontsize=9, color=INK2)
     a.set_xlabel(f'Predicted {name}'); a.set_ylabel('Observed frequency'); title(a, f'Calibration of {name}')
-fig.tight_layout(); save(fig, '05_calibration'); plt.show()
+fig.tight_layout(); save(fig, '04_calibration'); plt.show()
 pd.DataFrame(S['2020-2025']['calibration']['p_win']).round(3)"""),
     md("""
 **Reading:** the model's favourite *is* the pole sitter in 92% of races, so it wins about as often (54% vs 55% for pole): we do not beat the obvious answer on *who* wins. What the model adds is **how likely** each driver is to win. Its probabilities beat a fair baseline (the historical win rate of each grid slot: log-loss 1.38 vs 1.56), and they are **calibrated**: when it says 24%, the driver wins 25% of the time; 66% → 68%. The top-10 probabilities are too high for outsiders (20% predicted vs 11% observed), a limitation we report.
@@ -331,11 +306,11 @@ the expected features minus the winner's features (see `WinnerModel` in `f1duel/
 """),
 ]
 
-# ----------------------------------------------------------------------------- Part VI
-NB["06_verdict"] = [
+# ----------------------------------------------------------------------------- Part V
+NB["05_verdict"] = [
     md("""
-# Part VI — The verdict: model against reality
-**Question:** *could we have predicted the 2026 season, race by race?* Before each 2026 race, every model is re-trained on everything that happened before it (PCA and k-means included), exactly like a live forecast. Then we compare with what really happened.
+# Part V — The verdict: model against reality
+**Question:** *could we have predicted the 2026 season, race by race?* Before each 2026 race, every model is re-trained on everything that happened before it (car profile and k-means included), exactly like a live forecast. Then we compare with what really happened.
 """),
     code(SETUP + """
 import json
@@ -356,7 +331,7 @@ fig, ax = plt.subplots(figsize=(9, 3.4))
 ax.plot(T.index, T['Grid rule'], 'o-', color=GREY, label=f"Grid rule (avg {T['Grid rule'].mean():.2f})")
 ax.plot(T.index, T['Model'], 'o-', color=BLUE, label=f"Our model (avg {T['Model'].mean():.2f})")
 ax.set_xticks(T.index); ax.set_xlabel('2026 round'); ax.set_ylabel('Real scorers among the 10 picked'); ax.set_ylim(4, 10.5); ax.legend(loc='lower left')
-title(ax, '2026, race by race: how many of the 10 points scorers were predicted?'); save(fig, '06_2026'); plt.show()
+title(ax, '2026, race by race: how many of the 10 points scorers were predicted?'); save(fig, '05_2026'); plt.show()
 print(f"Model better in {(T.Model > T['Grid rule']).sum()} races, equal in {(T.Model == T['Grid rule']).sum()}, worse in {(T.Model < T['Grid rule']).sum()}.")"""),
     md("""
 ### Monaco and other grid-dependent tracks (the professor's question)
@@ -373,7 +348,7 @@ fig, ax = plt.subplots(figsize=(8, 2.8)); y = np.arange(len(G))[::-1]
 ax.barh(y + 0.2, G.duel_grid * 100, 0.4, color=GREY, label='Grid rule'); ax.barh(y - 0.2, G.duel_model * 100, 0.4, color=BLUE, label='Our model')
 ax.set_yticks(y); ax.set_yticklabels([f"{n} ({int(r)})" for n, r in zip(G.index, G.races)]); ax.set_xlim(70, 88)
 ax.set_xlabel('Duels predicted correctly, 2020-2025 (%)'); ax.legend(loc='upper right')
-title(ax, 'The model beats the grid on grid-dependent tracks, but not at Monaco'); save(fig, '06_tracks'); plt.show()"""),
+title(ax, 'The model beats the grid on grid-dependent tracks, but not at Monaco'); save(fig, '05_tracks'); plt.show()"""),
     md("""
 **Reading.** At **Monaco the grid wins** (5 races): it names 9.2 of the 10 scorers against 8.0 for the model. Overtaking is almost impossible there, so any change the model makes to the grid order is a mistake. But Monaco is an exception, not a family: on the **third of tracks that depended most on the grid in 2010–2019** and on **street circuits**, the model still beats the grid. Monaco itself was *not* unusually grid-dependent in 2010–2019; it became so after 2021 (bigger cars), which is why a rule learnt from the past could not anticipate it.
 """),
@@ -389,7 +364,7 @@ rows = [{'Test': t, 'Races': g, 'n': v['races'], 'Grid rule': v['named_grid'], '
         for t in ('2020-2025', '2026') for g, v in T[t].items()]
 display(pd.DataFrame(rows).set_index(['Test', 'Races']).round(3))
 print('Hard-to-overtake tracks:', ', '.join(x['name'] for x in T['final']['hard_tracks']))
-from IPython.display import Image; display(Image('../figures/06_two_models.png', width=650))"""),
+from IPython.display import Image; display(Image('../figures/05_two_models.png', width=650))"""),
     md("""
 **Reading.** The weights differ, but the hard-to-overtake model learns from only about 50 races at 5 circuits, so its weights are noisy (bias–variance trade-off, session 4): on the 20 hard-to-overtake test races it names fewer points scorers than the single model (7.85 vs 7.95). Two models do not predict better than one, so we keep one model for the forecasts.
 """),
@@ -409,17 +384,17 @@ The real test is the races that have not happened yet: **United States (25 Oct),
 ]
 
 
-# ----------------------------------------------------------------------------- Part VII
-NB["07_reset"] = [
+# ----------------------------------------------------------------------------- Part VI
+NB["06_reset"] = [
     md("""
-# Part VII — The reset: past results or this weekend's pace?
+# Part VI — The reset: past results or this weekend's pace?
 **Proposal question:** *can a pre-race model predict which drivers score points (top 10) through a regulation reset, and should it rely on past results or on the current weekend's pace?*
 
 - **H1** after a reset, weekend pace (practice, qualifying, grid) predicts better than past results
 - **H2** past results regain their value as the new season progresses
 - **H3** live forecasts for the remaining 2026 races are as accurate as the simulation (tested after the races)
 
-The same logistic regression is trained with different sets of variables. Each 2014 and 2026 race is predicted by a model re-trained on everything before it (PCA and k-means included). **New variables for the reset (the 2026 power units are about 50% electric):** `pu_form` (points per car of every car with the same engine, last 5 races), `pu_works` (works or lead-partner team), `pu_change` (the team changed engine supplier this season), `prev_season_fade` (did the team fade at the end of last season? a proxy for moving resources early to the new rules; no public source gives teams' spending).
+The same logistic regression is trained with different sets of variables. Each 2014 and 2026 race is predicted by a model re-trained on everything before it (car profile and k-means included). **New variables for the reset (the 2026 power units are about 50% electric):** `pu_form` (points per car of every car with the same engine, last 5 races), `pu_works` (works or lead-partner team), `pu_change` (the team changed engine supplier this season), `prev_season_fade` (did the team fade at the end of last season? a proxy for moving resources early to the new rules; no public source gives teams' spending).
 Code: `f1duel/reset.py`.
 """),
     code(SETUP + """
@@ -429,7 +404,7 @@ R = json.load(open('../results/reset_summary.json'))
 F = R['facts']
 print(f"Points that changed hands over the winter: 2014 {F['points_changing_hands']['2014']:.0%}, 2026 {F['points_changing_hands']['2026']:.0%} (median of other years {np.median([v for y, v in F['points_changing_hands'].items() if y not in ('2014', '2026')]):.0%})")
 print(f"Mechanical retirements: 2025 {F['mechanical_dnf_rate']['2025']:.0%} -> 2026 {F['mechanical_dnf_rate']['2026']:.0%}; 2013 {F['mechanical_dnf_rate']['2013']:.0%} -> 2014 {F['mechanical_dnf_rate']['2014']:.0%}")
-from IPython.display import Image; display(Image('../figures/07_reset_facts.png', width=800))"""),
+from IPython.display import Image; display(Image('../figures/06_reset_facts.png', width=800))"""),
     code("""
 rows = []
 for test in ['Reset 2026', 'Reset 2014', 'Normal seasons 2020-2025']:
@@ -444,7 +419,7 @@ for test in ['Reset 2026', 'Reset 2014']:
     l = m['Past results only']['logloss_late'] - m['Weekend pace only']['logloss_late']
     pu = m['Full model']['logloss'] - m['Full model (no power unit)']['logloss']
     print(f"{test}: H1 weekend beats past early by {e:+.4f} cross-entropy; H2 gap later {l:+.4f} (positive = weekend better); power unit changes the full model by {pu:+.4f}")
-from IPython.display import Image; display(Image('../figures/07_reset_2026.png', width=700))"""),
+from IPython.display import Image; display(Image('../figures/06_reset_2026.png', width=700))"""),
     md("""
 **Reading.** H1 holds in both resets: in the first five races, the weekend's pace predicts the points scorers better than past results. H2 holds too: the gap shrinks as the season goes on (in 2014, past results even become the better source after round 5). The full model, which combines both, is best overall. The power-unit variables do **not** improve the full model: the engine's past results are themselves "past results", which a reset makes stale; what matters is visible on Saturday.
 """),

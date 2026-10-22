@@ -5,7 +5,7 @@ races of the same track type (hard-to-overtake: Monaco, Zandvoort, Hungaroring, 
 The single model trained on every race is kept alongside, so both are compared on the live races.
 
 Two moments:
-  * BEFORE THE WEEKEND (Monday): only history is known -> car profile (PCA + k-means) and driver form.
+  * BEFORE THE WEEKEND (Monday): only history is known -> car profile (team points, reliability, k-means family) and driver form.
   * AFTER QUALIFYING (Saturday night): fill data/upcoming/<year>_r<round>.csv with
     driverId, grid, quali_time_s, practice_time_s  -> the full model (8 features) is used.
 
@@ -25,8 +25,8 @@ from .tracks import HARD_TO_OVERTAKE
 
 LABELS = {"grid": "starting position", "log_grid": "front-row advantage (log grid)",
           "quali_gap": "qualifying gap to pole", "practice_gap": "practice gap to fastest",
-          "car_perf": "car performance (PCA axis 1)", "car_rel": "car reliability (PCA axis 2)",
-          "tier_top": "top-car family (k-means)", "tier_back": "back-of-grid family (k-means)",
+          "car_perf": "car performance (team points, last 5 races)", "car_rel": "car reliability (mechanical failures, last 10 races)",
+          "tier_top": "top-car family (k-means)", "tier_unrel": "unreliable-car family (k-means)",
           "drv_avg_finish": "driver's average finish (last 5)", "drv_top10": "driver's top-10 rate (last 5)"}
 
 

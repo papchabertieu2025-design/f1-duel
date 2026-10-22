@@ -11,7 +11,7 @@ started in the top 10; circuits in the top third are "grid-dependent" (at least 
 Test (never uses the future): seasons 2020-2025 predicted from earlier seasons; 2026 race by race.
 Compared with the single model and with the grid rule.
 
-Usage: python -m f1duel.tracks  -> results/tracks_summary.json, figures/06_two_models.png
+Usage: python -m f1duel.tracks  -> results/tracks_summary.json, figures/05_two_models.png
 """
 import json
 
@@ -147,7 +147,7 @@ def figure(F):
     ax.set_yticks(y); ax.set_yticklabels(feats); ax.axvline(0, color="#888", lw=0.6)
     ax.set_xlabel(r"weight $\theta$ per standard deviation (positive = more likely to score)"); ax.legend(loc="lower right")
     title(ax, r"Two models, two sets of weights $\theta$")
-    save(fig, "06_two_models"); plt.close(fig)
+    save(fig, "05_two_models"); plt.close(fig)
 
 
 def final_fit(d):

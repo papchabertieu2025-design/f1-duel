@@ -19,7 +19,7 @@ def ci(lo, hi, scale=1, unit=""):
 
 def features():
     rows = [("Weekend pace", "grid position after penalties and $\\log(\\text{grid})$; gap to pole lap (\\%); gap to fastest practice lap (\\%)", "Grid, qualifying, practice"),
-            ("Past results", "car performance and reliability (PCA of 7 team statistics, last 5 races); car family (k-means, $k=3$)", "Race results"),
+            ("Past results", "team points per race (last 5 races); mechanical-failure rate (last 10); car family (k-means, $k=3$)", "Race results"),
             ("", "driver: average finish and top-10 rate, last 5 starts", "Race results"),
             ("Power unit (new)", "engine's points per car (last 5 races); works team; changed engine supplier; team's fade at the end of last season", "Results, engines")]
     body = "\n".join(" & ".join(r) + " \\\\" for r in rows)

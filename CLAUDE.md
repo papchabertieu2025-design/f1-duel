@@ -12,7 +12,7 @@ Read this first. It summarises everything decided in the earlier Claude conversa
 
 ## Who and what
 - Student: Paul (team: Paul, Luis, Eugenio), Bachelor in Applied Mathematics, IE University Madrid. Speaks French, but wants everything (chat, docs, deliverables) in English.
-- Courses: **Machine Learning** (Prof. Idris Kouadri; covered up to session 15: linear regression, Ridge/Lasso/CV, logistic regression + softmax + ROC/AUC, PCA, k-means; KNN deliberately NOT used, at Paul's request) and **Technology with Impact** (Prof. Manoel Gadi; covered up to session 8: Flask model deployment as API, HTML/CSS/JS, v0.dev, OpenAI API, PythonAnywhere).
+- Courses: **Machine Learning** (Prof. Idris Kouadri; covered up to session 15: linear regression, Ridge/Lasso/CV, logistic regression + softmax + ROC/AUC, k-means; KNN and PCA deliberately NOT used, at Paul's request — PCA replaced on 22 Oct by two team statistics: points per race last 5 races, mechanical-failure rate last 10) and **Technology with Impact** (Prof. Manoel Gadi; covered up to session 8: Flask model deployment as API, HTML/CSS/JS, v0.dev, OpenAI API, PythonAnywhere).
 - Goal: the best possible grade, a clear project, "wow effect", every method from the course used with one clear role.
 
 ## The project: F1 Duel
@@ -22,14 +22,13 @@ Read this first. It summarises everything decided in the earlier Claude conversa
 |---|---|---|---|
 | I | data (pandas) | official results 2014–2026, 5,435 starts, 269 races, pre-race info only | 01_data |
 | II | linear regression, Ridge, Lasso, CV | 1 grid place ≈ 0.64 finishing places; front rows count more → log(grid) | 02 |
-| III | PCA | 7 rolling team stats → PC1 car performance (76%), PC2 reliability (13%) | 03 |
-| IV | k-means (k=3, elbow + silhouette) | car families: top / midfield / back (top-10 rate 84/55/20%) | 04 |
+| III | k-means (k=3, elbow + silhouette agree) | car = (team points, reliability) → families: top / midfield / unreliable (top-10 rate 83/37/28%) | 03 |
 | V | logistic regression + softmax | P(top 10), P(A ahead of B) (logistic on differences, no intercept), P(win) (softmax over drivers, hand-written gradient) | 05 |
 | VI | verdict | 2026 race by race, then live races | 06 |
 | — | two models (tracks.py, forecast.py) | Paul's decision (Option A, 22 Oct): forecast uses the model of the next race's track type (hard-to-overtake list: Monaco, Zandvoort, Hungaroring, Marina Bay, Madring, vs normal). Honest numbers: 7.86 vs 7.87 overall, 7.85 vs 7.95 on hard tracks; single model kept alongside, both compared live (website table) | 06 |
 | VII | reset (proposal question) | past results vs weekend pace, 2014 and 2026 resets, power-unit variables | 07 |
 
-Final model after qualifying: 8 features (grid, log grid, quali_gap, practice_gap, car_perf, car_rel, tier_top, tier_back). Before qualifying: 6 features (4 car features + driver form).
+Final model after qualifying: 8 features (grid, log grid, quali_gap, practice_gap, car_perf, car_rel, tier_top, tier_unrel). Before qualifying: 6 features (4 car features + driver form).
 
 ## Results (results/summary.json — regenerate with `make all`)
 - Duels: 77.4% vs grid rule 75.5% (24,134 pairs, 2020–2025, +2.0 pts, 95% CI +1.1 to +2.8); 2026: 81.2% vs 78.9% (+2.3, CI +0.5 to +4.2).
@@ -45,7 +44,7 @@ Single source: official F1 results via F1DB (github.com/f1db/f1db), snapshot dat
 
 ## Professor's feedback on the earlier proposal (grade 7, "unclear paper") — must stay answered
 "Specify which features are used as predictors… Are you using grid position as a predictor? If so, show a baseline: top 10 on the grid = top 10 finishers, measure its performance, compare with your model. Monaco is very grid dependent (many GPs might be similar), and some teams simply have better cars."
-→ Every result is compared with the grid rule; car families (PCA + k-means) answer "better cars".
+→ Every result is compared with the grid rule; car families (team points + k-means) answer "better cars".
 
 ## Website (app/)
 Flask: `/` page, `/api/race`, `/api/duel`, `/api/ask` (OpenAI, grounded only on model.json numbers, key via OPENAI_API_KEY env var, model via OPENAI_MODEL, default gpt-4o-mini). Model exported as plain numbers in app/model.json by `python -m f1duel.forecast 2026 <round>`. Deployment: app/DEPLOY.md (PythonAnywhere). Design: track grey, ink, kerb red/white stripes, team colours, Titillium Web; light + dark themes.

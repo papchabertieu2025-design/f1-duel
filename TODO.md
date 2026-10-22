@@ -43,7 +43,7 @@ Local test: `make site`, then open http://127.0.0.1:5050
 2. For each yellow box: write the paragraph in your own words, delete the box.
 3. Fill the AI declaration and contributions; add the GitHub link.
 4. Check: **2 pages maximum**, no yellow box left. Keep each paragraph about as long as its box: with the boxes, sections 1–6 fill exactly 2 pages; references and the AI declaration fall on page 3 (ask the professor whether they count; the final report excludes the bibliography).
-5. It answers the professor's feedback: predictors listed (Table 1), grid is a predictor *and* the baseline, Monaco (Table 3), "better cars" (PCA + k-means).
+5. It answers the professor's feedback: predictors listed (Table 1), grid is a predictor *and* the baseline, Monaco (Table 3), "better cars" (team points + k-means families).
 
 ## Checked / fixed on 22 Oct by Claude (for the AI declaration)
 - `make all` re-run from scratch: every number reproduces (differences only at the 4th decimal).

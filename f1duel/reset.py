@@ -10,7 +10,7 @@ Tests (every model is trained only on races before the one it predicts):
   * normal seasons 2020-2025: each season predicted from all earlier seasons
 New variables for the reset: the power unit (pu_form, pu_works, pu_change, prev_season_fade).
 
-Usage: python -m f1duel.reset  -> results/reset_summary.json, results/reset_predictions.csv, figures/07_reset_*.png
+Usage: python -m f1duel.reset  -> results/reset_summary.json, results/reset_predictions.csv, figures/06_reset_*.png
 """
 import json
 
@@ -21,7 +21,7 @@ from sklearn.metrics import brier_score_loss, log_loss, roc_auc_score
 from .data import PU_FEATURES, ROOT, build
 from .model import CarProfile, fit_top10, scorers_named
 
-PAST = ["drv_avg_finish", "drv_top10", "car_perf", "car_rel", "tier_top", "tier_back"]
+PAST = ["drv_avg_finish", "drv_top10", "car_perf", "car_rel", "tier_top", "tier_unrel"]
 GRID = ["grid", "log_grid"]
 WEEKEND = GRID + ["quali_gap", "practice_gap"]
 MODELS = {                                         # name -> features (logistic regression)
@@ -108,7 +108,7 @@ def figures(S, F):
     ym = sorted(F["mechanical_dnf_rate"])
     ax[1].bar(ym, [100 * F["mechanical_dnf_rate"][y] for y in ym], color=[ORANGE if y in (2014, 2026) else GREY for y in ym])
     ax[1].set_ylabel("% of starters"); ax[1].set_xticks([2010, 2014, 2018, 2022, 2026]); title(ax[1], "(b) Mechanical retirements")
-    save(fig, "07_reset_facts"); plt.close(fig)
+    save(fig, "06_reset_facts"); plt.close(fig)
 
     fig, ax = plt.subplots(figsize=(8, 3.2))
     show = ["Past results only", "Past results + power unit", "Grid position only", "Weekend pace only", "Full model"]
@@ -119,7 +119,7 @@ def figures(S, F):
     ax.set_xticks(x); ax.set_xticklabels([n.replace(" + ", "\n+ ").replace(" only", "\nonly") for n in show], fontsize=9)
     ax.set_ylabel("Cross-entropy (lower = better)"); ax.set_ylim(0.40, 0.58); ax.legend()
     title(ax, "2026 reset: which information predicts the points scorers?")
-    save(fig, "07_reset_2026"); plt.close(fig)
+    save(fig, "06_reset_2026"); plt.close(fig)
 
 
 def main():

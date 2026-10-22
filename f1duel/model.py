@@ -1,9 +1,8 @@
-"""Parts II-V - the four methods of the course, each with one job.
+"""Parts II-IV - the methods of the course, each with one job.
 
   II   Linear regression   how many places is a grid slot worth?          (finish position)
-  III  PCA                 summarise 7 team statistics in 2 axes           (car performance, reliability)
-  IV   k-means             group the cars into 3 families                  (top / midfield / back)
-  V    Logistic regression three questions about the same race:
+  III  k-means             car = team points + reliability; 3 families     (top / midfield / back)
+  IV   Logistic regression three questions about the same race:
                              - will this driver finish in the top 10?      (binary logistic)
                              - will driver A finish ahead of driver B?     (logistic on differences)
                              - who wins?                                   (softmax over the 20 drivers)
@@ -14,49 +13,50 @@ import numpy as np
 import pandas as pd
 from scipy.optimize import minimize
 from sklearn.cluster import KMeans
-from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
-from .data import TEAM_STATS
 
 SEED = 2026
-TIERS = ["Top car", "Midfield car", "Back-of-grid car"]
+TIERS = ["Top car", "Midfield car", "Unreliable car"]
 
 # Features. "Before the weekend" = what we know on Monday; "after qualifying" = Saturday night.
-CAR = ["car_perf", "car_rel", "tier_top", "tier_back"]
+CAR = ["car_perf", "car_rel", "tier_top", "tier_unrel"]
 BEFORE_WEEKEND = CAR + ["drv_avg_finish", "drv_top10"]
 AFTER_QUALI = ["grid", "log_grid", "quali_gap", "practice_gap"] + CAR
 
 
-# --------------------------------------------------------------------------- III + IV
-class CarProfile:
-    """PCA on the 7 rolling team statistics, then k-means on the first 2 components.
+# --------------------------------------------------------------------------- III
+CAR_STATS = ["team_points", "team_mech_dnf"]          # points per race (last 5 races), mechanical failure rate (last 10)
 
-    car_perf  = PC1, oriented so that higher = faster car
-    car_rel   = PC2, oriented so that higher = more reliable car (fewer mechanical failures)
-    tier      = k-means cluster, ordered 0 = top car, 1 = midfield, 2 = back of the grid
+
+class CarProfile:
+    """Two simple team statistics describe the car, then k-means groups the cars into families.
+
+    car_perf  = team points per race over the last 5 races, standardised (higher = faster car)
+    car_rel   = minus the team's mechanical-failure rate over the last 10 races, standardised (higher = more reliable)
+    tier      = k-means cluster on (car_perf, car_rel), ordered 0 = top car (fastest), 1 = midfield, 2 = unreliable car (most mechanical failures)
     """
 
     def __init__(self, k=3):
         self.k = k
 
     def fit(self, train):
-        teams = train.drop_duplicates(["raceId", "team"])[TEAM_STATS]
+        teams = train.drop_duplicates(["raceId", "team"])[CAR_STATS]
         self.scaler = StandardScaler().fit(teams)
-        self.pca = PCA(n_components=len(TEAM_STATS)).fit(self.scaler.transform(teams))
-        comp = self.pca.components_
-        self.sign = np.array([np.sign(comp[0][TEAM_STATS.index("team_points")]),
-                              -np.sign(comp[1][TEAM_STATS.index("team_mech_dnf")])])
         z = self._z(teams)
         self.kmeans = KMeans(self.k, n_init=20, random_state=SEED).fit(z)
-        order = np.argsort([-z[self.kmeans.labels_ == c, 0].mean() for c in range(self.k)])
-        self.rank = {c: i for i, c in enumerate(order)}
+        perf = [z[self.kmeans.labels_ == c, 0].mean() for c in range(self.k)]
+        rel = [z[self.kmeans.labels_ == c, 1].mean() for c in range(self.k)]
+        top = int(np.argmax(perf))
+        unrel = min((c for c in range(self.k) if c != top), key=lambda c: rel[c])
+        mid = [c for c in range(self.k) if c not in (top, unrel)]
+        self.rank = {top: 0, **{c: 1 for c in mid}, unrel: self.k - 1}
         return self
 
     def _z(self, x):
-        return self.pca.transform(self.scaler.transform(x[TEAM_STATS]))[:, :2] * self.sign
+        return self.scaler.transform(x[CAR_STATS]) * np.array([1.0, -1.0])
 
     def transform(self, df):
         df = df.copy()
@@ -64,16 +64,12 @@ class CarProfile:
         df["car_perf"], df["car_rel"] = z[:, 0], z[:, 1]
         df["tier"] = [self.rank[c] for c in self.kmeans.predict(z)]
         df["tier_top"] = (df.tier == 0).astype(int)
-        df["tier_back"] = (df.tier == self.k - 1).astype(int)
+        df["tier_unrel"] = (df.tier == self.k - 1).astype(int)
         df["log_grid"] = np.log(df.grid)
         return df
 
-    def loadings(self):
-        return pd.DataFrame(self.pca.components_[:2].T * self.sign, index=TEAM_STATS,
-                            columns=["PC1 car performance", "PC2 reliability"])
 
-
-# --------------------------------------------------------------------------- V
+# --------------------------------------------------------------------------- IV
 def fit_top10(train, features):
     return make_pipeline(StandardScaler(), LogisticRegression(max_iter=3000)).fit(train[features], train.top10)
 

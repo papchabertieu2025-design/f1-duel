@@ -11,12 +11,11 @@ This is not a presentation about F1: we ask one question, build a model, compare
 |---|---|---|---|
 | **I. Data** | pandas | One verified source, and never use what happens during the race | 5,435 starts, 269 GPs, 2014–2026, checked against formula1.com |
 | **II. Linear regression** | OLS, Ridge, Lasso, cross-validation | The simplest model: "what is a grid place worth?" | 1 grid place = 0.64 finishing places. But front places count more: pole wins 52% of races, P2 24%, P3 11%. So we add log(grid) |
-| **III. PCA** | principal components | 7 team statistics that say almost the same thing. PCA summarises them | 2 axes are enough: **car performance** (76%) and **reliability** (13%) |
-| **IV. k-means** | clustering, elbow, silhouette | The professor said "some teams simply have better cars". k-means groups them automatically | 3 families: top (84% top-10 rate), midfield (55%), back (20%) |
-| **V. Logistic regression** | sigmoid, softmax, ROC/AUC | Our questions are probabilities. The same model answers three questions | Points: 7.87 of 10 found vs 7.71 for the grid. Duels: 77.4% vs 75.5% (significant). Winner: the favourite is the pole sitter in 86% of races, but the probabilities are reliable (when the model says 24%, it happens 24% of the time) |
-| **VI. Verdict** | test on 2026, then live races | Compare with what really happened | The model beats the grid on duels in 2026 (81.2% vs 78.9%). Monaco: the grid wins there. The real test: Austin, Mexico, São Paulo, Las Vegas, Qatar, Abu Dhabi |
+| **III. k-means** | clustering, elbow, silhouette | The professor said "some teams simply have better cars". Two team statistics (recent points, reliability) describe each car; k-means groups them | 3 families: top (83% top-10 rate), midfield (37%), unreliable (28%; 22% mechanical failures) |
+| **IV. Logistic regression** | sigmoid, softmax, ROC/AUC | Our questions are probabilities. The same model answers three questions | Points: 7.87 of 10 found vs 7.71 for the grid. Duels: 77.4% vs 75.5% (significant). Winner: the favourite is the pole sitter in 86% of races, but the probabilities are reliable (when the model says 24%, it happens 24% of the time) |
+| **V. Verdict** | test on 2026, then live races | Compare with what really happened | The model beats the grid on duels in 2026 (81.2% vs 78.9%). Monaco: the grid wins there. The real test: Austin, Mexico, São Paulo, Las Vegas, Qatar, Abu Dhabi |
 
-**Each part feeds the next:** linear regression shows the grid matters but is not linear (hence log(grid)); PCA creates the "car performance" axis; k-means creates the car families; logistic regression uses all of it.
+**Each part feeds the next:** linear regression shows the grid matters but is not linear (hence log(grid)); two team statistics (recent points, reliability) describe the car; k-means creates the car families; logistic regression uses all of it.
 
 ## Parameters of the final model (know them for the oral)
 8 features, all known on Saturday night:
@@ -24,10 +23,10 @@ This is not a presentation about F1: we ask one question, build a model, compare
 2. `log(grid)`: front-row advantage
 3. `quali_gap`: gap to pole in qualifying (%)
 4. `practice_gap`: gap to the best free-practice lap (%)
-5. `car_perf`: PCA axis 1 (car performance)
-6. `car_rel`: PCA axis 2 (reliability)
+5. `car_perf`: car performance = team points per race over the last 5 races (standardised)
+6. `car_rel`: reliability = minus the mechanical-failure rate over the last 10 races (standardised)
 7. `tier_top`: the car is in the "top" family (k-means)
-8. `tier_back`: the car is in the "back of the grid" family (k-means)
+8. `tier_unrel`: the car is in the "unreliable car" family (k-means)
 
 Duel: P(A ahead of B) = sigmoid(w · (x_A − x_B)). Weights w are in notebook 05; car performance and log(grid) matter most.
 

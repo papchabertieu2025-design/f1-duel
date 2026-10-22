@@ -3,7 +3,7 @@
 **Question (proposal, 11 Oct 2026).** Can a pre-race model predict which drivers score points (top ten)
 through a regulation reset, and should it rely on past results or on the current weekend's pace?
 H1 weekend pace beats past results after a reset · H2 past results regain value during the season ·
-H3 live forecasts match the simulation. Code for the reset analysis: `f1duel/reset.py`, notebook `07_reset`.
+H3 live forecasts match the simulation. Code for the reset analysis: `f1duel/reset.py`, notebook `06_reset`.
 
 | Brier score (lower = better) | 2014 reset, rounds 1–5 / 6–19 | 2026 reset, rounds 1–5 / 6–17 |
 |---|---|---|
@@ -43,14 +43,13 @@ each 2026 race by models re-trained on everything before it.
 |---|---|---|---|
 | I | Data (pandas) | official results 2010–2026, 7,231 starts, pre-race information only | `01_data` |
 | II | Linear regression, Ridge, Lasso, CV (S2–5) | one grid place ≈ 0.64 finishing places; the front rows count more → log(grid) | `02_linear_regression` |
-| III | PCA (S9) | 7 team statistics → 2 axes: car performance (76%) and reliability (13%) | `03_pca` |
-| IV | k-means (S10–11) | 3 car families: top, midfield, back (elbow + silhouette) | `04_kmeans` |
-| V | Logistic regression + softmax (S6–8) | P(points), P(A ahead of B), P(win): the main model | `05_logistic_regression` |
-| VI | Verdict | model vs reality, 2026 race by race, then live races | `06_verdict` |
-| VII | The reset (proposal question) | past results vs weekend pace in 2014 and 2026; power-unit variables | `07_reset` |
+| III | k-means (S10–11) | car = team points (last 5 races) + reliability (mechanical failures, last 10) → 3 families: top, midfield, unreliable (elbow + silhouette agree on k = 3) | `03_kmeans` |
+| IV | Logistic regression + softmax (S6–8) | P(points), P(A ahead of B), P(win): the main model | `04_logistic_regression` |
+| V | Verdict | model vs reality, 2026 race by race, then live races | `05_verdict` |
+| VI | The reset (proposal question) | past results vs weekend pace in 2014 and 2026; power-unit variables | `06_reset` |
 
 Final model (after qualifying): 8 features known on Saturday night: grid, log(grid), qualifying gap,
-practice gap, car performance (PC1), reliability (PC2), top-car and back-of-grid flags (k-means).
+practice gap, car performance (team points per race, last 5), reliability (mechanical failures, last 10), top-car and unreliable-car flags (k-means).
 Before qualifying the site uses the 6 features known on Monday: the 4 car features and the driver's recent form.
 
 ## Data and sources
