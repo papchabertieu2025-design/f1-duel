@@ -117,7 +117,7 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 3
 <section>
   <div class="wrap">
     <h1>Who finishes ahead?</h1>
-    <p class="lede">Pick two drivers. A model trained on every Grand Prix since 2014 gives each one's chance of finishing ahead of the other in the next race, and the three reasons that weigh the most.</p>
+    <p class="lede">Pick two drivers. A model trained on every Grand Prix since 2010 gives each one's chance of finishing ahead of the other in the next race, and the three reasons that weigh the most.</p>
     <div class="panel">
       <div class="pickers">
         <div><label for="a">Driver A</label><select id="a"></select></div>
@@ -195,14 +195,13 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 3
 <section style="padding-top:0">
   <div class="wrap">
     <h2>How the model is built</h2>
-    <p class="lede">Six steps, one method from the course for each, every step feeding the next.</p>
+    <p class="lede">Five steps, one method from the course for each, every step feeding the next.</p>
     <ol class="steps">
-      <li><div class="n">1</div><h3>Official results</h3><p>Every Grand Prix since 2014: 5,435 starts. Only information known before the race is used.</p></li>
-      <li><div class="n">2</div><h3>Linear regression</h3><p>One grid place is worth about 0.64 finishing places, and the front rows count more.</p></li>
+      <li><div class="n">1</div><h3>Official results</h3><p>Every Grand Prix since 2010: 7,231 starts. Only information known before the race is used.</p></li>
+      <li><div class="n">2</div><h3>Linear regression</h3><p>One grid place is worth about 0.65 finishing places, and the front rows count more.</p></li>
       <li><div class="n">3</div><h3>PCA</h3><p>Seven team statistics become two axes: car performance and reliability.</p></li>
       <li><div class="n">4</div><h3>k-means</h3><p>Cars fall into three families: top, midfield and back of the grid.</p></li>
       <li><div class="n">5</div><h3>Logistic regression</h3><p>Turns everything into probabilities: points, duels, and the winner (softmax).</p></li>
-      <li><div class="n">6</div><h3>KNN</h3><p>A second opinion: what happened in the most similar starts of the past?</p></li>
     </ol>
   </div>
 </section>

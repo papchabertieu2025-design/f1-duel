@@ -1,9 +1,8 @@
-"""Part VII - the verdict: every model against the grid and against reality.
+"""Part VI - the verdict: every model against the grid and against reality.
 
 Test 1 (2020-2025): each season is predicted by models trained on all EARLIER seasons.
 Test 2 (2026, new rules): each race is predicted by models re-trained on everything before it,
                           exactly as a live forecast would be made.
-KNN's k is chosen once, on seasons 2016-2019, and never on the test seasons.
 
 Usage: python -m f1duel.evaluate   -> results/predictions.csv, results/summary.json
 """
@@ -16,34 +15,18 @@ import pandas as pd
 from sklearn.metrics import accuracy_score, log_loss, roc_auc_score
 
 from .data import ROOT, build
-from .model import (AFTER_QUALI, BEFORE_WEEKEND, CarProfile, DuelModel, WinnerModel, fit_knn,
-                    fit_top10, race_pairs, scorers_named)
+from .model import (AFTER_QUALI, BEFORE_WEEKEND, CarProfile, DuelModel, WinnerModel, fit_top10,
+                    race_pairs, scorers_named)
 
 RES = ROOT / "results"
-K_GRID = [5, 15, 25, 51, 101, 201, 301]
 
 
-def choose_k(d):
-    """Season-ahead on 2016-2019: pick the k with the best average log-loss."""
-    scores = {}
-    for k in K_GRID:
-        ll = []
-        for y in range(2016, 2020):
-            prof = CarProfile().fit(d[d.year < y])
-            tr, te = prof.transform(d[d.year < y]), prof.transform(d[d.year == y])
-            p = np.clip(fit_knn(tr, AFTER_QUALI, k).predict_proba(te[AFTER_QUALI])[:, 1], 1e-3, 1 - 1e-3)
-            ll.append(log_loss(te.top10, p))
-        scores[k] = float(np.mean(ll))
-    return min(scores, key=scores.get), scores
-
-
-def predict_block(train_raw, test_raw, k):
+def predict_block(train_raw, test_raw):
     """Fit everything on train_raw, predict test_raw. Returns test rows with predictions + fitted duel models."""
     prof = CarProfile().fit(train_raw)
     tr, te = prof.transform(train_raw), prof.transform(test_raw).copy()
     te["p_top10_logit"] = fit_top10(tr, AFTER_QUALI).predict_proba(te[AFTER_QUALI])[:, 1]
     te["p_top10_logit_before"] = fit_top10(tr, BEFORE_WEEKEND).predict_proba(te[BEFORE_WEEKEND])[:, 1]
-    te["p_top10_knn"] = fit_knn(tr, AFTER_QUALI, k).predict_proba(te[AFTER_QUALI])[:, 1]
     duel = DuelModel().fit(tr, AFTER_QUALI)
     duel_b = DuelModel().fit(tr, BEFORE_WEEKEND)
     te["race_score"] = duel.score(te)
@@ -97,34 +80,32 @@ def track_analysis(d, P, D):
 def main():
     t0 = time.time()
     d = build()
-    k, k_scores = choose_k(d)
-    print("chosen k =", k, {kk: round(v, 4) for kk, v in k_scores.items()})
     preds, duels = [], []
     for y in range(2020, 2026):                                       # Test 1
-        te, ds = predict_block(d[d.year < y], d[d.year == y], k)
+        te, ds = predict_block(d[d.year < y], d[d.year == y])
         preds.append(te.assign(test="2020-2025")); duels += [dict(x, test="2020-2025", year=y) for x in ds]
         print(y, f"{time.time() - t0:.0f}s")
     for r in sorted(d[d.year == 2026]["round"].unique()):             # Test 2
         past = d[(d.year < 2026) | ((d.year == 2026) & (d["round"] < r))]
-        te, ds = predict_block(past, d[(d.year == 2026) & (d["round"] == r)], k)
+        te, ds = predict_block(past, d[(d.year == 2026) & (d["round"] == r)])
         preds.append(te.assign(test="2026")); duels += [dict(x, test="2026", round=int(r)) for x in ds]
     P = pd.concat(preds)
     P.to_csv(RES / "predictions.csv", index=False)
     D = pd.DataFrame(duels)
     D.to_csv(RES / "duels.csv", index=False)
 
-    summary = {"k": k, "k_cv_logloss": k_scores}
+    summary = {}
     for test, Q in P.groupby("test"):
         races = Q.raceId.nunique()
         s = {"races": races, "starts": len(Q)}
         named = {"Grid rule": scorers_named(Q, "grid", ascending=True)}
-        for col, name in [("p_top10_logit", "Logistic regression"), ("p_top10_knn", "KNN"),
+        for col, name in [("p_top10_logit", "Logistic regression"),
                           ("p_top10_logit_before", "Logistic, before the weekend")]:
             named[name] = scorers_named(Q, col)
             s.setdefault("auc", {})[name] = roc_auc_score(Q.top10, Q[col])
         s["scorers_named"] = {n: float(v.mean()) for n, v in named.items()}
         rng = np.random.default_rng(2026)
-        for n in ["Logistic regression", "KNN", "Logistic, before the weekend"]:
+        for n in ["Logistic regression", "Logistic, before the weekend"]:
             diff = (named[n] - named["Grid rule"]).to_numpy()
             boots = [diff[rng.integers(0, len(diff), len(diff))].mean() for _ in range(5000)]
             s.setdefault("gain_vs_grid", {})[n] = [float(diff.mean()), float(np.percentile(boots, 2.5)),

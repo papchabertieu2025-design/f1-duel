@@ -1,4 +1,4 @@
-"""Parts II-VI - the five methods of the course, each with one job.
+"""Parts II-V - the four methods of the course, each with one job.
 
   II   Linear regression   how many places is a grid slot worth?          (finish position)
   III  PCA                 summarise 7 team statistics in 2 axes           (car performance, reliability)
@@ -7,7 +7,6 @@
                              - will this driver finish in the top 10?      (binary logistic)
                              - will driver A finish ahead of driver B?     (logistic on differences)
                              - who wins?                                   (softmax over the 20 drivers)
-  VI   KNN                 the most similar situations of the past        (second opinion, explanation)
 
 Every model is trained only on races that happened BEFORE the races it predicts.
 """
@@ -17,7 +16,6 @@ from scipy.optimize import minimize
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LogisticRegression
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
@@ -144,18 +142,6 @@ class WinnerModel:
         s = self.scaler.transform(race_df[self.features]) @ self.w
         p = np.exp(s - s.max())
         return p / p.sum()
-
-
-# --------------------------------------------------------------------------- VI
-def fit_knn(train, features, k):
-    return make_pipeline(StandardScaler(), KNeighborsClassifier(n_neighbors=k)).fit(train[features], train.top10)
-
-
-def nearest_cases(train, row, features, k=20):
-    """The k past driver-races most similar to `row` (standardised Euclidean distance)."""
-    sc = StandardScaler().fit(train[features])
-    dist = np.sqrt(((sc.transform(train[features]) - sc.transform(row[features].to_frame().T)) ** 2).sum(axis=1))
-    return train.assign(distance=dist).nsmallest(k, "distance")
 
 
 # --------------------------------------------------------------------------- helpers

@@ -10,7 +10,7 @@ evaluate: data
 	$(PY) -m f1duel.evaluate
 
 # the proposal's question: the 2014 and 2026 resets, history vs weekend pace, power-unit variables
-reset: evaluate
+reset: data
 	$(PY) -m f1duel.reset
 
 notebooks: evaluate

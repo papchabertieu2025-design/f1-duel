@@ -10,7 +10,7 @@ Tests (every model is trained only on races before the one it predicts):
   * normal seasons 2020-2025: each season predicted from all earlier seasons
 New variables for the reset: the power unit (pu_form, pu_works, pu_change, prev_season_fade).
 
-Usage: python -m f1duel.reset  -> results/reset_summary.json, results/reset_predictions.csv, figures/08_*.png
+Usage: python -m f1duel.reset  -> results/reset_summary.json, results/reset_predictions.csv, figures/07_reset_*.png
 """
 import json
 
@@ -19,7 +19,7 @@ import pandas as pd
 from sklearn.metrics import brier_score_loss, log_loss, roc_auc_score
 
 from .data import PU_FEATURES, ROOT, build
-from .model import CarProfile, fit_knn, fit_top10, scorers_named
+from .model import CarProfile, fit_top10, scorers_named
 
 PAST = ["drv_avg_finish", "drv_top10", "car_perf", "car_rel", "tier_top", "tier_back"]
 GRID = ["grid", "log_grid"]
@@ -35,34 +35,28 @@ MODELS = {                                         # name -> features (logistic 
 EARLY = 5                                           # "early season" = rounds 1-5
 
 
-def knn_k():
-    """k chosen by cross-validation on 2016-2019 in f1duel.evaluate."""
-    return json.loads((ROOT / "results" / "summary.json").read_text())["k"]
-
-
-def predict(train_raw, test_raw, k):
+def predict(train_raw, test_raw):
     prof = CarProfile().fit(train_raw)
     tr, te = prof.transform(train_raw), prof.transform(test_raw).copy()
     for name, feats in MODELS.items():
         te[name] = fit_top10(tr, feats).predict_proba(te[feats])[:, 1]
-    te["KNN (full model)"] = fit_knn(tr, WEEKEND + PAST + PU_FEATURES, k).predict_proba(te[WEEKEND + PAST + PU_FEATURES])[:, 1]
     return te
 
 
 def run():
-    d, k = build(), knn_k()
+    d = build()
     out = []
     for year in (2014, 2026):                                         # the two engine resets, race by race
         for r in sorted(d[d.year == year]["round"].unique()):
             past = d[(d.year < year) | ((d.year == year) & (d["round"] < r))]
-            out.append(predict(past, d[(d.year == year) & (d["round"] == r)], k).assign(test=f"Reset {year}"))
+            out.append(predict(past, d[(d.year == year) & (d["round"] == r)]).assign(test=f"Reset {year}"))
     for year in range(2020, 2026):                                    # normal seasons
-        out.append(predict(d[d.year < year], d[d.year == year], k).assign(test="Normal seasons 2020-2025"))
+        out.append(predict(d[d.year < year], d[d.year == year]).assign(test="Normal seasons 2020-2025"))
     return d, pd.concat(out)
 
 
 def summarise(P):
-    names = list(MODELS) + ["KNN (full model)"]
+    names = list(MODELS)
     rng = np.random.default_rng(2026)
     S = {}
     for test, Q in P.groupby("test"):
@@ -114,7 +108,7 @@ def figures(S, F):
     ym = sorted(F["mechanical_dnf_rate"])
     ax[1].bar(ym, [100 * F["mechanical_dnf_rate"][y] for y in ym], color=[ORANGE if y in (2014, 2026) else GREY for y in ym])
     ax[1].set_ylabel("% of starters"); ax[1].set_xticks([2010, 2014, 2018, 2022, 2026]); title(ax[1], "(b) Mechanical retirements")
-    save(fig, "08_reset_facts"); plt.close(fig)
+    save(fig, "07_reset_facts"); plt.close(fig)
 
     fig, ax = plt.subplots(figsize=(8, 3.2))
     show = ["Past results only", "Past results + power unit", "Grid position only", "Weekend pace only", "Full model"]
@@ -125,7 +119,7 @@ def figures(S, F):
     ax.set_xticks(x); ax.set_xticklabels([n.replace(" + ", "\n+ ").replace(" only", "\nonly") for n in show], fontsize=9)
     ax.set_ylabel("Cross-entropy (lower = better)"); ax.set_ylim(0.40, 0.58); ax.legend()
     title(ax, "2026 reset: which information predicts the points scorers?")
-    save(fig, "08_reset_2026_brier"); plt.close(fig)
+    save(fig, "07_reset_2026"); plt.close(fig)
 
 
 def main():

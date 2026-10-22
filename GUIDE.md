@@ -14,10 +14,9 @@ This is not a presentation about F1: we ask one question, build a model, compare
 | **III. PCA** | principal components | 7 team statistics that say almost the same thing. PCA summarises them | 2 axes are enough: **car performance** (76%) and **reliability** (13%) |
 | **IV. k-means** | clustering, elbow, silhouette | The professor said "some teams simply have better cars". k-means groups them automatically | 3 families: top (84% top-10 rate), midfield (55%), back (20%) |
 | **V. Logistic regression** | sigmoid, softmax, ROC/AUC | Our questions are probabilities. The same model answers three questions | Points: 7.87 of 10 found vs 7.71 for the grid. Duels: 77.4% vs 75.5% (significant). Winner: the favourite is the pole sitter in 86% of races, but the probabilities are reliable (when the model says 24%, it happens 24% of the time) |
-| **VI. KNN** | k nearest neighbours, k by cross-validation | A second opinion with no shape assumption, and a human explanation | k = 51. Almost as good as logistic, and useful to explain: "among the 51 most similar starts, 45 scored" |
-| **VII. Verdict** | test on 2026, then live races | Compare with what really happened | The model beats the grid on duels in 2026 (81.2% vs 78.9%). Monaco: the grid wins there. The real test: Austin, Mexico, São Paulo, Las Vegas, Qatar, Abu Dhabi |
+| **VI. Verdict** | test on 2026, then live races | Compare with what really happened | The model beats the grid on duels in 2026 (81.2% vs 78.9%). Monaco: the grid wins there. The real test: Austin, Mexico, São Paulo, Las Vegas, Qatar, Abu Dhabi |
 
-**Each part feeds the next:** linear regression shows the grid matters but is not linear (hence log(grid)); PCA creates the "car performance" axis; k-means creates the car families; logistic regression uses all of it; KNN checks and explains.
+**Each part feeds the next:** linear regression shows the grid matters but is not linear (hence log(grid)); PCA creates the "car performance" axis; k-means creates the car families; logistic regression uses all of it.
 
 ## Parameters of the final model (know them for the oral)
 8 features, all known on Saturday night:

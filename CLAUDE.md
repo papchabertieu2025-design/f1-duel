@@ -12,7 +12,7 @@ Read this first. It summarises everything decided in the earlier Claude conversa
 
 ## Who and what
 - Student: Paul (team: Paul, Luis, Eugenio), Bachelor in Applied Mathematics, IE University Madrid. Speaks French, but wants everything (chat, docs, deliverables) in English.
-- Courses: **Machine Learning** (Prof. Idris Kouadri; covered up to session 15: linear regression, Ridge/Lasso/CV, logistic regression + softmax + ROC/AUC, PCA, k-means, KNN) and **Technology with Impact** (Prof. Manoel Gadi; covered up to session 8: Flask model deployment as API, HTML/CSS/JS, v0.dev, OpenAI API, PythonAnywhere).
+- Courses: **Machine Learning** (Prof. Idris Kouadri; covered up to session 15: linear regression, Ridge/Lasso/CV, logistic regression + softmax + ROC/AUC, PCA, k-means; KNN deliberately NOT used, at Paul's request) and **Technology with Impact** (Prof. Manoel Gadi; covered up to session 8: Flask model deployment as API, HTML/CSS/JS, v0.dev, OpenAI API, PythonAnywhere).
 - Goal: the best possible grade, a clear project, "wow effect", every method from the course used with one clear role.
 
 ## The project: F1 Duel
@@ -25,8 +25,8 @@ Read this first. It summarises everything decided in the earlier Claude conversa
 | III | PCA | 7 rolling team stats → PC1 car performance (76%), PC2 reliability (13%) | 03 |
 | IV | k-means (k=3, elbow + silhouette) | car families: top / midfield / back (top-10 rate 84/55/20%) | 04 |
 | V | logistic regression + softmax | P(top 10), P(A ahead of B) (logistic on differences, no intercept), P(win) (softmax over drivers, hand-written gradient) | 05 |
-| VI | KNN (k=51 by CV on 2016–2019) | second opinion + "most similar past starts" explanation | 06 |
-| VII | verdict | 2026 race by race, then live races | 07 |
+| VI | verdict | 2026 race by race, then live races | 06 |
+| VII | reset (proposal question) | past results vs weekend pace, 2014 and 2026 resets, power-unit variables | 07 |
 
 Final model after qualifying: 8 features (grid, log grid, quali_gap, practice_gap, car_perf, car_rel, tier_top, tier_back). Before qualifying: 6 features (4 car features + driver form).
 

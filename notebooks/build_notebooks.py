@@ -149,7 +149,7 @@ for f in (['grid'], ['grid', 'log_grid']):
 1. **One grid place is worth about 0.65 finishing places.** The grid alone explains more than half of the finishing order (R² ≈ 0.55 on the test seasons).
 2. **Adding car and qualifying information lowers the error** below the "finish = grid" baseline on both test seasons.
 3. **Ridge and Lasso keep almost the same coefficients:** with 8 features and thousands of rows, there is little overfitting to fix.
-4. **The grid effect bends:** pole wins 52% of races, 2nd 24%, 3rd 11%. Each place at the front halves the chance of winning, which no straight line can follow. Adding `log(grid)` next to `grid` captures this curve (R² 0.550 → 0.561 for finishing position, and much more for the winner in Part V), so from now on every model gets both.
+4. **The grid effect bends:** pole wins 53% of races, 2nd 25%, 3rd 10%. Each place at the front halves the chance of winning, which no straight line can follow. Adding `log(grid)` next to `grid` captures this curve (R² 0.550 → 0.561 for finishing position, and much more for the winner in Part V), so from now on every model gets both.
 5. **The car matters:** team strength features are among the largest coefficients. Part III summarises them properly.
 """),
 ]
@@ -332,52 +332,9 @@ the expected features minus the winner's features (see `WinnerModel` in `f1duel/
 ]
 
 # ----------------------------------------------------------------------------- Part VI
-NB["06_knn"] = [
+NB["06_verdict"] = [
     md("""
-# Part VI — KNN: the most similar situations of the past
-**Method (sessions 14–15):** k-nearest neighbours, choice of k by cross-validation, comparison with logistic regression.
-**Why:** KNN makes no assumption about the shape of the relationship, so it is a good **second opinion**. It also gives the most human explanation: *"among the most similar past starts, this many scored points"*.
-"""),
-    code(SETUP + """
-import json
-from f1duel.model import CarProfile, AFTER_QUALI, nearest_cases
-S = json.load(open('../results/summary.json'))
-k_scores = {int(k): v for k, v in S['k_cv_logloss'].items()}
-fig, ax = plt.subplots(figsize=(6, 3.4))
-ax.plot(list(k_scores), list(k_scores.values()), 'o-', color=BLUE); ax.set_xscale('log')
-ax.axvline(S['k'], color=ORANGE, ls='--', lw=1); ax.set_xlabel('k (number of neighbours, log scale)'); ax.set_ylabel('Log-loss (lower = better)')
-title(ax, f"Cross-validation on 2016–2019: best k = {S['k']}"); save(fig, '06_choose_k'); plt.show()"""),
-    md("""
-**Bias–variance in one picture:** with k = 5 the model copies a handful of past cases (high variance); with k = 301 it averages almost everything (high bias). k = 101 is the best compromise, chosen **only** on 2016–2019.
-"""),
-    code("""
-rows = []
-for t in ['2020-2025', '2026']:
-    s = S[t]
-    for m in ['Grid rule', 'Logistic regression', 'KNN']:
-        g = s['gain_vs_grid'].get(m)
-        rows.append({'Test': t, 'Method': m, 'Scorers named': round(s['scorers_named'][m], 2), 'ROC-AUC': round(s['auc'].get(m, np.nan), 3),
-                     'Gain vs grid [95% CI]': '—' if g is None else f"{g[0]:+.2f} [{g[1]:+.2f}, {g[2]:+.2f}]"})
-pd.DataFrame(rows).set_index(['Test', 'Method'])"""),
-    md("""
-**Reading:** KNN is close to logistic regression but slightly behind over 2020–2025 (its gain is not significant). With 8 features, distances become less informative (curse of dimensionality, session 14). We keep **logistic regression as the main model** and use KNN to **explain** a prediction.
-"""),
-    md("### KNN as an explanation: the last race of our data (Singapore 2026)"),
-    code("""
-past = d[(d.upcoming == 0) & ~((d.year == 2026) & (d['round'] == 17))]
-prof = CarProfile().fit(past); tr = prof.transform(past)
-race = prof.transform(d[(d.year == 2026) & (d['round'] == 17)])
-for name in race.sort_values('grid').driver_name.iloc[[0, 9, 12]]:
-    row = race[race.driver_name == name].iloc[0]
-    nn = nearest_cases(tr, row, AFTER_QUALI, k=S['k'])
-    print(f"{name:20s} started P{int(row.grid):<2d} | in the {S['k']} most similar past starts, {nn.top10.sum()} scored points ({nn.top10.mean():.0%}) "
-          f"| real result: {'P' + str(int(row.finish_pos)) if row.finish_pos == row.finish_pos else 'DNF'}")"""),
-]
-
-# ----------------------------------------------------------------------------- Part VII
-NB["07_verdict"] = [
-    md("""
-# Part VII — The verdict: model against reality
+# Part VI — The verdict: model against reality
 **Question:** *could we have predicted the 2026 season, race by race?* Before each 2026 race, every model is re-trained on everything that happened before it (PCA and k-means included), exactly like a live forecast. Then we compare with what really happened.
 """),
     code(SETUP + """
@@ -399,7 +356,7 @@ fig, ax = plt.subplots(figsize=(9, 3.4))
 ax.plot(T.index, T['Grid rule'], 'o-', color=GREY, label=f"Grid rule (avg {T['Grid rule'].mean():.2f})")
 ax.plot(T.index, T['Model'], 'o-', color=BLUE, label=f"Our model (avg {T['Model'].mean():.2f})")
 ax.set_xticks(T.index); ax.set_xlabel('2026 round'); ax.set_ylabel('Real scorers among the 10 picked'); ax.set_ylim(4, 10.5); ax.legend(loc='lower left')
-title(ax, '2026, race by race: how many of the 10 points scorers were predicted?'); save(fig, '07_2026'); plt.show()
+title(ax, '2026, race by race: how many of the 10 points scorers were predicted?'); save(fig, '06_2026'); plt.show()
 print(f"Model better in {(T.Model > T['Grid rule']).sum()} races, equal in {(T.Model == T['Grid rule']).sum()}, worse in {(T.Model < T['Grid rule']).sum()}.")"""),
     md("""
 ### Monaco and other grid-dependent tracks (the professor's question)
@@ -416,7 +373,7 @@ fig, ax = plt.subplots(figsize=(8, 2.8)); y = np.arange(len(G))[::-1]
 ax.barh(y + 0.2, G.duel_grid * 100, 0.4, color=GREY, label='Grid rule'); ax.barh(y - 0.2, G.duel_model * 100, 0.4, color=BLUE, label='Our model')
 ax.set_yticks(y); ax.set_yticklabels([f"{n} ({int(r)})" for n, r in zip(G.index, G.races)]); ax.set_xlim(70, 88)
 ax.set_xlabel('Duels predicted correctly, 2020-2025 (%)'); ax.legend(loc='upper right')
-title(ax, 'The model beats the grid on grid-dependent tracks, but not at Monaco'); save(fig, '07_tracks'); plt.show()"""),
+title(ax, 'The model beats the grid on grid-dependent tracks, but not at Monaco'); save(fig, '06_tracks'); plt.show()"""),
     md("""
 **Reading.** At **Monaco the grid wins** (5 races): it names 9.2 of the 10 scorers against 8.0 for the model. Overtaking is almost impossible there, so any change the model makes to the grid order is a mistake. But Monaco is an exception, not a family: on the **third of tracks that depended most on the grid in 2010–2019** and on **street circuits**, the model still beats the grid. Monaco itself was *not* unusually grid-dependent in 2010–2019; it became so after 2021 (bigger cars), which is why a rule learnt from the past could not anticipate it.
 """),
@@ -436,10 +393,10 @@ The real test is the races that have not happened yet: **United States (25 Oct),
 ]
 
 
-# ----------------------------------------------------------------------------- Part VIII
-NB["08_reset"] = [
+# ----------------------------------------------------------------------------- Part VII
+NB["07_reset"] = [
     md("""
-# Part VIII — The reset: past results or this weekend's pace?
+# Part VII — The reset: past results or this weekend's pace?
 **Proposal question:** *can a pre-race model predict which drivers score points (top 10) through a regulation reset, and should it rely on past results or on the current weekend's pace?*
 
 - **H1** after a reset, weekend pace (practice, qualifying, grid) predicts better than past results
@@ -456,7 +413,7 @@ R = json.load(open('../results/reset_summary.json'))
 F = R['facts']
 print(f"Points that changed hands over the winter: 2014 {F['points_changing_hands']['2014']:.0%}, 2026 {F['points_changing_hands']['2026']:.0%} (median of other years {np.median([v for y, v in F['points_changing_hands'].items() if y not in ('2014', '2026')]):.0%})")
 print(f"Mechanical retirements: 2025 {F['mechanical_dnf_rate']['2025']:.0%} -> 2026 {F['mechanical_dnf_rate']['2026']:.0%}; 2013 {F['mechanical_dnf_rate']['2013']:.0%} -> 2014 {F['mechanical_dnf_rate']['2014']:.0%}")
-from IPython.display import Image; display(Image('../figures/08_reset_facts.png', width=800))"""),
+from IPython.display import Image; display(Image('../figures/07_reset_facts.png', width=800))"""),
     code("""
 rows = []
 for test in ['Reset 2026', 'Reset 2014', 'Normal seasons 2020-2025']:
@@ -471,7 +428,7 @@ for test in ['Reset 2026', 'Reset 2014']:
     l = m['Past results only']['logloss_late'] - m['Weekend pace only']['logloss_late']
     pu = m['Full model']['logloss'] - m['Full model (no power unit)']['logloss']
     print(f"{test}: H1 weekend beats past early by {e:+.4f} cross-entropy; H2 gap later {l:+.4f} (positive = weekend better); power unit changes the full model by {pu:+.4f}")
-from IPython.display import Image; display(Image('../figures/08_reset_2026_brier.png', width=700))"""),
+from IPython.display import Image; display(Image('../figures/07_reset_2026.png', width=700))"""),
     md("""
 **Reading.** H1 holds in both resets: in the first five races, the weekend's pace predicts the points scorers better than past results. H2 holds too: the gap shrinks as the season goes on (in 2014, past results even become the better source after round 5). The full model, which combines both, is best overall. The power-unit variables do **not** improve the full model: the engine's past results are themselves "past results", which a reset makes stale; what matters is visible on Saturday.
 """),

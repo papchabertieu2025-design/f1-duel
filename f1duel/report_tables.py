@@ -40,8 +40,6 @@ def results(S):
         ("Points: scorers named of 10", "Grid rule (top 10 on grid)", f"{a['scorers_named']['Grid rule']:.2f}", f"{b['scorers_named']['Grid rule']:.2f}", "--"),
         ("", "Logistic (after quali)", f"{a['scorers_named']['Logistic regression']:.2f}", f"{b['scorers_named']['Logistic regression']:.2f}",
          f"{g['Logistic regression'][0]:+.2f} ({ci(*g['Logistic regression'][1:])})"),
-        ("", f"KNN ($k={S['k']}$)", f"{a['scorers_named']['KNN']:.2f}", f"{b['scorers_named']['KNN']:.2f}",
-         f"{g['KNN'][0]:+.2f} ({ci(*g['KNN'][1:])})"),
         ("Winner: log-loss (lower is better)", "Win rate of each grid slot", f"{a['winner']['logloss_gridrate_baseline']:.2f}", f"{b['winner']['logloss_gridrate_baseline']:.2f}", "--"),
         ("", "Softmax (after quali)", f"{a['winner']['logloss']:.2f}", f"{b['winner']['logloss']:.2f}",
          f"favourite = pole in {100 * a['winner']['favourite_is_pole']:.0f}\\% of races"),
@@ -80,12 +78,12 @@ def reset_table(R):
 
 def grid_table(R):
     """The professor's baseline: how many of the 10 scorers each method names, against the grid rule."""
-    show = ["Past results only", "Weekend pace only", "Full model", "KNN (full model)"]
+    show = ["Past results only", "Weekend pace only", "Full model"]
     n, a, b = R["Normal seasons 2020-2025"], R["Reset 2014"], R["Reset 2026"]
     rows = [f"Grid rule (top 10 on the grid) & {n['grid_rule_named']:.2f} & -- & {a['grid_rule_named']:.2f} & {b['grid_rule_named']:.2f} \\\\"]
     for m in show:
         g = n["models"][m]["gain_vs_grid"]
-        rows.append(f"{m.replace('KNN (full model)', 'KNN, full model')} & {n['models'][m]['named']:.2f} & {g[0]:+.2f} ({g[1]:+.2f} to {g[2]:+.2f}) & "
+        rows.append(f"{m} & {n['models'][m]['named']:.2f} & {g[0]:+.2f} ({g[1]:+.2f} to {g[2]:+.2f}) & "
                     f"{a['models'][m]['named']:.2f} & {b['models'][m]['named']:.2f} \\\\")
     return ("\\begin{tabular}{lcccc}\n\\hline\n & \\multicolumn{2}{c}{2020--2025 (" + str(n["races"]) + " races)} & 2014 reset & 2026 reset \\\\\n"
             "Method & named & gain vs grid (95\\% CI) & (" + str(a["races"]) + " races) & (" + str(b["races"]) + " races) \\\\\n\\hline\n"
