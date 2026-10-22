@@ -1,0 +1,8 @@
+__pycache__/
+.ipynb_checkpoints/
+data/raw/f1db/
+*.pyc
+.env
+.venv/
+.DS_Store
+.claude/
