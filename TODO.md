@@ -5,7 +5,8 @@ Today: Thursday 22 October 2026. All written deliverables: **LaTeX → PDF, uplo
 | Date | Deliverable / action | Weight | Where it is prepared |
 |---|---|---|---|
 | ~~11 Oct~~ | ~~Proposal~~ (grade 7) | 5% ML, 20% CS | done |
-| **Thu 22 – Fri 23 Oct** | Public GitHub repo + website online | (required) | §1 and §2 |
+| ~~Thu 22 Oct~~ | ~~Public GitHub repo + website online~~ — done: github.com/papchabertieu2025-design/f1-duel and paulchabert.pythonanywhere.com | (required) | §1 and §2 |
+| **before 22 Nov** | PythonAnywhere Web tab → "Run until 1 month from today" (free site expires 22 Nov) | | `app/DEPLOY.md` |
 | **Sat 24 Oct** (after Austin qualifying) | Live forecast #1, committed **before** the race | (proof) | §3 |
 | **Sun 25 Oct** | **Progress report** (max 2 pages) | 5% ML | `reports/1_progress_report_25oct/main.tex` |
 | 31 Oct / 1 Nov | Mexico City forecast (round 19) | | §3 |
@@ -22,7 +23,7 @@ Today: Thursday 22 October 2026. All written deliverables: **LaTeX → PDF, uplo
 
 ## §1 Public GitHub repository (required; link in the final report)
 The brief requires a **credible history**: "a single final upload or an artificial commit history does not demonstrate the required development process".
-1. Repository `f1-duel`, public, with the code so far as the first commit.
+1. Done: https://github.com/papchabertieu2025-design/f1-duel (public).
 2. Paul adds Luis and Eugenio as collaborators (Settings → Collaborators).
 3. From now on, **each member commits their own real work from their own computer**: race forecasts, figures, report, fixes. Never commit under someone else's name.
 

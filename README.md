@@ -4,7 +4,7 @@
 starting grid does, and will the model be right on the races still to come?
 
 Paul, Luis, Eugenio — Machine Learning (BAM, IE University), Fall 2026.
-Live website: add your PythonAnywhere address here once deployed (see "Deploy").
+Live website: **https://paulchabert.pythonanywhere.com** · Code: https://github.com/papchabertieu2025-design/f1-duel
 
 ## The answer so far
 

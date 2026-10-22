@@ -17,3 +17,12 @@
 
 **Update before each race:** run `python -m f1duel.forecast 2026 <round>` on your computer, upload the new
 `model.json` (or `git pull` in the PythonAnywhere console), and press *Reload*.
+
+## How it is deployed now (22 Oct 2026)
+- Code: `git clone https://github.com/papchabertieu2025-design/f1-duel.git` in `/home/paulchabert/`.
+- WSGI file `/var/www/paulchabert_pythonanywhere_com_wsgi.py` adds `/home/paulchabert/f1-duel/app` to `sys.path`,
+  reads the OpenAI key from `/home/paulchabert/tvb_flask_openai/api_key.txt` (never in Git) and imports `app`.
+  The previous site's WSGI file is backed up as `~/wsgi_backup_tvb_flask_openai.py`.
+- Update: Bash console → `cd ~/f1-duel && git pull` → Web tab → **Reload**.
+- Free sites stop after one month: log in and click **"Run until 1 month from today"** on the Web tab before
+  22 November 2026 (so the site is up for the presentation).
