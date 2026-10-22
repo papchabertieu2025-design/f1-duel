@@ -72,8 +72,8 @@ def api_ask():
     question = str(body.get("question") or "").strip()[:500]
     if not question:
         return jsonify({"error": "Type a question first."}), 400
-    key = os.environ.get("OPENAI_API_KEY")
-    if not key:
+    key = os.environ.get("OPENAI_API_KEY", "")
+    if not key.startswith("sk-"):                                # missing or placeholder key
         return jsonify({"error": "The AI box is off: add OPENAI_API_KEY to the server settings."}), 503
     m = load_model()
     context = {"race": m["race"], "mode": m["mode"],
@@ -82,18 +82,21 @@ def api_ask():
     ids = {d["id"] for d in m["drivers"]}
     if body.get("a") in ids and body.get("b") in ids and body["a"] != body["b"]:
         context["current_duel"] = duel(m, body["a"], body["b"])
-    from openai import OpenAI                                    # as in the GenAI tutorial
+    from openai import OpenAI, OpenAIError                       # as in the GenAI tutorial
     client = OpenAI(api_key=key)
-    reply = client.chat.completions.create(
-        model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
-        messages=[{"role": "system", "content":
-                   "You are the race engineer of a student machine-learning project that predicts Formula 1 results. "
-                   "Answer in the user's language, in at most 120 words, for a general audience. "
-                   "Use ONLY the numbers in this JSON (model outputs and test results); never invent statistics. "
-                   "If the data cannot answer, say so. Probabilities are estimates, not certainties.\n"
-                   + json.dumps(context)},
-                  {"role": "user", "content": question}],
-        temperature=0.3, max_tokens=300)
+    try:
+        reply = client.chat.completions.create(
+            model=os.environ.get("OPENAI_MODEL", "gpt-4o-mini"),
+            messages=[{"role": "system", "content":
+                       "You are the race engineer of a student machine-learning project that predicts Formula 1 results. "
+                       "Answer in the user's language, in at most 120 words, for a general audience. "
+                       "Use ONLY the numbers in this JSON (model outputs and test results); never invent statistics. "
+                       "If the data cannot answer, say so. Probabilities are estimates, not certainties.\n"
+                       + json.dumps(context)},
+                      {"role": "user", "content": question}],
+            temperature=0.3, max_tokens=300)
+    except OpenAIError:
+        return jsonify({"error": "The AI box is unavailable right now (check the OpenAI key on the server)."}), 503
     return jsonify({"answer": reply.choices[0].message.content})
 
 
