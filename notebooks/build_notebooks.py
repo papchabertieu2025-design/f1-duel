@@ -461,16 +461,16 @@ from IPython.display import Image; display(Image('../figures/08_reset_facts.png'
 rows = []
 for test in ['Reset 2026', 'Reset 2014', 'Normal seasons 2020-2025']:
     for n, v in R[test]['models'].items():
-        rows.append({'Test': test, 'Model': n, 'Brier rounds 1-5': v['brier_early'], 'Brier rounds 6+': v['brier_late'],
-                     'Brier all': v['brier'], 'AUC': v['auc'], 'Scorers named': v['named'], 'Gain vs grid': v['gain_vs_grid'][0]})
+        rows.append({'Test': test, 'Model': n, 'Cross-entropy rounds 1-5': v['logloss_early'], 'Cross-entropy rounds 6+': v['logloss_late'],
+                     'Cross-entropy all': v['logloss'], 'AUC': v['auc'], 'Precision = recall (of 10)': v['named'] / 10, 'Gain vs grid': v['gain_vs_grid'][0]})
 T = pd.DataFrame(rows).set_index(['Test', 'Model']).round(4); T"""),
     code("""
 for test in ['Reset 2026', 'Reset 2014']:
     m = R[test]['models']
-    e = m['Past results only']['brier_early'] - m['Weekend pace only']['brier_early']
-    l = m['Past results only']['brier_late'] - m['Weekend pace only']['brier_late']
-    pu = m['Full model']['brier'] - m['Full model (no power unit)']['brier']
-    print(f"{test}: H1 weekend beats past early by {e:+.4f} Brier; H2 gap later {l:+.4f} (positive = weekend better); power unit changes full-model Brier by {pu:+.4f}")
+    e = m['Past results only']['logloss_early'] - m['Weekend pace only']['logloss_early']
+    l = m['Past results only']['logloss_late'] - m['Weekend pace only']['logloss_late']
+    pu = m['Full model']['logloss'] - m['Full model (no power unit)']['logloss']
+    print(f"{test}: H1 weekend beats past early by {e:+.4f} cross-entropy; H2 gap later {l:+.4f} (positive = weekend better); power unit changes the full model by {pu:+.4f}")
 from IPython.display import Image; display(Image('../figures/08_reset_2026_brier.png', width=700))"""),
     md("""
 **Reading.** H1 holds in both resets: in the first five races, the weekend's pace predicts the points scorers better than past results. H2 holds too: the gap shrinks as the season goes on (in 2014, past results even become the better source after round 5). The full model, which combines both, is best overall. The power-unit variables do **not** improve the full model: the engine's past results are themselves "past results", which a reset makes stale; what matters is visible on Saturday.

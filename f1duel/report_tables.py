@@ -63,7 +63,7 @@ def tracks(S):
 
 
 def reset_table(R):
-    """H1/H2: Brier score early (rounds 1-5) and later in the two reset seasons."""
+    """H1/H2: cross-entropy (log-loss) early (rounds 1-5) and later in the two reset seasons."""
     show = ["Past results only", "Past results + power unit", "Grid position only", "Weekend pace only",
             "Full model (no power unit)", "Full model"]
     rows = []
@@ -71,10 +71,10 @@ def reset_table(R):
         cells = []
         for t in ("Reset 2014", "Reset 2026"):
             m = R[t]["models"][n]
-            cells += [f"{m['brier_early']:.3f}", f"{m['brier_late']:.3f}"]
+            cells += [f"{m['logloss_early']:.3f}", f"{m['logloss_late']:.3f}"]
         rows.append(n + " & " + " & ".join(cells) + " \\\\")
     return ("\\begin{tabular}{lcccc}\n\\hline\n & \\multicolumn{2}{c}{2014 reset} & \\multicolumn{2}{c}{2026 reset} \\\\\n"
-            "Logistic regression with & rounds 1--5 & 6--19 & rounds 1--5 & 6--17 \\\\\n\\hline\n" + "\n".join(rows)
+            "$P(y=1\\mid x)=\\sigma(\\theta^\\top x)$ with $x=$ & rounds 1--5 & 6--19 & rounds 1--5 & 6--17 \\\\\n\\hline\n" + "\n".join(rows)
             + "\n\\hline\n\\end{tabular}\n")
 
 

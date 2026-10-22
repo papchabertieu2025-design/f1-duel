@@ -16,7 +16,7 @@ import json
 
 import numpy as np
 import pandas as pd
-from sklearn.metrics import brier_score_loss, roc_auc_score
+from sklearn.metrics import brier_score_loss, log_loss, roc_auc_score
 
 from .data import PU_FEATURES, ROOT, build
 from .model import CarProfile, fit_knn, fit_top10, scorers_named
@@ -74,7 +74,10 @@ def summarise(P):
             named = scorers_named(Q, n)
             diff = (named - grid_named).to_numpy()
             boots = [diff[rng.integers(0, len(diff), len(diff))].mean() for _ in range(5000)]
-            s["models"][n] = {"brier": brier_score_loss(Q.top10, Q[n]),
+            s["models"][n] = {"logloss": log_loss(Q.top10, Q[n]),
+                              "logloss_early": log_loss(early.top10, early[n]),
+                              "logloss_late": log_loss(late.top10, late[n]),
+                              "brier": brier_score_loss(Q.top10, Q[n]),
                               "brier_early": brier_score_loss(early.top10, early[n]),
                               "brier_late": brier_score_loss(late.top10, late[n]),
                               "auc": roc_auc_score(Q.top10, Q[n]),
@@ -107,20 +110,20 @@ def figures(S, F):
     ys = sorted(F["points_changing_hands"])
     c = [ORANGE if y in (2014, 2026) else GREY for y in ys]
     ax[0].bar(ys, [100 * F["points_changing_hands"][y] for y in ys], color=c)
-    ax[0].set_ylabel("% of team points"); title(ax[0], "(a) Points that change hands over the winter")
+    ax[0].set_ylabel("% of team points"); ax[0].set_xticks([2011, 2014, 2017, 2020, 2023, 2026]); title(ax[0], "(a) Points that change hands over the winter")
     ym = sorted(F["mechanical_dnf_rate"])
     ax[1].bar(ym, [100 * F["mechanical_dnf_rate"][y] for y in ym], color=[ORANGE if y in (2014, 2026) else GREY for y in ym])
-    ax[1].set_ylabel("% of starters"); title(ax[1], "(b) Mechanical retirements")
+    ax[1].set_ylabel("% of starters"); ax[1].set_xticks([2010, 2014, 2018, 2022, 2026]); title(ax[1], "(b) Mechanical retirements")
     save(fig, "08_reset_facts"); plt.close(fig)
 
     fig, ax = plt.subplots(figsize=(8, 3.2))
     show = ["Past results only", "Past results + power unit", "Grid position only", "Weekend pace only", "Full model"]
     x = np.arange(len(show)); w = 0.38
     m = S["Reset 2026"]["models"]
-    ax.bar(x - w / 2, [m[n]["brier_early"] for n in show], w, color=ORANGE, label="Rounds 1-5")
-    ax.bar(x + w / 2, [m[n]["brier_late"] for n in show], w, color=BLUE, label="Rounds 6-17")
+    ax.bar(x - w / 2, [m[n]["logloss_early"] for n in show], w, color=ORANGE, label="Rounds 1-5")
+    ax.bar(x + w / 2, [m[n]["logloss_late"] for n in show], w, color=BLUE, label="Rounds 6-17")
     ax.set_xticks(x); ax.set_xticklabels([n.replace(" + ", "\n+ ").replace(" only", "\nonly") for n in show], fontsize=9)
-    ax.set_ylabel("Brier score (lower = better)"); ax.set_ylim(0.13, 0.20); ax.legend()
+    ax.set_ylabel("Cross-entropy (lower = better)"); ax.set_ylim(0.40, 0.58); ax.legend()
     title(ax, "2026 reset: which information predicts the points scorers?")
     save(fig, "08_reset_2026_brier"); plt.close(fig)
 
@@ -137,7 +140,7 @@ def main():
             continue
         print(f"\n{test}: {s['races']} races, grid rule names {s['grid_rule_named']:.2f}/10")
         for n, v in s["models"].items():
-            print(f"  {n:28s} Brier {v['brier']:.4f} (early {v['brier_early']:.4f}, late {v['brier_late']:.4f})"
+            print(f"  {n:28s} CE {v['logloss']:.4f} (early {v['logloss_early']:.4f}, late {v['logloss_late']:.4f})"
                   f"  AUC {v['auc']:.3f}  named {v['named']:.2f}  gain {v['gain_vs_grid'][0]:+.2f}"
                   f" [{v['gain_vs_grid'][1]:+.2f}, {v['gain_vs_grid'][2]:+.2f}]")
     F = S["facts"]

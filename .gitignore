@@ -6,3 +6,5 @@ data/raw/f1db/
 .venv/
 .DS_Store
 .claude/
+*.aux
+*.log
