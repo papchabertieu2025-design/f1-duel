@@ -3,7 +3,7 @@
 One source: the official Formula 1 race results, as stored in the open F1DB database
 (github.com/f1db/f1db, snapshot in data/raw/ with its SHA-256 checksum).
 
-build() returns one row per driver per Grand Prix (2014 onwards) with:
+build() returns one row per driver per Grand Prix (2010 onwards) with:
   * what happened in the race  -> finish_pos, top10, points, dnf_mechanical
   * what was known BEFORE the race -> features (past form, team strength, grid, qualifying gap)
 
@@ -17,10 +17,20 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw" / "f1db"
-FIRST_YEAR = 2014          # start of the turbo-hybrid era: same points system ever since
+FIRST_YEAR = 2010          # same points system ever since (top 10 score); covers the 2014 and 2026 engine resets
 DNF_POSITION = 20          # a driver who does not finish counts as 20th in average-position features
 INCIDENT = ("collision", "accident", "spun", "crash", "damage", "contact", "puncture",
             "debris", "withdrew", "illness", "injury")
+
+# Engine names change with sponsors: one family per power-unit maker
+ENGINE_FAMILY = {"tag-heuer": "renault", "toro-rosso": "renault", "bwt-mercedes": "mercedes",
+                 "rbpt": "honda", "honda-rbpt": "honda"}
+# Works / lead-partner teams of each power-unit maker (the team builds or co-develops the engine)
+WORKS = {("mercedes", "mercedes"), ("ferrari", "ferrari"), ("renault", "renault"), ("alpine", "renault"),
+         ("audi", "audi"), ("red-bull", "red-bull-ford"), ("mclaren", "honda"), ("red-bull", "honda"),
+         ("aston-martin", "honda")}
+# Power-unit variables (Part I, added for the 2026 reset: the new engines are 50% electric)
+PU_FEATURES = ["pu_form", "pu_works", "pu_change", "prev_season_fade"]
 
 # Team statistics summarised by PCA in Part III (rolling, previous 5 races, both cars)
 TEAM_STATS = ["team_points", "team_top10", "team_podium", "team_avg_finish",
@@ -56,11 +66,11 @@ def upcoming_entries(year, rnd):
     columns driverId, grid, quali_time_s, practice_time_s (any can be left empty)."""
     res = _read("races-race-results")
     last = res[res.year == res.year.max()]
-    last = last[last["round"] == last["round"].max()][["driverId", "constructorId"]]
+    last = last[last["round"] == last["round"].max()][["driverId", "constructorId", "engineManufacturerId"]]
     path = ROOT / "data" / "upcoming" / f"{year}_r{rnd:02d}.csv"
     if path.exists():
         extra = pd.read_csv(path)
-        last = extra.merge(last, on="driverId", how="left") if "constructorId" not in extra else extra
+        last = extra.drop(columns=["constructorId", "engineManufacturerId"], errors="ignore").merge(last, on="driverId", how="left")
     return last
 
 
@@ -83,7 +93,8 @@ def build(upcoming=None):
         race = races[(races.year == y) & (races["round"] == r)].iloc[0]
         ent = upcoming_entries(y, r)
         add = pd.DataFrame({"raceId": race["id"], "year": y, "round": r, "driverId": ent.driverId,
-                            "constructorId": ent.constructorId, "gridPositionText": "?"})
+                            "constructorId": ent.constructorId, "engineManufacturerId": ent.engineManufacturerId,
+                            "gridPositionText": "?"})
         for col in ("grid", "quali_time_s", "practice_time_s"):
             add["up_" + col] = ent[col].values if col in ent else np.nan
         res = pd.concat([res, add], ignore_index=True)
@@ -156,16 +167,34 @@ def build(upcoming=None):
         team_race[name] = _prev_mean(team_race[col], g, w)
     df = df.merge(team_race[["team", "race_idx"] + TEAM_STATS], on=["team", "race_idx"], how="left")
 
+    # --- power unit (history only) -----------------------------------------------
+    df["engine"] = df.engineManufacturerId.replace(ENGINE_FAMILY)
+    df["pu_works"] = [int((c, e) in WORKS) for c, e in zip(df.constructorId, df.engine)]
+    eng_race = (df.groupby(["engine", "race_idx"]).points_scored.mean().rename("pts").reset_index()
+                .sort_values("race_idx"))
+    eng_race["pu_form"] = _prev_mean(eng_race.pts, eng_race.engine, 5)       # points per car, last 5 races
+    df = df.merge(eng_race[["engine", "race_idx", "pu_form"]], on=["engine", "race_idx"], how="left")
+    last_engine = df.sort_values("race_idx").groupby(["team", "year"]).engine.last()
+    prev = {(t, y + 1): e for (t, y), e in last_engine.items()}
+    df["pu_change"] = [int(y > FIRST_YEAR and prev.get((t, y)) != e) for t, y, e in zip(df.team, df.year, df.engine)]
+    # did the team fade at the end of last season? (points per race, last 5 races minus season average)
+    tr = df.groupby(["team", "year", "race_idx"]).points_scored.sum().reset_index().sort_values("race_idx")
+    season = tr.groupby(["team", "year"]).points_scored
+    fade = (season.apply(lambda x: x.tail(5).mean()) - season.mean())
+    df["prev_season_fade"] = [fade.get((t, y - 1), np.nan) for t, y in zip(df.team, df.year)]
+    df["prev_season_fade"] = df.prev_season_fade.fillna(0)
+
     # newcomers (no history): neutral values from the 2014-2019 seasons, flagged
     df["new_entry"] = df.drv_avg_finish.isna().astype(int)
     ref = df[df.year <= 2019]
-    for col in ["drv_avg_finish", "drv_top10"] + TEAM_STATS:
+    for col in ["drv_avg_finish", "drv_top10", "pu_form"] + TEAM_STATS:
         df[col] = df[col].fillna(ref[col].median())
     df["season_progress"] = df["round"] / df.year.map(calendar)
 
     keep = ["raceId", "year", "round", "date", "gp_name", "circuitId", "circuit_type", "driverId",
             "driver_name", "driver_code", "team", "team_name", "n_starters", "grid", "quali_gap", "practice_gap",
             "drv_avg_finish", "drv_top10", "new_entry", "season_progress", *TEAM_STATS,
+            "engine", *PU_FEATURES,
             "finish_pos", "top10", "podium", "win", "points_scored", "dnf_mechanical", "upcoming"]
     return df[keep]
 

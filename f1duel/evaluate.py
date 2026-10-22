@@ -69,7 +69,7 @@ def predict_block(train_raw, test_raw, k):
 def track_analysis(d, P, D):
     """Teacher's question: Monaco (and similar tracks) depend on the grid. Does the model still help there?
     Grid dependence of a circuit = share of its top-10 finishers who started in the top 10, measured on
-    2014-2019 only (before the test seasons), so the groups are fixed without looking at the test races."""
+    2010-2019 only (before the test seasons), so the groups are fixed without looking at the test races."""
     hist = d[d.year < 2020]
     dep = (hist[hist.top10 == 1].assign(g10=lambda x: x.grid <= 10)
            .groupby(["circuitId", "raceId"]).g10.mean().groupby("circuitId").mean())
@@ -89,8 +89,8 @@ def track_analysis(d, P, D):
         out[name] = {"races": int(len(r)), "scorers_grid": float(r.grid_named.mean()), "scorers_model": float(r.model_named.mean()),
                      "duel_grid": float(r.grid_correct.sum() / r.pairs.sum()), "duel_model": float(r.correct.sum() / r.pairs.sum())}
     out["grid_dependent_tracks"] = sorted(top_third)
-    out["monaco_grid_dependence_2014_2019"] = float(dep.get("monaco", np.nan))
-    out["grid_dependence_median_2014_2019"] = float(dep.median())
+    out["monaco_grid_dependence_2010_2019"] = float(dep.get("monaco", np.nan))
+    out["grid_dependence_median_2010_2019"] = float(dep.median())
     return out
 
 

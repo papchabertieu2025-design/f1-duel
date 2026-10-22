@@ -1,4 +1,21 @@
-# F1 Duel: can a model beat the starting grid?
+# Reset: Can Machine Learning Forecast Formula 1 Through Its Biggest Rule Change in a Decade?
+
+**Question (proposal, 11 Oct 2026).** Can a pre-race model predict which drivers score points (top ten)
+through a regulation reset, and should it rely on past results or on the current weekend's pace?
+H1 weekend pace beats past results after a reset · H2 past results regain value during the season ·
+H3 live forecasts match the simulation. Progress report: `reports/Progress_Report_25oct.pdf`;
+code for the reset analysis: `f1duel/reset.py`, notebook `08_reset`.
+
+| Brier score (lower = better) | 2014 reset, rounds 1–5 / 6–19 | 2026 reset, rounds 1–5 / 6–17 |
+|---|---|---|
+| Past results only | 0.166 / 0.145 | 0.186 / 0.156 |
+| Weekend pace only | 0.155 / 0.155 | 0.176 / 0.153 |
+| Full model | 0.146 / 0.140 | 0.173 / 0.148 |
+
+H1 and H2 supported in both resets; the new power-unit variables do not improve the full model.
+Against the professor's grid baseline (2020–2025): 7.92 vs 7.71 of 10 points scorers (+0.21, 95% CI +0.06 to +0.35).
+
+## F1 Duel (the website built on the same models): can a model beat the starting grid?
 
 **Question.** Before a Grand Prix starts, can we predict who will finish ahead of whom better than the
 starting grid does, and will the model be right on the races still to come?
@@ -24,7 +41,7 @@ each 2026 race by models re-trained on everything before it.
 
 | Part | Method (course session) | Its job | Notebook |
 |---|---|---|---|
-| I | Data (pandas) | official results 2014–2026, 5,435 starts, pre-race information only | `01_data` |
+| I | Data (pandas) | official results 2010–2026, 7,231 starts, pre-race information only | `01_data` |
 | II | Linear regression, Ridge, Lasso, CV (S2–5) | one grid place ≈ 0.64 finishing places; the front rows count more → log(grid) | `02_linear_regression` |
 | III | PCA (S9) | 7 team statistics → 2 axes: car performance (76%) and reliability (13%) | `03_pca` |
 | IV | k-means (S10–11) | 3 car families: top, midfield, back (elbow + silhouette) | `04_kmeans` |
