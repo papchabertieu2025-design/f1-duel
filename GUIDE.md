@@ -18,15 +18,13 @@ This is not a presentation about F1: we ask one question, build a model, compare
 **Each part feeds the next:** linear regression shows the grid matters but is not linear (hence log(grid)); two team statistics (recent points, reliability) describe the car; k-means creates the car families; logistic regression uses all of it.
 
 ## Parameters of the final model (know them for the oral) — simplified on 23 Oct: grid, quali gap, practice gap, team points, top car, unreliable car (log(grid) and reliability dropped)
-8 features, all known on Saturday night:
+6 features, all known on Saturday night:
 1. `grid`: starting position
-2. `log(grid)`: front-row advantage
-3. `quali_gap`: gap to pole in qualifying (%)
-4. `practice_gap`: gap to the best free-practice lap (%)
-5. `car_perf`: car performance = team points per race over the last 5 races (standardised)
-6. `car_rel`: reliability = minus the mechanical-failure rate over the last 10 races (standardised)
-7. `tier_top`: the car is in the "top" family (k-means)
-8. `tier_unrel`: the car is in the "unreliable car" family (k-means)
+2. `quali_gap`: gap to pole in qualifying (%)
+3. `practice_gap`: gap to the best free-practice lap (%)
+4. `car_perf`: car performance = team points per race over the last 5 races (standardised)
+5. `tier_top`: the car is in the "top" family (k-means)
+6. `tier_unrel`: the car is in the "unreliable car" family (k-means)
 
 Duel: P(A ahead of B) = sigmoid(w · (x_A − x_B)). Weights w are in notebook 05; car performance and log(grid) matter most.
 
