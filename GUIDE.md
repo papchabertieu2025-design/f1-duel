@@ -17,7 +17,7 @@ This is not a presentation about F1: we ask one question, build a model, compare
 
 **Each part feeds the next:** linear regression shows the grid matters but is not linear (hence log(grid)); two team statistics (recent points, reliability) describe the car; k-means creates the car families; logistic regression uses all of it.
 
-## Parameters of the final model (know them for the oral)
+## Parameters of the final model (know them for the oral) — simplified on 23 Oct: grid, quali gap, practice gap, team points, top car, unreliable car (log(grid) and reliability dropped)
 8 features, all known on Saturday night:
 1. `grid`: starting position
 2. `log(grid)`: front-row advantage

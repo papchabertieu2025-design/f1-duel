@@ -30,7 +30,7 @@ WORKS = {("mercedes", "mercedes"), ("ferrari", "ferrari"), ("renault", "renault"
          ("audi", "audi"), ("red-bull", "red-bull-ford"), ("mclaren", "honda"), ("red-bull", "honda"),
          ("aston-martin", "honda")}
 # Power-unit variables (Part I, added for the 2026 reset: the new engines are 50% electric)
-PU_FEATURES = ["pu_form", "pu_works", "pu_change", "prev_season_fade"]
+PU_FEATURES = ["pu_works", "pu_change"]
 
 # Team statistics (rolling, previous races, both cars); the car profile uses team_points and team_mech_dnf
 TEAM_STATS = ["team_points", "team_top10", "team_podium", "team_avg_finish",
@@ -170,24 +170,14 @@ def build(upcoming=None):
     # --- power unit (history only) -----------------------------------------------
     df["engine"] = df.engineManufacturerId.replace(ENGINE_FAMILY)
     df["pu_works"] = [int((c, e) in WORKS) for c, e in zip(df.constructorId, df.engine)]
-    eng_race = (df.groupby(["engine", "race_idx"]).points_scored.mean().rename("pts").reset_index()
-                .sort_values("race_idx"))
-    eng_race["pu_form"] = _prev_mean(eng_race.pts, eng_race.engine, 5)       # points per car, last 5 races
-    df = df.merge(eng_race[["engine", "race_idx", "pu_form"]], on=["engine", "race_idx"], how="left")
     last_engine = df.sort_values("race_idx").groupby(["team", "year"]).engine.last()
     prev = {(t, y + 1): e for (t, y), e in last_engine.items()}
     df["pu_change"] = [int(y > FIRST_YEAR and prev.get((t, y)) != e) for t, y, e in zip(df.team, df.year, df.engine)]
-    # did the team fade at the end of last season? (points per race, last 5 races minus season average)
-    tr = df.groupby(["team", "year", "race_idx"]).points_scored.sum().reset_index().sort_values("race_idx")
-    season = tr.groupby(["team", "year"]).points_scored
-    fade = (season.apply(lambda x: x.tail(5).mean()) - season.mean())
-    df["prev_season_fade"] = [fade.get((t, y - 1), np.nan) for t, y in zip(df.team, df.year)]
-    df["prev_season_fade"] = df.prev_season_fade.fillna(0)
 
     # newcomers (no history): neutral values from the 2014-2019 seasons, flagged
     df["new_entry"] = df.drv_avg_finish.isna().astype(int)
     ref = df[df.year <= 2019]
-    for col in ["drv_avg_finish", "drv_top10", "pu_form"] + TEAM_STATS:
+    for col in ["drv_avg_finish", "drv_top10"] + TEAM_STATS:
         df[col] = df[col].fillna(ref[col].median())
     df["season_progress"] = df["round"] / df.year.map(calendar)
 

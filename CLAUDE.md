@@ -28,7 +28,7 @@ Read this first. It summarises everything decided in the earlier Claude conversa
 | — | two models (tracks.py, forecast.py) | Paul's decision (Option A, 22 Oct): forecast uses the model of the next race's track type (hard-to-overtake list: Monaco, Zandvoort, Hungaroring, Marina Bay, Madring, vs normal). Honest numbers: 7.86 vs 7.87 overall, 7.85 vs 7.95 on hard tracks; single model kept alongside, both compared live (website table) | 06 |
 | VII | reset (proposal question) | past results vs weekend pace, 2014 and 2026 resets, power-unit variables | 07 |
 
-Final model after qualifying: 8 features (grid, log grid, quali_gap, practice_gap, car_perf, car_rel, tier_top, tier_unrel). Before qualifying: 6 features (4 car features + driver form).
+Final model after qualifying (simplified 23 Oct at Paul's request): 6 features (grid, quali_gap, practice_gap, car_perf = team points, tier_top, tier_unrel). Before qualifying: 5 (3 car features + driver form). Reset full model adds driver form + 2 engine variables (pu_works, pu_change) = 10 parameters + intercept. Dropped: log(grid) (adds nothing in logistic), car_rel as a predictor (still used by k-means), pu_form, prev_season_fade.
 
 ## Results (results/summary.json — regenerate with `make all`)
 - Duels: 77.4% vs grid rule 75.5% (24,134 pairs, 2020–2025, +2.0 pts, 95% CI +1.1 to +2.8); 2026: 81.2% vs 78.9% (+2.3, CI +0.5 to +4.2).

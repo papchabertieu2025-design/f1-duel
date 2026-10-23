@@ -22,9 +22,9 @@ SEED = 2026
 TIERS = ["Top car", "Midfield car", "Unreliable car"]
 
 # Features. "Before the weekend" = what we know on Monday; "after qualifying" = Saturday night.
-CAR = ["car_perf", "car_rel", "tier_top", "tier_unrel"]
+CAR = ["car_perf", "tier_top", "tier_unrel"]          # reliability is used by k-means, not as its own predictor
 BEFORE_WEEKEND = CAR + ["drv_avg_finish", "drv_top10"]
-AFTER_QUALI = ["grid", "log_grid", "quali_gap", "practice_gap"] + CAR
+AFTER_QUALI = ["grid", "quali_gap", "practice_gap"] + CAR
 
 
 # --------------------------------------------------------------------------- III

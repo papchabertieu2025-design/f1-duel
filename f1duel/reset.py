@@ -8,7 +8,7 @@ regulation reset, and should it rely on past results or on the current weekend's
 Tests (every model is trained only on races before the one it predicts):
   * reset 2026 and reset 2014 (the two engine rule changes): race by race, re-trained before each race
   * normal seasons 2020-2025: each season predicted from all earlier seasons
-New variables for the reset: the power unit (pu_form, pu_works, pu_change, prev_season_fade).
+New variables for the reset: the power unit (pu_works = works team, pu_change = new engine supplier).
 
 Usage: python -m f1duel.reset  -> results/reset_summary.json, results/reset_predictions.csv, figures/06_reset_*.png
 """
@@ -21,8 +21,8 @@ from sklearn.metrics import brier_score_loss, log_loss, roc_auc_score
 from .data import PU_FEATURES, ROOT, build
 from .model import CarProfile, fit_top10, scorers_named
 
-PAST = ["drv_avg_finish", "drv_top10", "car_perf", "car_rel", "tier_top", "tier_unrel"]
-GRID = ["grid", "log_grid"]
+PAST = ["drv_avg_finish", "drv_top10", "car_perf", "tier_top", "tier_unrel"]
+GRID = ["grid"]
 WEEKEND = GRID + ["quali_gap", "practice_gap"]
 MODELS = {                                         # name -> features (logistic regression)
     "Past results only": PAST,

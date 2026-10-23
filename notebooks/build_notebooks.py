@@ -149,7 +149,7 @@ for f in (['grid'], ['grid', 'log_grid']):
 1. **One grid place is worth about 0.65 finishing places.** The grid alone explains more than half of the finishing order (R² ≈ 0.55 on the test seasons).
 2. **Adding car and qualifying information lowers the error** below the "finish = grid" baseline on both test seasons.
 3. **Ridge and Lasso keep almost the same coefficients:** with 8 features and thousands of rows, there is little overfitting to fix.
-4. **The grid effect bends:** pole wins 53% of races, 2nd 25%, 3rd 10%. Each place at the front halves the chance of winning, which no straight line can follow. Adding `log(grid)` next to `grid` captures this curve (R² 0.550 → 0.561 for finishing position, and much more for the winner in Part V), so from now on every model gets both.
+4. **The grid effect bends:** pole wins 53% of races, 2nd 25%, 3rd 10%. Each place at the front halves the chance of winning, which no straight line can follow. Adding `log(grid)` captures this curve in a linear regression (R² rises a little). In the logistic regression of Part IV, the sigmoid already bends, and `log(grid)` adds nothing (tested: cross-entropy 0.481 with grid alone, 0.481 with both), so the final model keeps **grid only**.
 5. **The car matters:** team strength features are among the largest coefficients. Part III turns them into car families.
 """),
 ]
@@ -224,7 +224,7 @@ NB["04_logistic_regression"] = [
 | Will A finish ahead of B? | logistic regression on differences x_A − x_B | P(A ahead of B) → **the duel of the website** |
 | Who wins? | softmax over the 20 drivers of the race | P(win) for each driver |
 
-**Features (8, known on Saturday night):** grid, log(grid), qualifying gap, practice gap, car performance (team points), reliability (mechanical failures), top-car and unreliable-car flags (k-means).
+**Features (6, known on Saturday night):** grid, qualifying gap, practice gap, car performance (team points), top-car and unreliable-car flags (k-means).
 **Honest test:** each season 2020–2025 is predicted by a model trained only on earlier seasons; 2026 (new rules) is re-trained before every race. All results come from `python -m f1duel.evaluate`.
 """),
     code(SETUP + """
@@ -277,7 +277,7 @@ ax.barh(w.index, w.values, color=[ORANGE if v < 0 else BLUE for v in w.values]);
 ax.set_xlabel('Weight per standard deviation (positive = helps finish ahead)'); title(ax, 'Duel model: what makes a driver finish ahead')
 save(fig, '04_duel_weights'); plt.show(); w.round(3)"""),
     md("""
-**How to read a weight:** P(A ahead of B) = sigmoid(w · (x_A − x_B)). A positive weight means more of that feature helps. Grid and log(grid) are negative (starting further back hurts); car performance is positive.
+**How to read a weight:** P(A ahead of B) = sigmoid(w · (x_A − x_B)). A positive weight means more of that feature helps. Grid is negative (starting further back hurts); car performance is positive.
 """),
     md("### Question 3 — Who wins? (softmax over the drivers of a race)"),
     code("""
@@ -394,7 +394,7 @@ NB["06_reset"] = [
 - **H2** past results regain their value as the new season progresses
 - **H3** live forecasts for the remaining 2026 races are as accurate as the simulation (tested after the races)
 
-The same logistic regression is trained with different sets of variables. Each 2014 and 2026 race is predicted by a model re-trained on everything before it (car profile and k-means included). **New variables for the reset (the 2026 power units are about 50% electric):** `pu_form` (points per car of every car with the same engine, last 5 races), `pu_works` (works or lead-partner team), `pu_change` (the team changed engine supplier this season), `prev_season_fade` (did the team fade at the end of last season? a proxy for moving resources early to the new rules; no public source gives teams' spending).
+The same logistic regression is trained with different sets of variables. Each 2014 and 2026 race is predicted by a model re-trained on everything before it (car profile and k-means included). **New variables for the reset (the 2026 power units are about 50% electric):** `pu_works` (works or lead-partner team of the engine maker) and `pu_change` (the team changed engine supplier this season).
 Code: `f1duel/reset.py`.
 """),
     code(SETUP + """
