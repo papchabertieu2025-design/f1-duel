@@ -2966,3 +2966,25 @@ test,raceId,year,round,gp_name,circuitId,driverId,driver_name,grid,top10,track_t
 2026,1166,2026,17,Singapore,marina-bay,isack-hadjar,Isack Hadjar,22.0,1,1,0.23153251042362355,0.2128147152817799
 2026,1166,2026,17,Singapore,marina-bay,fernando-alonso,Fernando Alonso,22.0,0,1,0.0702462195669602,0.08443872468161737
 2026,1166,2026,17,Singapore,marina-bay,lance-stroll,Lance Stroll,22.0,0,1,0.053160785806373866,0.06366628752167076
+2026,1167,2026,18,United States,austin,kimi-antonelli,Kimi Antonelli,1.0,1,0,0.9552400743987264,0.9541607457404264
+2026,1167,2026,18,United States,austin,max-verstappen,Max Verstappen,2.0,1,0,0.9411809897904209,0.9398799854057169
+2026,1167,2026,18,United States,austin,isack-hadjar,Isack Hadjar,3.0,1,0,0.9117902833901435,0.9113076356747634
+2026,1167,2026,18,United States,austin,charles-leclerc,Charles Leclerc,4.0,1,0,0.8693024645498938,0.8688355245916561
+2026,1167,2026,18,United States,austin,lewis-hamilton,Lewis Hamilton,5.0,1,0,0.8598735057825881,0.8590458906124241
+2026,1167,2026,18,United States,austin,george-russell,George Russell,6.0,1,0,0.9029336898253084,0.901948844219051
+2026,1167,2026,18,United States,austin,oscar-piastri,Oscar Piastri,7.0,1,0,0.733802339439889,0.7354482566421356
+2026,1167,2026,18,United States,austin,lando-norris,Lando Norris,8.0,1,0,0.6940533429546875,0.6979016975889447
+2026,1167,2026,18,United States,austin,liam-lawson,Liam Lawson,9.0,1,0,0.573193738157316,0.572059895015338
+2026,1167,2026,18,United States,austin,pierre-gasly,Pierre Gasly,10.0,1,0,0.49822128882061945,0.4984496196270855
+2026,1167,2026,18,United States,austin,nico-hulkenberg,Nico Hülkenberg,11.0,0,0,0.45538503778685846,0.45535725118538667
+2026,1167,2026,18,United States,austin,fernando-alonso,Fernando Alonso,12.0,0,0,0.3094085686072042,0.2929994499670717
+2026,1167,2026,18,United States,austin,oliver-bearman,Oliver Bearman,13.0,0,0,0.32666051040425936,0.3274863731646003
+2026,1167,2026,18,United States,austin,arvid-lindblad,Arvid Lindblad,14.0,0,0,0.37643953436854943,0.3797402071290304
+2026,1167,2026,18,United States,austin,esteban-ocon,Esteban Ocon,15.0,0,0,0.22845662586132914,0.23039771254684502
+2026,1167,2026,18,United States,austin,carlos-sainz-jr,Carlos Sainz Jr.,16.0,0,0,0.1463981899505832,0.14998831033299206
+2026,1167,2026,18,United States,austin,alexander-albon,Alexander Albon,17.0,0,0,0.12893505517482742,0.1320833418028739
+2026,1167,2026,18,United States,austin,sergio-perez,Sergio Pérez,18.0,0,0,0.09007615808611766,0.08540266737813094
+2026,1167,2026,18,United States,austin,valtteri-bottas,Valtteri Bottas,19.0,0,0,0.06634053292767662,0.06345330221918626
+2026,1167,2026,18,United States,austin,franco-colapinto,Franco Colapinto,20.0,0,0,0.15900915395898085,0.16259574977524263
+2026,1167,2026,18,United States,austin,gabriel-bortoleto,Gabriel Bortoleto,21.0,0,0,0.1293651095099284,0.1330210020450135
+2026,1167,2026,18,United States,austin,lance-stroll,Lance Stroll,22.0,0,0,0.0704366440877947,0.06724319763788296

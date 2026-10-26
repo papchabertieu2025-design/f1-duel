@@ -1,0 +1,23 @@
+driver_name,team_name,grid,tier_name,p_top10,p_top10_one,p_win
+Max Verstappen,Red Bull,,Top car,0.928,0.93,0.309
+Kimi Antonelli,Mercedes,,Top car,0.917,0.918,0.236
+Charles Leclerc,Ferrari,,Top car,0.889,0.888,0.149
+Isack Hadjar,Red Bull,,Top car,0.91,0.91,0.12
+George Russell,Mercedes,,Top car,0.849,0.848,0.066
+Lewis Hamilton,Ferrari,,Top car,0.818,0.816,0.06
+Oscar Piastri,McLaren,,Midfield car,0.731,0.731,0.013
+Lando Norris,McLaren,,Midfield car,0.726,0.726,0.012
+Liam Lawson,Racing Bulls,,Midfield car,0.586,0.575,0.006
+Arvid Lindblad,Racing Bulls,,Midfield car,0.474,0.467,0.004
+Nico Hülkenberg,Audi,,Midfield car,0.344,0.343,0.004
+Fernando Alonso,Aston Martin,,Unreliable car,0.165,0.176,0.004
+Esteban Ocon,Haas,,Midfield car,0.257,0.26,0.003
+Lance Stroll,Aston Martin,,Unreliable car,0.114,0.125,0.003
+Sergio Pérez,Cadillac,,Unreliable car,0.106,0.115,0.002
+Pierre Gasly,Alpine,,Midfield car,0.242,0.243,0.002
+Valtteri Bottas,Cadillac,,Unreliable car,0.102,0.11,0.002
+Oliver Bearman,Haas,,Midfield car,0.235,0.235,0.002
+Gabriel Bortoleto,Audi,,Midfield car,0.169,0.171,0.001
+Franco Colapinto,Alpine,,Midfield car,0.219,0.216,0.001
+Carlos Sainz Jr.,Williams,,Midfield car,0.207,0.204,0.001
+Alexander Albon,Williams,,Midfield car,0.144,0.144,0.001
