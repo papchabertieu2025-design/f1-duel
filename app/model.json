@@ -1,15 +1,15 @@
 {
- "generated": "2026-10-26 09:13 UTC",
+ "generated": "2026-11-02 10:21 UTC",
  "race": {
   "year": 2026,
-  "round": 19,
-  "name": "Mexico",
-  "date": "2026-11-01",
-  "circuit": "mexico-city"
+  "round": 20,
+  "name": "S\u00e3o Paulo",
+  "date": "2026-11-08",
+  "circuit": "interlagos"
  },
  "mode": "before_weekend",
  "model_used": "Normal track",
- "training_races": 292,
+ "training_races": 293,
  "labels": {
   "grid": "starting position",
   "log_grid": "front-row advantage (log grid)",
@@ -31,33 +31,15 @@
    "tier": "Top car",
    "grid": null,
    "x": {
-    "car_perf": 1.7598308015198874,
+    "car_perf": 1.7783707388385714,
     "tier_top": 1.0,
     "tier_unrel": 0.0,
-    "drv_avg_finish": 1.8,
+    "drv_avg_finish": 1.6,
     "drv_top10": 1.0
    },
-   "p_top10": 0.9285,
-   "p_top10_one": 0.9303,
-   "p_win": 0.3086
-  },
-  {
-   "id": "kimi-antonelli",
-   "name": "Kimi Antonelli",
-   "code": "ANT",
-   "team": "Mercedes",
-   "tier": "Top car",
-   "grid": null,
-   "x": {
-    "car_perf": 1.5928218833014285,
-    "tier_top": 1.0,
-    "tier_unrel": 0.0,
-    "drv_avg_finish": 2.4,
-    "drv_top10": 1.0
-   },
-   "p_top10": 0.9168,
-   "p_top10_one": 0.9179,
-   "p_win": 0.2362
+   "p_top10": 0.9305,
+   "p_top10_one": 0.9324,
+   "p_win": 0.3077
   },
   {
    "id": "charles-leclerc",
@@ -67,51 +49,33 @@
    "tier": "Top car",
    "grid": null,
    "x": {
-    "car_perf": 1.2402475003957938,
+    "car_perf": 1.5742650508974139,
     "tier_top": 1.0,
     "tier_unrel": 0.0,
     "drv_avg_finish": 3.2,
     "drv_top10": 1.0
    },
-   "p_top10": 0.889,
-   "p_top10_one": 0.888,
-   "p_win": 0.1493
+   "p_top10": 0.9123,
+   "p_top10_one": 0.9128,
+   "p_win": 0.1816
   },
   {
-   "id": "isack-hadjar",
-   "name": "Isack Hadjar",
-   "code": "HAD",
-   "team": "Red Bull",
-   "tier": "Top car",
-   "grid": null,
-   "x": {
-    "car_perf": 1.7598308015198874,
-    "tier_top": 1.0,
-    "tier_unrel": 0.0,
-    "drv_avg_finish": 6.0,
-    "drv_top10": 1.0
-   },
-   "p_top10": 0.9101,
-   "p_top10_one": 0.9095,
-   "p_win": 0.1197
-  },
-  {
-   "id": "george-russell",
-   "name": "George Russell",
-   "code": "RUS",
+   "id": "kimi-antonelli",
+   "name": "Kimi Antonelli",
+   "code": "ANT",
    "team": "Mercedes",
    "tier": "Top car",
    "grid": null,
    "x": {
-    "car_perf": 1.5928218833014285,
+    "car_perf": 1.3701593629562558,
     "tier_top": 1.0,
     "tier_unrel": 0.0,
-    "drv_avg_finish": 8.6,
-    "drv_top10": 0.8
+    "drv_avg_finish": 2.8,
+    "drv_top10": 1.0
    },
-   "p_top10": 0.8486,
-   "p_top10_one": 0.8484,
-   "p_win": 0.066
+   "p_top10": 0.901,
+   "p_top10_one": 0.901,
+   "p_win": 0.1695
   },
   {
    "id": "lewis-hamilton",
@@ -121,15 +85,51 @@
    "tier": "Top car",
    "grid": null,
    "x": {
-    "car_perf": 1.2402475003957938,
+    "car_perf": 1.5742650508974139,
     "tier_top": 1.0,
     "tier_unrel": 0.0,
-    "drv_avg_finish": 7.8,
+    "drv_avg_finish": 4.2,
+    "drv_top10": 1.0
+   },
+   "p_top10": 0.9074,
+   "p_top10_one": 0.9072,
+   "p_win": 0.1444
+  },
+  {
+   "id": "isack-hadjar",
+   "name": "Isack Hadjar",
+   "code": "HAD",
+   "team": "Red Bull",
+   "tier": "Top car",
+   "grid": null,
+   "x": {
+    "car_perf": 1.7783707388385714,
+    "tier_top": 1.0,
+    "tier_unrel": 0.0,
+    "drv_avg_finish": 6.6,
+    "drv_top10": 1.0
+   },
+   "p_top10": 0.9085,
+   "p_top10_one": 0.9075,
+   "p_win": 0.0978
+  },
+  {
+   "id": "george-russell",
+   "name": "George Russell",
+   "code": "RUS",
+   "team": "Mercedes",
+   "tier": "Top car",
+   "grid": null,
+   "x": {
+    "car_perf": 1.3701593629562558,
+    "tier_top": 1.0,
+    "tier_unrel": 0.0,
+    "drv_avg_finish": 8.8,
     "drv_top10": 0.8
    },
-   "p_top10": 0.8175,
-   "p_top10_one": 0.8156,
-   "p_win": 0.0599
+   "p_top10": 0.8238,
+   "p_top10_one": 0.8216,
+   "p_win": 0.0489
   },
   {
    "id": "oscar-piastri",
@@ -139,15 +139,15 @@
    "tier": "Midfield car",
    "grid": null,
    "x": {
-    "car_perf": 0.3495332698973478,
+    "car_perf": 0.18263536038952027,
     "tier_top": 0.0,
     "tier_unrel": 0.0,
-    "drv_avg_finish": 7.8,
-    "drv_top10": 0.8
+    "drv_avg_finish": 8.8,
+    "drv_top10": 0.6
    },
-   "p_top10": 0.7307,
-   "p_top10_one": 0.731,
-   "p_win": 0.0129
+   "p_top10": 0.623,
+   "p_top10_one": 0.6276,
+   "p_win": 0.0095
   },
   {
    "id": "lando-norris",
@@ -157,15 +157,15 @@
    "tier": "Midfield car",
    "grid": null,
    "x": {
-    "car_perf": 0.3495332698973478,
+    "car_perf": 0.18263536038952027,
     "tier_top": 0.0,
     "tier_unrel": 0.0,
-    "drv_avg_finish": 8.2,
+    "drv_avg_finish": 8.6,
     "drv_top10": 0.8
    },
-   "p_top10": 0.726,
-   "p_top10_one": 0.7256,
-   "p_win": 0.0117
+   "p_top10": 0.6946,
+   "p_top10_one": 0.6917,
+   "p_win": 0.0087
   },
   {
    "id": "liam-lawson",
@@ -175,33 +175,15 @@
    "tier": "Midfield car",
    "grid": null,
    "x": {
-    "car_perf": -0.4669547747262277,
+    "car_perf": -0.3925715783537423,
     "tier_top": 0.0,
     "tier_unrel": 0.0,
-    "drv_avg_finish": 8.2,
+    "drv_avg_finish": 8.4,
     "drv_top10": 0.8
    },
-   "p_top10": 0.5856,
-   "p_top10_one": 0.5752,
-   "p_win": 0.0062
-  },
-  {
-   "id": "arvid-lindblad",
-   "name": "Arvid Lindblad",
-   "code": "LIN",
-   "team": "Racing Bulls",
-   "tier": "Midfield car",
-   "grid": null,
-   "x": {
-    "car_perf": -0.4669547747262277,
-    "tier_top": 0.0,
-    "tier_unrel": 0.0,
-    "drv_avg_finish": 10.6,
-    "drv_top10": 0.6
-   },
-   "p_top10": 0.4738,
-   "p_top10_one": 0.467,
-   "p_win": 0.0041
+   "p_top10": 0.5964,
+   "p_top10_one": 0.5867,
+   "p_win": 0.0058
   },
   {
    "id": "nico-hulkenberg",
@@ -211,15 +193,15 @@
    "tier": "Midfield car",
    "grid": null,
    "x": {
-    "car_perf": -0.8009726111631449,
+    "car_perf": -0.745117766615742,
     "tier_top": 0.0,
     "tier_unrel": 0.0,
-    "drv_avg_finish": 10.2,
-    "drv_top10": 0.4
+    "drv_avg_finish": 11.0,
+    "drv_top10": 0.2
    },
-   "p_top10": 0.3437,
-   "p_top10_one": 0.3425,
-   "p_win": 0.0039
+   "p_top10": 0.2772,
+   "p_top10_one": 0.2824,
+   "p_win": 0.0036
   },
   {
    "id": "fernando-alonso",
@@ -229,50 +211,50 @@
    "tier": "Unreliable car",
    "grid": null,
    "x": {
-    "car_perf": -0.8195291576318624,
+    "car_perf": -0.8193380167761629,
     "tier_top": 0.0,
     "tier_unrel": 1.0,
-    "drv_avg_finish": 15.4,
+    "drv_avg_finish": 16.0,
     "drv_top10": 0.2
    },
-   "p_top10": 0.1652,
-   "p_top10_one": 0.1763,
-   "p_win": 0.0037
+   "p_top10": 0.1597,
+   "p_top10_one": 0.1698,
+   "p_win": 0.003
   },
   {
-   "id": "esteban-ocon",
-   "name": "Esteban Ocon",
-   "code": "OCO",
+   "id": "arvid-lindblad",
+   "name": "Arvid Lindblad",
+   "code": "LIN",
+   "team": "Racing Bulls",
+   "tier": "Midfield car",
+   "grid": null,
+   "x": {
+    "car_perf": -0.3925715783537423,
+    "tier_top": 0.0,
+    "tier_unrel": 0.0,
+    "drv_avg_finish": 12.8,
+    "drv_top10": 0.4
+   },
+   "p_top10": 0.3806,
+   "p_top10_one": 0.379,
+   "p_win": 0.0028
+  },
+  {
+   "id": "ryo-hirakawa",
+   "name": "Ry\u014d Hirakawa",
+   "code": "HIR",
    "team": "Haas",
    "tier": "Midfield car",
    "grid": null,
    "x": {
-    "car_perf": -0.7824160646944274,
+    "car_perf": -0.7636728291558472,
     "tier_top": 0.0,
     "tier_unrel": 0.0,
-    "drv_avg_finish": 12.2,
-    "drv_top10": 0.2
+    "drv_avg_finish": 10.0,
+    "drv_top10": 1.0
    },
-   "p_top10": 0.2575,
-   "p_top10_one": 0.2602,
-   "p_win": 0.0028
-  },
-  {
-   "id": "lance-stroll",
-   "name": "Lance Stroll",
-   "code": "STR",
-   "team": "Aston Martin",
-   "tier": "Unreliable car",
-   "grid": null,
-   "x": {
-    "car_perf": -0.8195291576318624,
-    "tier_top": 0.0,
-    "tier_unrel": 1.0,
-    "drv_avg_finish": 17.4,
-    "drv_top10": 0.0
-   },
-   "p_top10": 0.1144,
-   "p_top10_one": 0.1245,
+   "p_top10": 0.5786,
+   "p_top10_one": 0.5522,
    "p_win": 0.0026
   },
   {
@@ -283,33 +265,33 @@
    "tier": "Unreliable car",
    "grid": null,
    "x": {
-    "car_perf": -0.893755343506733,
+    "car_perf": -0.8935582669365839,
     "tier_top": 0.0,
     "tier_unrel": 1.0,
-    "drv_avg_finish": 17.8,
+    "drv_avg_finish": 17.0,
     "drv_top10": 0.0
    },
-   "p_top10": 0.1065,
-   "p_top10_one": 0.1153,
-   "p_win": 0.0023
+   "p_top10": 0.1106,
+   "p_top10_one": 0.1205,
+   "p_win": 0.0025
   },
   {
-   "id": "pierre-gasly",
-   "name": "Pierre Gasly",
-   "code": "GAS",
-   "team": "Alpine",
-   "tier": "Midfield car",
+   "id": "lance-stroll",
+   "name": "Lance Stroll",
+   "code": "STR",
+   "team": "Aston Martin",
+   "tier": "Unreliable car",
    "grid": null,
    "x": {
-    "car_perf": -0.7638595182257096,
+    "car_perf": -0.8193380167761629,
     "tier_top": 0.0,
-    "tier_unrel": 0.0,
-    "drv_avg_finish": 13.8,
-    "drv_top10": 0.2
+    "tier_unrel": 1.0,
+    "drv_avg_finish": 17.4,
+    "drv_top10": 0.0
    },
-   "p_top10": 0.2424,
-   "p_top10_one": 0.2427,
-   "p_win": 0.002
+   "p_top10": 0.1139,
+   "p_top10_one": 0.1241,
+   "p_win": 0.0025
   },
   {
    "id": "valtteri-bottas",
@@ -319,69 +301,15 @@
    "tier": "Unreliable car",
    "grid": null,
    "x": {
-    "car_perf": -0.893755343506733,
+    "car_perf": -0.8935582669365839,
     "tier_top": 0.0,
     "tier_unrel": 1.0,
-    "drv_avg_finish": 18.6,
+    "drv_avg_finish": 19.0,
     "drv_top10": 0.0
    },
-   "p_top10": 0.102,
-   "p_top10_one": 0.1099,
-   "p_win": 0.0019
-  },
-  {
-   "id": "oliver-bearman",
-   "name": "Oliver Bearman",
-   "code": "BEA",
-   "team": "Haas",
-   "tier": "Midfield car",
-   "grid": null,
-   "x": {
-    "car_perf": -0.7824160646944274,
-    "tier_top": 0.0,
-    "tier_unrel": 0.0,
-    "drv_avg_finish": 14.2,
-    "drv_top10": 0.2
-   },
-   "p_top10": 0.2355,
-   "p_top10_one": 0.235,
-   "p_win": 0.0018
-  },
-  {
-   "id": "gabriel-bortoleto",
-   "name": "Gabriel Bortoleto",
-   "code": "BOR",
-   "team": "Audi",
-   "tier": "Midfield car",
-   "grid": null,
-   "x": {
-    "car_perf": -0.8009726111631449,
-    "tier_top": 0.0,
-    "tier_unrel": 0.0,
-    "drv_avg_finish": 15.8,
-    "drv_top10": 0.0
-   },
-   "p_top10": 0.1687,
-   "p_top10_one": 0.1713,
-   "p_win": 0.0014
-  },
-  {
-   "id": "franco-colapinto",
-   "name": "Franco Colapinto",
-   "code": "COL",
-   "team": "Alpine",
-   "tier": "Midfield car",
-   "grid": null,
-   "x": {
-    "car_perf": -0.7638595182257096,
-    "tier_top": 0.0,
-    "tier_unrel": 0.0,
-    "drv_avg_finish": 16.0,
-    "drv_top10": 0.2
-   },
-   "p_top10": 0.2193,
-   "p_top10_one": 0.2164,
-   "p_win": 0.0012
+   "p_top10": 0.0994,
+   "p_top10_one": 0.1068,
+   "p_win": 0.0016
   },
   {
    "id": "carlos-sainz-jr",
@@ -391,15 +319,69 @@
    "tier": "Midfield car",
    "grid": null,
    "x": {
-    "car_perf": -0.8751987970380154,
+    "car_perf": -0.8750032043964787,
     "tier_top": 0.0,
     "tier_unrel": 0.0,
-    "drv_avg_finish": 15.8,
+    "drv_avg_finish": 14.2,
     "drv_top10": 0.2
    },
-   "p_top10": 0.2069,
-   "p_top10_one": 0.2035,
-   "p_win": 0.0012
+   "p_top10": 0.2228,
+   "p_top10_one": 0.2216,
+   "p_win": 0.0016
+  },
+  {
+   "id": "gabriel-bortoleto",
+   "name": "Gabriel Bortoleto",
+   "code": "BOR",
+   "team": "Audi",
+   "tier": "Midfield car",
+   "grid": null,
+   "x": {
+    "car_perf": -0.745117766615742,
+    "tier_top": 0.0,
+    "tier_unrel": 0.0,
+    "drv_avg_finish": 14.8,
+    "drv_top10": 0.2
+   },
+   "p_top10": 0.2341,
+   "p_top10_one": 0.2331,
+   "p_win": 0.0015
+  },
+  {
+   "id": "oliver-bearman",
+   "name": "Oliver Bearman",
+   "code": "BEA",
+   "team": "Haas",
+   "tier": "Midfield car",
+   "grid": null,
+   "x": {
+    "car_perf": -0.7636728291558472,
+    "tier_top": 0.0,
+    "tier_unrel": 0.0,
+    "drv_avg_finish": 15.0,
+    "drv_top10": 0.2
+   },
+   "p_top10": 0.2294,
+   "p_top10_one": 0.228,
+   "p_win": 0.0014
+  },
+  {
+   "id": "pierre-gasly",
+   "name": "Pierre Gasly",
+   "code": "GAS",
+   "team": "Alpine",
+   "tier": "Midfield car",
+   "grid": null,
+   "x": {
+    "car_perf": -0.8750032043964787,
+    "tier_top": 0.0,
+    "tier_unrel": 0.0,
+    "drv_avg_finish": 14.8,
+    "drv_top10": 0.2
+   },
+   "p_top10": 0.2166,
+   "p_top10_one": 0.2146,
+   "p_win": 0.0014
   },
   {
    "id": "alexander-albon",
@@ -409,14 +391,32 @@
    "tier": "Midfield car",
    "grid": null,
    "x": {
-    "car_perf": -0.8751987970380154,
+    "car_perf": -0.8750032043964787,
     "tier_top": 0.0,
     "tier_unrel": 0.0,
-    "drv_avg_finish": 18.0,
+    "drv_avg_finish": 17.2,
     "drv_top10": 0.0
    },
-   "p_top10": 0.144,
-   "p_top10_one": 0.1436,
+   "p_top10": 0.1498,
+   "p_top10_one": 0.1502,
+   "p_win": 0.0009
+  },
+  {
+   "id": "franco-colapinto",
+   "name": "Franco Colapinto",
+   "code": "COL",
+   "team": "Alpine",
+   "tier": "Midfield car",
+   "grid": null,
+   "x": {
+    "car_perf": -0.8750032043964787,
+    "tier_top": 0.0,
+    "tier_unrel": 0.0,
+    "drv_avg_finish": 17.6,
+    "drv_top10": 0.0
+   },
+   "p_top10": 0.1468,
+   "p_top10_one": 0.1468,
    "p_win": 0.0008
   }
  ],
@@ -429,25 +429,25 @@
    "drv_top10"
   ],
   "mean": [
-   0.004008040493037109,
-   0.2866283839212469,
-   0.11648892534864644,
-   11.045307629204265,
-   0.48222039923434507
+   0.00396843973333387,
+   0.2865783880987412,
+   0.11672388425698872,
+   11.046354422102336,
+   0.48218625687973404
   ],
   "scale": [
-   1.0005660951186868,
-   0.4521864144928961,
-   0.32081031096235657,
-   4.5549557574277175,
-   0.3548363601727589
+   1.0005804187487142,
+   0.45216281976017053,
+   0.32109098259052654,
+   4.557345430026286,
+   0.3549274821115224
   ],
   "w": [
-   0.5357341959167615,
-   0.012868557276001044,
-   -0.06036630918479051,
-   -0.3201535001822786,
-   0.14358949281971314
+   0.5359590747258393,
+   0.013556473051353417,
+   -0.06229866377903662,
+   -0.3211249342811213,
+   0.14279849914967002
   ],
   "b": 0.0
  },
@@ -460,27 +460,27 @@
    "drv_top10"
   ],
   "mean": [
-   0.004008040493037109,
-   0.2866283839212469,
-   0.11648892534864644,
-   11.045307629204265,
-   0.48222039923434507
+   0.00396843973333387,
+   0.2865783880987412,
+   0.11672388425698872,
+   11.046354422102336,
+   0.48218625687973404
   ],
   "scale": [
-   1.0005660951186868,
-   0.4521864144928961,
-   0.32081031096235657,
-   4.5549557574277175,
-   0.3548363601727589
+   1.0005804187487142,
+   0.45216281976017053,
+   0.32109098259052654,
+   4.557345430026286,
+   0.3549274821115224
   ],
   "w": [
-   0.7706915316046262,
-   -0.08348475401606163,
-   -0.10993361801540524,
-   -0.26953077905691425,
-   0.5472069922831112
+   0.7702819494044758,
+   -0.08193074020583212,
+   -0.11127127694985577,
+   -0.2720351255925619,
+   0.5457481171807493
   ],
-  "b": -0.04276277223267806
+  "b": -0.04307114819350543
  },
  "winner": {
   "features": [
@@ -491,25 +491,25 @@
    "drv_top10"
   ],
   "mean": [
-   0.004008040493037109,
-   0.2866283839212469,
-   0.11648892534864644,
-   11.045307629204265,
-   0.48222039923434507
+   0.00396843973333387,
+   0.2865783880987412,
+   0.11672388425698872,
+   11.046354422102336,
+   0.48218625687973404
   ],
   "scale": [
-   1.0005660951186868,
-   0.4521864144928961,
-   0.32081031096235657,
-   4.5549557574277175,
-   0.3548363601727589
+   1.0005804187487142,
+   0.45216281976017053,
+   0.32109098259052654,
+   4.557345430026286,
+   0.3549274821115224
   ],
   "w": [
-   0.7900466128126716,
-   0.37760299635608247,
-   0.3243334976829907,
-   -1.0271957349432739,
-   -0.21898625884599585
+   0.7875452210810798,
+   0.3777219962433009,
+   0.32495983505821224,
+   -1.0444846023309053,
+   -0.23351171333762827
   ],
   "b": 0.0
  },
@@ -523,12 +523,12 @@
    "races": 131
   },
   "2026": {
-   "duel_accuracy": 0.8119090212113468,
-   "duel_grid_rule": 0.7932532583695374,
-   "duel_accuracy_before": 0.7623306925632507,
-   "scorers_model": 7.833333333333333,
-   "scorers_grid": 7.666666666666667,
-   "races": 18
+   "duel_accuracy": 0.8079342041606192,
+   "duel_grid_rule": 0.7885824866956942,
+   "duel_accuracy_before": 0.7636671504596033,
+   "scorers_model": 7.7894736842105265,
+   "scorers_grid": 7.631578947368421,
+   "races": 19
   }
  },
  "scoreboard": [
@@ -729,17 +729,28 @@
    "favourite": "Kimi Antonelli",
    "favourite_p": 0.4,
    "winner": "Kimi Antonelli"
+  },
+  {
+   "round": 19,
+   "gp": "Mexico",
+   "model_hits": 7,
+   "two_model_hits": 7,
+   "hard_track": false,
+   "grid_hits": 7,
+   "favourite": "Lewis Hamilton",
+   "favourite_p": 0.255,
+   "winner": "Max Verstappen"
   }
  ],
  "tracks": {
   "next_race_type": "Normal track",
   "thetas": {
    "Normal track": {
-    "grid": -0.921,
-    "quali_gap": -0.089,
-    "practice_gap": -0.371,
-    "car_perf": 0.696,
-    "tier_top": -0.139,
+    "grid": -0.915,
+    "quali_gap": -0.095,
+    "practice_gap": -0.364,
+    "car_perf": 0.701,
+    "tier_top": -0.138,
     "tier_unrel": -0.077,
     "intercept": -0.091
    },
@@ -775,5 +786,5 @@
    }
   }
  },
- "source": "Official Formula 1 race results via F1DB (github.com/f1db/f1db), snapshot 2026-10-26T07:00:37Z"
+ "source": "Official Formula 1 race results via F1DB (github.com/f1db/f1db), snapshot 2026-11-02T08:30:02Z"
 }
