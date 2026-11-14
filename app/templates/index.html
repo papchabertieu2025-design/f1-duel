@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Grid or model? · F1 Duel</title>
-<meta name="description" content="A machine-learning project explained step by step: can a model predict a Formula 1 race better than the starting grid? Replay any Grand Prix since 2011.">
+<meta name="description" content="Can machine learning predict a Formula 1 race better than the starting grid? An interactive walk-through: move the sliders, replay any Grand Prix since 2011.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@400;600;700;900&display=swap" rel="stylesheet">
@@ -24,157 +24,134 @@
   --kerb:#f0464d; --kerb-light:#3a1f22; --stripe:#d9dce2; --ok:#4cc07f; --ok-light:#193324; --bad:#f06a70; --focus:#6aa7ff;
   --a:#6aa7ff; --a-light:#1d2c45; --b:#f39a55; --b-light:#3d2a1b; --grey:#7d8592; --violet:#a48bff; color-scheme:dark}
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:64px}
-body{margin:0;background:var(--track);color:var(--ink);font:400 17px/1.5 var(--font);font-variant-numeric:tabular-nums}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--track);color:var(--ink);font:400 17px/1.45 var(--font);font-variant-numeric:tabular-nums}
 a{color:var(--a)}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .kerb{height:8px;background:repeating-linear-gradient(90deg,var(--kerb) 0 28px,var(--stripe) 28px 56px)}
 header{position:sticky;top:0;z-index:10;background:var(--paper);border-bottom:1px solid var(--line)}
 .top{display:flex;align-items:center;gap:14px;padding-top:8px;padding-bottom:8px}
-.brand{font-weight:900;font-size:22px;letter-spacing:-.01em;text-decoration:none;color:var(--ink);white-space:nowrap;flex:none}
+.brand{font-weight:900;font-size:22px;text-decoration:none;color:var(--ink);white-space:nowrap;flex:none;background:none;padding:0;border-radius:0}
 .brand span{color:var(--kerb)}
-nav{display:flex;gap:2px;min-width:0;overflow-x:auto;scrollbar-width:none;margin-left:auto}
-nav a{color:var(--ink2);text-decoration:none;font-weight:600;font-size:14px;padding:5px 8px;border-radius:4px;white-space:nowrap}
-nav a b{color:var(--kerb);font-weight:900;margin-right:3px}
-nav a:hover{background:var(--row);color:var(--ink)}
-section{padding:44px 0 6px}
-h1{text-wrap:balance;font-size:clamp(36px,6vw,58px);line-height:1.02;font-weight:900;margin:0 0 10px;letter-spacing:-.02em}
-h2{font-size:30px;font-weight:900;margin:2px 0 6px;letter-spacing:-.01em;line-height:1.15}
-h3{font-size:20px;font-weight:700;margin:0 0 6px}
-h4{font-size:16px;font-weight:700;margin:0 0 4px}
-p{margin:0 0 10px}
-.step{font-weight:900;color:var(--kerb);font-size:14px;letter-spacing:.08em;text-transform:uppercase}
-.lede{color:var(--ink2);max-width:74ch;margin:0 0 18px;font-size:18px}
-.panel{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:20px}
-.stack>*+*{margin-top:16px}
+nav{display:flex;gap:4px;min-width:0;overflow-x:auto;scrollbar-width:none;margin-left:auto}
+nav button{background:var(--row);color:var(--ink2);font-size:14px;padding:6px 10px;white-space:nowrap;font-weight:600}
+nav button b{color:var(--kerb);font-weight:900;margin-right:4px}
+nav button.on{background:var(--ink);color:var(--paper)} nav button.on b{color:var(--paper)}
+h1{font-size:clamp(30px,5vw,46px);line-height:1.05;font-weight:900;margin:0 0 6px;letter-spacing:-.02em}
+h2{font-size:28px;font-weight:900;margin:0 0 4px;letter-spacing:-.01em;line-height:1.15}
+h3{font-size:18px;font-weight:700;margin:0 0 6px}
+p{margin:0 0 8px}
 .small{font-size:14px;color:var(--ink2)}
-.big{font-size:36px;font-weight:900;line-height:1.05}
+.big{font-size:32px;font-weight:900;line-height:1.05}
 .ga{color:var(--a)} .gb{color:var(--b)}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.grid4 .panel{padding:14px 16px}
-.grid2>*,.grid3>*,.grid4>*,.pair>*{min-width:0}
-label{display:block;font-weight:600;font-size:14px;color:var(--ink2);margin-bottom:4px}
-select,input[type=text]{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink)}
-button{font:inherit;font-weight:700;border:0;border-radius:6px;background:var(--ink);color:var(--paper);padding:10px 18px;cursor:pointer}
-button:disabled{opacity:.5;cursor:wait}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid2>*,.grid3>*{min-width:0}
+.stack>*+*{margin-top:12px}
+label{font-weight:600;font-size:14px;color:var(--ink2)}
+select,input[type=text]{width:100%;font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink)}
+button{font:inherit;font-weight:700;border:0;border-radius:6px;background:var(--ink);color:var(--paper);padding:9px 16px;cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+.btn2{background:var(--row);color:var(--ink);font-size:14px;padding:6px 11px}
+.btn2.on{background:var(--ink);color:var(--paper)}
 input[type=range]{width:100%;accent-color:var(--a);margin:0;vertical-align:middle}
-.play{border:2px solid var(--a)}
-.playtag{display:inline-block;background:var(--a);color:#fff;font-weight:900;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:2px 9px;border-radius:999px;margin-bottom:6px}
-.sl{display:grid;grid-template-columns:150px 1fr 64px;gap:10px;align-items:center;font-size:15px;padding:5px 0;border-bottom:1px solid var(--row)}
+/* hero */
+.hero{padding:22px 0 8px}
+.hero p{max-width:70ch;color:var(--ink2);font-size:18px}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.chip{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:8px 14px;font-size:14px;color:var(--ink2)}
+.chip b{font-size:22px;font-weight:900;display:block;line-height:1.1}
+/* steps */
+.stp{display:none;padding:14px 0 10px}
+.stp.on{display:block}
+.eyebrow{font-weight:900;color:var(--kerb);font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.why{color:var(--ink2);max-width:80ch;margin-bottom:12px}
+.why b{color:var(--kerb)}
+.take{border-left:5px solid var(--ok);background:var(--ok-light);border-radius:8px;padding:10px 14px}
+.take b.t{color:var(--ok);font-weight:900;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-right:6px}
+.try{display:inline-block;background:var(--a);color:#fff;font-weight:900;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:2px 9px;border-radius:999px;margin-bottom:6px}
+.sl{display:grid;grid-template-columns:138px 1fr 62px;gap:10px;align-items:center;font-size:15px;padding:4px 0}
 .sl b.v{text-align:right}
-.btn2{background:var(--row);color:var(--ink);font-size:14px;padding:7px 12px}
-.rk{display:grid;grid-template-columns:26px 1fr 54px 60px;gap:6px;font-size:14px;padding:2px 6px;border-radius:4px}
-.rk.me{background:var(--a-light);font-weight:700}
-.rk.h{color:var(--muted);font-size:12.5px}
-/* the four explanation blocks */
-.x{border-radius:8px;padding:12px 16px 12px 18px;border-left:5px solid var(--line);background:var(--paper)}
-.x p:last-child,.x ul:last-child{margin-bottom:0}
-.x ul{margin:4px 0 8px;padding-left:20px}
-.x .t{display:block;font-weight:900;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
-.x.why{border-color:var(--kerb)} .x.why .t{color:var(--kerb)}
-.x.did{border-color:var(--ink2)} .x.did .t{color:var(--ink2)}
-.x.res{border-color:var(--a);background:var(--a-light)} .x.res .t{color:var(--a)}
-.x.mean{border-color:var(--ok);background:var(--ok-light)} .x.mean .t{color:var(--ok)}
-.pair{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.live{background:var(--track);border-radius:8px;padding:10px 12px}
+.navrow{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:14px}
+details{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:8px 14px}
+details summary{cursor:pointer;font-weight:700;font-size:15px}
+details[open] summary{margin-bottom:8px}
 /* charts */
 figure{margin:0}
-figcaption{font-weight:700;margin-bottom:2px}
-figure .sub{font-size:14px;color:var(--ink2);margin-bottom:6px}
+figcaption{font-weight:700;font-size:15px;margin-bottom:2px}
 svg.chart{width:100%;height:auto;display:block;overflow:visible}
 svg.chart text{font-family:var(--font);font-size:12.5px;fill:var(--ink2)}
 svg.chart .axl{font-size:13px;fill:var(--ink);font-weight:600}
 svg.chart .gridl{stroke:var(--row);stroke-width:1}
 svg.chart .axis{stroke:var(--muted);stroke-width:1}
-.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:14px;color:var(--ink2);margin-top:4px}
-.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
-.hbar{display:grid;grid-template-columns:150px 1fr 58px;gap:8px;align-items:center;font-size:14px;margin:3px 0}
+svg.chart .hit{cursor:pointer}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:13.5px;color:var(--ink2);margin-top:2px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.hbar{display:grid;grid-template-columns:170px 1fr 60px;gap:8px;align-items:center;font-size:14px;margin:3px 0}
 .hbar .lab{text-align:right;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hbar .trk{position:relative;height:14px;background:var(--row);border-radius:3px;display:block}
 .hbar .trk i{position:absolute;top:0;bottom:0;border-radius:3px}
 .hbar .trk u{position:absolute;top:-2px;bottom:-2px;width:1px;background:var(--ink)}
-.hbar .val{font-weight:600}
+.hbar .val{font-weight:700}
+.hbar.me .lab{color:var(--ink);font-weight:700}
 /* tables */
 .tablewrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:15px}
-th{text-align:left;color:var(--muted);font-weight:600;font-size:13px;padding:6px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
-td{padding:6px 8px;border-bottom:1px solid var(--row);vertical-align:top}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{text-align:left;color:var(--muted);font-weight:600;font-size:13px;padding:5px 7px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:5px 7px;border-bottom:1px solid var(--row);vertical-align:top}
 td.num,th.num{text-align:right;white-space:nowrap}
 td.c,th.c{text-align:center}
-tr.hl td{background:var(--a-light)} tr.hlb td{background:var(--b-light)}
+tr.hl td{background:var(--a-light)}
 .cls{display:inline-block;padding:2px 10px;border-radius:999px;font-size:13px;font-weight:700}
 .cls.model-friendly{background:var(--a-light);color:var(--a)} .cls.grid-dependent,.cls.new{background:var(--b-light);color:var(--b)}
 .cls.neutral,.cls.too{background:var(--row);color:var(--ink2)}
-.pill{display:inline-block;min-width:44px;text-align:center;padding:1px 8px;border-radius:999px;font-size:13px;font-weight:700}
+.pill{display:inline-block;min-width:40px;text-align:center;padding:1px 8px;border-radius:999px;font-size:13px;font-weight:700}
 .pill.A{background:var(--a-light);color:var(--a)} .pill.B{background:var(--b-light);color:var(--b)} .pill.T{background:var(--row);color:var(--ink2)}
-.mlbar{display:inline-block;width:70px;height:8px;background:var(--row);border-radius:4px;vertical-align:middle;margin-right:6px;overflow:hidden}
-.mlbar i{display:block;height:100%;border-radius:4px}
-.formula{font-family:Georgia,"Times New Roman",serif;font-size:18px;text-align:center;padding:10px;background:var(--row);border-radius:6px;margin:8px 0;line-height:1.9}
-.formula span{white-space:nowrap;margin:0 12px;display:inline-block}
-.timeline{display:grid;grid-template-columns:4fr 6fr 6fr 2fr;gap:3px;margin:8px 0 10px;font-size:13px;font-weight:700;text-align:center}
-.timeline div{padding:9px 4px;border-radius:4px}
+.timeline{display:grid;grid-template-columns:4fr 6fr 6fr 2fr;gap:3px;font-size:13px;font-weight:700;text-align:center}
+.timeline div{padding:7px 4px;border-radius:4px}
 .tl0{background:var(--row);color:var(--ink2)} .tl1{background:var(--a-light);color:var(--a)} .tl2{background:var(--a);color:#fff} .tl3{background:var(--kerb);color:#fff}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-.tabs button{background:var(--row);color:var(--ink);font-size:14px;padding:7px 12px}
-.tabs button.on{background:var(--ink);color:var(--paper)}
-.heat td,.heat th{text-align:center;border:0;padding:10px 8px}
-.heat td{font-weight:700;border-radius:4px}
-.heat td.best{outline:3px solid var(--a);outline-offset:-3px}
-.cm{display:grid;grid-template-columns:auto 1fr 1fr;gap:4px;font-size:14px;text-align:center;margin:6px 0}
-.cm .h{color:var(--muted);font-size:12.5px;align-self:center;line-height:1.2}
-.cm .v{padding:12px 4px;border-radius:5px;font-weight:900;font-size:20px}
+.cm{display:grid;grid-template-columns:auto 1fr 1fr;gap:4px;font-size:13px;text-align:center;margin:4px 0}
+.cm .h{color:var(--muted);font-size:12px;align-self:center;line-height:1.2}
+.cm .v{padding:9px 4px;border-radius:5px;font-weight:900;font-size:18px}
 .cm .good{background:var(--a-light);color:var(--a)} .cm .err{background:var(--kerb-light);color:var(--kerb)}
-.tree{overflow-x:auto;padding-bottom:4px}
-.tnode{display:flex;flex-direction:column;align-items:center;min-width:0;flex:1}
-.tbox{border:1px solid var(--line);border-radius:6px;padding:5px 7px;font-size:12.5px;text-align:center;background:var(--paper);font-weight:600;line-height:1.3}
-.tbox.leaf{background:var(--a-light);border-color:transparent}
-.tkids{display:flex;gap:5px;margin-top:20px;width:100%}
-.tkids>.tnode{position:relative}
-.tkids>.tnode::before{content:attr(data-e);position:absolute;top:-18px;font-size:11.5px;color:var(--muted)}
-/* replay */
-.controls{display:grid;grid-template-columns:160px 1fr;gap:14px;margin-bottom:16px}
-.used{font-size:32px;font-weight:900;line-height:1.1;margin:8px 0 6px}
-.meter .row{display:grid;grid-template-columns:86px 1fr 62px;gap:10px;align-items:center;margin:6px 0;font-weight:600}
-.meter .track{height:14px;background:var(--row);border-radius:7px;overflow:hidden}
-.meter .fill{height:100%;border-radius:7px}
-.verdict{margin-top:10px;padding:10px 14px;border-radius:6px;font-weight:600}
-.verdict.A{background:var(--a-light);color:var(--a)} .verdict.B{background:var(--b-light);color:var(--b)} .verdict.T{background:var(--row)}
-.drv{display:flex;align-items:center;gap:8px;font-weight:600}
-.tag{width:4px;height:22px;border-radius:2px;flex:none}
-.team{color:var(--muted);font-weight:400;font-size:13px}
-.minibar{height:5px;background:var(--row);border-radius:3px;margin-top:3px;overflow:hidden;min-width:60px}
-.minibar i{display:block;height:100%;background:var(--a)}
-.duel{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:end}
-.duel .vs{font-weight:900;color:var(--muted);padding-bottom:10px}
-.duelout{margin-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.mini{background:var(--track);border-radius:8px;padding:12px 14px}
+.rk{display:grid;grid-template-columns:24px 1fr 52px 58px;gap:6px;font-size:13.5px;padding:1px 6px;border-radius:4px}
+.rk.me{background:var(--a-light);font-weight:700}
+.rk.h{color:var(--muted);font-size:12.5px}
+.game .row{display:grid;grid-template-columns:28px 1fr auto auto;gap:8px;align-items:center;padding:5px 8px;border-radius:6px;background:var(--track);margin:4px 0;font-weight:600}
+.game .row button{padding:2px 9px;font-size:14px;background:var(--paper);color:var(--ink);border:1px solid var(--line)}
+.mini{background:var(--track);border-radius:8px;padding:9px 12px}
 .ok{color:var(--ok);font-weight:700} .ko{color:var(--bad);font-weight:700}
 .hard{color:var(--kerb);font-weight:700}
-.next{border-left:6px solid var(--a)}
-.askrow{display:flex;gap:10px}
-.suggest{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.suggest button{background:var(--row);color:var(--ink);font-weight:600;font-size:14px;padding:6px 12px}
-.answer{margin-top:14px;white-space:pre-wrap}
+/* replay */
+.controls{display:grid;grid-template-columns:150px 1fr;gap:12px}
+.used{font-size:28px;font-weight:900;line-height:1.1;margin:4px 0}
+.meter .row{display:grid;grid-template-columns:80px 1fr 58px;gap:10px;align-items:center;margin:5px 0;font-weight:600}
+.meter .trackb{height:13px;background:var(--row);border-radius:7px;overflow:hidden}
+.meter .fill{height:100%;border-radius:7px}
+.verdict{margin-top:8px;padding:8px 12px;border-radius:6px;font-weight:600}
+.verdict.A{background:var(--a-light);color:var(--a)} .verdict.B{background:var(--b-light);color:var(--b)} .verdict.T{background:var(--row)}
+.drv{display:flex;align-items:center;gap:8px;font-weight:600}
+.tag{width:4px;height:20px;border-radius:2px;flex:none}
+.team{color:var(--muted);font-weight:400;font-size:13px}
+.duel{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:end}
+.duelout{margin-top:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.scrollbox{max-height:330px;overflow-y:auto}
+.askrow{display:flex;gap:8px}
+.answer{margin-top:10px;white-space:pre-wrap}
 .answer.err{color:var(--bad)}
-.road{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.road a{display:block;text-decoration:none;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:15px;font-weight:700}
-.road a:hover{border-color:var(--a)}
-.road a b{display:block;color:var(--kerb);font-size:13px;letter-spacing:.06em}
-.road a span{display:block;color:var(--ink2);font-size:13.5px;line-height:1.35;margin-top:2px;font-weight:400}
-footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 34px;color:var(--ink2);font-size:14px;margin-top:44px}
+footer{padding:14px 0 28px;color:var(--muted);font-size:13px}
 @media (max-width:860px){
-  .grid2,.grid3,.pair,.duelout{grid-template-columns:1fr}
-  .grid4,.road{grid-template-columns:1fr 1fr}
+  .grid2,.grid3,.duelout{grid-template-columns:1fr}
   .controls{grid-template-columns:1fr 1fr}
   .duel{grid-template-columns:1fr}.duel .vs{display:none}
   .hide-s{display:none}
   .askrow{flex-direction:column}
-  .panel{padding:14px}
-  td,th{padding:6px 4px}
-  .hbar{grid-template-columns:112px 1fr 50px}
-  h2{font-size:26px}
+  .hbar{grid-template-columns:118px 1fr 52px}
+  .sl{grid-template-columns:112px 1fr 56px}
+  h2{font-size:24px}
 }
 </style>
 </head>
@@ -182,418 +159,217 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 3
 <div class="kerb" aria-hidden="true"></div>
 <header>
   <div class="wrap top">
-    <a class="brand" href="#top">F1 <span>Duel</span></a>
-    <nav aria-label="Steps">
-      <a href="#data"><b>1</b>Data</a><a href="#score"><b>2</b>Scoring</a><a href="#families"><b>3</b>Car families</a>
-      <a href="#modelA"><b>4</b>Model A</a><a href="#check"><b>5</b>Other models</a><a href="#matters"><b>6</b>What matters</a>
-      <a href="#season"><b>7</b>2026</a><a href="#tracks"><b>8</b>Tracks</a><a href="#replay"><b>9</b>Replay</a><a href="#ask">Ask</a>
-    </nav>
+    <button class="brand" data-go="0">F1 <span>Duel</span></button>
+    <nav aria-label="Steps" id="nav"></nav>
   </div>
 </header>
 
-<main id="top">
-<!-- ============================================================ START -->
-<section id="start">
-  <div class="wrap">
+<main class="wrap">
+<!-- ============================================================ 0 START -->
+<section class="stp" data-title="Start">
+  <div class="hero">
     <h1>Grid or model?</h1>
-    <p class="lede"><b>Our question:</b> before a Formula&nbsp;1 race starts, can machine learning predict the finishing order better than the starting grid? And on which tracks should we simply trust the grid?</p>
-    <div class="grid2">
-      <div class="panel" style="border-top:5px solid var(--b)">
-        <h3 class="gb">Model B: the grid</h3>
-        <p style="margin:0">No learning at all: we predict that <b>drivers finish in the order they start</b>. It is the simple rule every fan knows, and the baseline our professor asked us to beat.</p>
-      </div>
-      <div class="panel" style="border-top:5px solid var(--a)">
-        <h3 class="ga">Model A: our machine-learning model</h3>
-        <p style="margin:0">A <b>softmax ranking model</b> (the multiclass logistic regression of the course, applied to a whole race). It also knows each driver's pace in qualifying and practice, and how strong his car is.</p>
-      </div>
-    </div>
-    <div class="grid4" id="stats" style="margin-top:16px"></div>
-    <div class="x mean" style="margin-top:16px"><span class="t">The answer in one sentence</span>
-      <p id="oneLine"></p></div>
-    <h3 style="margin-top:26px">How to read this page</h3>
-    <p class="small" style="max-width:74ch">The page follows the project in nine steps. Every step says <b style="color:var(--kerb)">why we do it</b>, <b>what we do</b>, the <b class="ga">result</b> we get and <b style="color:var(--ok)">what it means</b> for the next step. Boxes marked <span class="playtag" style="margin:0">Try it</span> are interactive: move the sliders and watch the numbers change (families in step 3, model A in step 4, the points threshold in step 5, any race in step 9).</p>
-    <div class="road">
-      <a href="#data"><b>STEP 1</b>The data<span>Official results, and how good the grid already is</span></a>
-      <a href="#score"><b>STEP 2</b>Scoring<span>How we judge a forecast, without cheating</span></a>
-      <a href="#families"><b>STEP 3</b>Car families<span>PCA and k-means: which cars are strong?</span></a>
-      <a href="#modelA"><b>STEP 4</b>Model A<span>The formula, its six weights, one worked example</span></a>
-      <a href="#check"><b>STEP 5</b>Ten other models<span>Trees, KNN, kernels… do they do better?</span></a>
-      <a href="#matters"><b>STEP 6</b>What matters<span>Which information beats the grid</span></a>
-      <a href="#season"><b>STEP 7</b>The 2026 test<span>20 real races, each predicted before it started</span></a>
-      <a href="#tracks"><b>STEP 8</b>Tracks<span>Where the grid wins: Monaco</span></a>
-    </div>
-    <p style="margin-top:14px"><a href="#replay"><b>Step 9: try it yourself, replay any Grand Prix since 2011 →</b></a></p>
+    <p>Before a Formula&nbsp;1 race, can machine learning predict the finishing order better than the starting grid?</p>
   </div>
+  <div class="grid2">
+    <div class="panel" style="border-top:5px solid var(--b)"><h3 class="gb">Model B: the grid</h3><p style="margin:0">Drivers finish where they start. No learning: the rule to beat.</p></div>
+    <div class="panel" style="border-top:5px solid var(--a)"><h3 class="ga">Model A: machine learning</h3><p style="margin:0">A softmax ranking model that also knows each driver's pace and the strength of his car.</p></div>
+  </div>
+  <div class="chips" id="chips"></div>
+  <div class="take" style="margin-top:12px"><b class="t">Answer</b><span id="oneLine"></span></div>
+  <p class="small" style="margin-top:12px">Nine short steps. In each one, <b>move something</b> and read the green line.</p>
+  <div class="navrow"><span></span><button data-go="1">Start: step 1 →</button></div>
 </section>
 
-{% if ml %}
-<!-- ============================================================ 1 DATA -->
-<section id="data">
-  <div class="wrap stack">
-    <div><div class="step">Step 1 of 9</div>
-    <h2>The data, and how good the grid already is</h2></div>
-    <div class="pair">
-      <div class="x why"><span class="t">Why we do this</span><p>A model is only impressive if it beats a simple rule. Our professor asked: <i>“show a baseline: top 10 on the grid = top 10 finishers, and compare it with your model.”</i> So we first measure how much the grid alone tells us.</p></div>
-      <div class="x did"><span class="t">What we do</span><p id="dataDid"></p></div>
-    </div>
-    <div class="panel">
-      <h3>The 12 things we know before the start (the features)</h3>
-      <div class="tablewrap"><table>
-        <thead><tr><th>Group</th><th>Feature</th><th>What it is</th><th class="c">Used by model A</th></tr></thead>
-        <tbody>
-          <tr><td rowspan="3">This weekend</td><td><b>Grid</b></td><td>starting position</td><td class="c ga"><b>yes</b></td></tr>
-          <tr><td><b>Qualifying gap</b></td><td>% slower than the fastest lap in qualifying (at most 5%)</td><td class="c ga"><b>yes</b></td></tr>
-          <tr><td><b>Practice gap</b></td><td>% slower than the fastest lap in practice (at most 5%)</td><td class="c ga"><b>yes</b></td></tr>
-          <tr><td rowspan="2">Team, last 5 races</td><td><b>Team points per race</b></td><td>points scored by the team's two cars</td><td class="c ga"><b>yes</b></td></tr>
-          <tr><td>6 other team statistics</td><td>top-10 rate, podium rate, average finish, average grid, qualifying gap, mechanical-failure rate (last 10 races)</td><td class="c">through the car family (step 3)</td></tr>
-          <tr><td>Driver, last 5 races</td><td>2 driver statistics</td><td>average finish, top-10 rate</td><td class="c">no</td></tr>
-        </tbody>
-      </table></div>
-      <p class="small" style="margin:8px 0 0"><b>No cheating:</b> team and driver statistics are computed from <b>earlier races only</b>. Nothing that happens during a race is used to predict that race.</p>
-    </div>
-    <div class="grid2">
-      <div class="panel"><figure><figcaption>Chart 1a. Where you start decides a lot</figcaption><div class="sub">Share of starts from each grid position that end in a win or in the top 10 (all races 2010–2025)</div><div id="cGridA"></div>
-        <div class="legend"><span><i style="background:var(--a)"></i>wins the race</span><span><i style="background:var(--a-light);border:1px solid var(--a)"></i>finishes in the top 10</span></div></figure></div>
-      <div class="panel"><figure><figcaption>Chart 1b. Linear regression: finish against grid</figcaption><div class="sub">Average finishing position for each grid position, and the least-squares line (course sessions 2–3)</div><div id="cGridB"></div>
-        <div class="legend"><span><i style="background:var(--ink)"></i>average finish</span><span><i style="background:var(--a)"></i>least-squares line</span><span><i style="background:var(--grey)"></i>finish = grid</span></div></figure></div>
-    </div>
-    <div class="pair">
-      <div class="x res"><span class="t">Result</span><p id="dataRes"></p></div>
-      <div class="x mean"><span class="t">What it means</span><p>The grid is a <b>strong forecast</b>: it explains more than half of the result on its own. That is why model B is hard to beat, and why every number on this page is shown next to the grid's number. But the slope is below 1: drivers do not finish exactly where they start, so there is room for a model that knows more.</p></div>
-    </div>
+<!-- ============================================================ 1 GRID -->
+<section class="stp" data-title="The grid">
+  <div class="eyebrow">Step 1 · the baseline</div>
+  <h2>How good is the grid on its own?</h2>
+  <p class="why"><b>Why:</b> a model is only impressive if it beats a simple rule. Our professor asked us to compare everything with the grid.</p>
+  <div class="grid2">
+    <div class="panel"><span class="try">Try it</span>
+      <div class="sl"><label for="gSl">Start from</label><input type="range" id="gSl" min="1" max="22" value="1"><b class="v" id="gVal">P1</b></div>
+      <div class="grid3" style="margin-top:8px" id="gOut"></div>
+      <p class="small" style="margin:8px 0 0" id="gLine"></p></div>
+    <div class="panel"><figure><figcaption>Share of starts ending in a win or in the points, by grid position (2010–2025)</figcaption><div id="cGridA"></div>
+      <div class="legend"><span><i style="background:var(--a)"></i>win</span><span><i style="background:var(--a-light);border:1px solid var(--a)"></i>top 10</span></div></figure></div>
   </div>
+  <div class="take" style="margin-top:12px"><b class="t">Takeaway</b><span id="t1"></span></div>
+  <details style="margin-top:12px"><summary>The data and the 12 things we know before the start</summary>
+    <p class="small" id="dataLine"></p>
+    <div class="tablewrap"><table><tbody>
+      <tr><td><b>This weekend</b></td><td><b>grid</b>, <b>qualifying gap</b>, <b>practice gap</b> (% slower than the fastest lap)</td></tr>
+      <tr><td><b>Team, last 5 races</b></td><td><b>points per race</b>, top-10 rate, podium rate, average finish, average grid, qualifying gap, mechanical-failure rate</td></tr>
+      <tr><td><b>Driver, last 5 races</b></td><td>average finish, top-10 rate</td></tr>
+    </tbody></table></div>
+    <p class="small" style="margin:6px 0 0">Bold: used by model A. Team and driver statistics use earlier races only, never the race we predict.</p></details>
 </section>
 
-<!-- ============================================================ 2 SCORING -->
-<section id="score">
-  <div class="wrap stack">
-    <div><div class="step">Step 2 of 9</div>
-    <h2>How we judge a forecast, without cheating</h2></div>
-    <div class="pair">
-      <div class="x why"><span class="t">Why we do this</span><p>Model A and model B both give an <b>order</b> of the drivers. We need one fair number that says how close an order is to the real result, and we must test the model only on races it has <b>never seen</b>.</p></div>
-      <div class="x did"><span class="t">What we do</span><p>We count the <b>pairs of drivers put in the right order</b>. For every two drivers, the forecast is right if it puts ahead the one who really finished ahead. A race with 22 drivers has 231 pairs, so the score uses the whole result, not only the winner.</p></div>
+<!-- ============================================================ 2 SCORE -->
+<section class="stp" data-title="Scoring">
+  <div class="eyebrow">Step 2 · the metric</div>
+  <h2>How do we score a forecast?</h2>
+  <p class="why"><b>Why:</b> both models give an order of drivers. We need one fair number: the share of <b style="color:var(--ink)">pairs of drivers put in the right order</b>.</p>
+  <div class="grid2">
+    <div class="panel game"><span class="try">Try it</span>
+      <p class="small">The real top five of São Paulo 2026. Build your own forecast with the arrows and watch the score.</p>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px"><button class="btn2" id="gmB">Load the grid order (model B)</button><button class="btn2" id="gmA">Shuffle</button></div>
+      <div id="gmRows"></div></div>
+    <div class="panel stack">
+      <div class="live"><div class="small">Your forecast</div><div class="big" id="gmScore"></div><div class="small" id="gmPairs"></div></div>
+      <div><div class="small" style="margin-bottom:4px"><b>No cheating:</b> a model is always tested on races it has never seen.</div>
+        <div class="timeline"><div class="tl0">2010–13<br>train</div><div class="tl1">2014–19<br>choose settings</div><div class="tl2">2020–25<br>test 1</div><div class="tl3">2026<br>test 2</div></div></div>
     </div>
-    <div class="grid2">
-      <div class="panel">
-        <h3>A tiny example with three drivers</h3>
-        <p class="small">Forecast: Norris, Russell, Sainz. Real result: Russell, Norris, Sainz.</p>
-        <div class="tablewrap"><table>
-          <thead><tr><th>Pair</th><th>Forecast says</th><th>Really happened</th><th class="c">Right?</th></tr></thead>
-          <tbody>
-            <tr><td>Norris – Russell</td><td>Norris ahead</td><td>Russell ahead</td><td class="c ko">✘</td></tr>
-            <tr><td>Norris – Sainz</td><td>Norris ahead</td><td>Norris ahead</td><td class="c ok">✔</td></tr>
-            <tr><td>Russell – Sainz</td><td>Russell ahead</td><td>Russell ahead</td><td class="c ok">✔</td></tr>
-          </tbody>
-        </table></div>
-        <p style="margin-top:8px">The forecast is right on <b>2 pairs out of 3 = 67%</b>.</p>
-        <p class="small" style="margin:0">50% is a coin flip; 100% is the perfect order. We also count the <b>points scorers found</b>: how many of the 10 drivers a model ranks highest really finish in the top 10.</p>
-      </div>
-      <div class="panel">
-        <h3>Which seasons are used for what</h3>
-        <div class="timeline"><div class="tl0">2010–13<br>training only</div><div class="tl1">2014–19<br>choose the settings</div><div class="tl2">2020–25<br>test 1</div><div class="tl3">2026<br>test 2</div></div>
-        <p class="small"><b>Choose the settings (cross-validation):</b> each season of 2014–2019 is hidden in turn; the model learns on the other seasons of 2010–2019 and is scored on the hidden one. As in the labs, we never choose a setting by looking at the test set.</p>
-        <p class="small"><b>Test 1:</b> each season of 2020–2025 is predicted by a model that learned on the earlier seasons only (<span id="t1races"></span> races).</p>
-        <p class="small" style="margin:0"><b>Test 2:</b> each race of 2026 is predicted by a model re-trained on all earlier races (20 races).</p>
-      </div>
-    </div>
-    <div class="x mean"><span class="t">What it means</span><p>In the labs we split the data at random (<code>train_test_split</code>). Here we cannot: races follow each other in time, and a random split would let the model learn from 2023 to predict 2022. Splitting <b>by season</b> keeps the test honest: when we say “model A gets 76.8%”, it is on races it had never seen.</p></div>
   </div>
+  <div class="take" style="margin-top:12px"><b class="t">Takeaway</b>50% is a coin flip, 100% a perfect order. We split by season, not at random, so a model never learns from the future.</div>
 </section>
 
 <!-- ============================================================ 3 FAMILIES -->
-<section id="families">
-  <div class="wrap stack">
-    <div><div class="step">Step 3 of 9 · unsupervised learning</div>
-    <h2>Car families: PCA, then k-means</h2></div>
-    <div class="pair">
-      <div class="x why"><span class="t">Why we do this</span><p>Our professor noted that <i>“some teams simply have better cars”</i>. We have seven statistics per team, but they mostly say the same thing. We want a <b>simple description of a car</b> that the model can use.</p></div>
-      <div class="x did"><span class="t">What we do</span><p>Exactly the two tools of the PCA / k-means lab. <b>First</b> we standardise the seven statistics (they have different units: points, positions, %). <b>PCA</b> then tells us how many independent directions they really contain. <b>k-means</b> then groups the cars into families.</p></div>
-    </div>
-    <h3 style="margin-top:24px">3a. PCA: seven statistics, how many dimensions?</h3>
-    <div class="grid2">
-      <div class="panel"><figure><figcaption>Chart 3a. Explained variance</figcaption><div class="sub">Share of the variance carried by each principal component, and the cumulative share</div><div id="cPcaVar"></div>
-        <div class="legend"><span><i style="background:var(--a)"></i>each component</span><span><i style="background:var(--ink)"></i>cumulative</span></div></figure></div>
-      <div class="panel"><figure><figcaption>Chart 3b. What the first two components measure</figcaption><div class="sub">Loadings: how much each team statistic weighs in the component (left: negative, right: positive)</div><div id="cPcaLoad" style="margin-top:14px"></div>
-        <div class="legend" style="margin-top:12px"><span><i style="background:var(--a)"></i>component 1</span><span><i style="background:var(--b)"></i>component 2</span></div></figure></div>
-    </div>
-    <div class="panel" id="pcaScatterPanel"><figure><figcaption>Chart 3c. The cars projected on the first two components</figcaption><div class="sub">One dot is one team at one race (a sample of 1,200). Colour: the family found by k-means below</div><div id="cPcaScatter" style="max-width:760px;margin:0 auto"></div>
-      <div class="legend"><span><i style="background:var(--a)"></i>top cars</span><span><i style="background:var(--grey)"></i>midfield</span><span><i style="background:var(--b)"></i>unreliable cars</span></div></figure></div>
-    <div class="pair">
-      <div class="x res"><span class="t">Result</span><p id="pcaRes"></p></div>
-      <div class="x mean"><span class="t">What it means</span><p>Seven statistics are really <b>two ideas</b>: how <b>fast</b> the car is and how <b>reliable</b> it is. So we can describe each car with just two numbers that anyone understands: its <b>points per race</b> (performance) and its <b>mechanical-failure rate</b> (reliability). PCA does not use the race results at all; it only looks at how the statistics move together.</p></div>
-    </div>
-    <h3 style="margin-top:24px">3b. k-means: how many families of cars?</h3>
-    <div class="grid3">
-      <div class="panel"><figure><figcaption>Chart 3d. Elbow plot</figcaption><div class="sub">Inertia (within-cluster sum of squares) for each number of clusters k</div><div id="cElbow"></div></figure></div>
-      <div class="panel"><figure><figcaption>Chart 3e. Silhouette score</figcaption><div class="sub">How well separated the clusters are (higher is better)</div><div id="cSil"></div></figure></div>
-      <div class="panel play"><figure><span class="playtag">Try it</span><figcaption>Chart 3f. Choose k and watch the families</figcaption>
-        <div class="sl" style="grid-template-columns:auto 1fr;border:0"><label for="kSlider" style="margin:0">k = <b id="kVal" style="font-size:18px;color:var(--ink)">3</b></label><input type="range" id="kSlider" min="2" max="8" step="1" value="3"></div>
-        <div id="cFam"></div><p class="small" id="kNote" style="margin:4px 0 0"></p></figure></div>
-    </div>
-    <div class="panel">
-      <div class="tablewrap"><table>
-        <thead><tr><th>Family</th><th class="num">Points per race (centre)</th><th class="num">Mechanical failures (centre)</th><th class="num">Finishes in the top 10</th></tr></thead>
-        <tbody id="famRows"></tbody>
-      </table></div>
-    </div>
-    <div class="pair">
-      <div class="x res"><span class="t">Result</span><p id="kmRes"></p></div>
-      <div class="x mean"><span class="t">What it means</span><p>The two tools of the lab agree on <b>k = 3</b>, and the families make sense to any fan: <b class="ga">top cars</b>, <b>midfield</b>, and <b class="gb">unreliable cars</b>. Model A receives the family of each car as two yes/no features. This is our answer to “some teams simply have better cars”.</p></div>
-    </div>
+<section class="stp" data-title="Car families">
+  <div class="eyebrow">Step 3 · PCA and k-means</div>
+  <h2>Which cars are strong?</h2>
+  <p class="why"><b>Why:</b> “some teams simply have better cars”. Seven team statistics say almost the same thing, so we summarise them (PCA) and group the cars (k-means).</p>
+  <div class="grid2">
+    <div class="panel"><figure><figcaption>PCA: variance explained by each component</figcaption><div id="cPcaVar"></div>
+      <p class="small" style="margin:4px 0 0" id="pcaLine"></p></figure></div>
+    <div class="panel"><span class="try">Try it</span>
+      <div class="sl" style="grid-template-columns:auto 1fr"><label for="kSlider">Number of families k = <b id="kVal" style="font-size:18px;color:var(--ink)">3</b></label><input type="range" id="kSlider" min="2" max="8" value="3"></div>
+      <div class="grid2" style="gap:8px"><div id="cFam"></div><div id="cSil"></div></div>
+      <p class="small" style="margin:4px 0 0" id="kNote"></p></div>
   </div>
+  <div class="take" style="margin-top:12px"><b class="t">Takeaway</b><span id="t3"></span></div>
 </section>
 
 <!-- ============================================================ 4 MODEL A -->
-<section id="modelA">
-  <div class="wrap stack">
-    <div><div class="step">Step 4 of 9 · supervised learning</div>
-    <h2>Model A: one score per driver, then a simulated race</h2></div>
-    <div class="pair">
-      <div class="x why"><span class="t">Why this model</span><p>Logistic regression (sessions 6–7) answers a yes/no question. A race is not yes/no: it is an <b>order of 22 drivers</b>. Softmax, the multiclass version seen in class, can pick the winner among many; applied again and again (winner, then second, then third…), it gives a whole order <b>and probabilities</b>.</p></div>
-      <div class="x did"><span class="t">What we do</span>
-        <ul><li>Each driver gets a <b>score</b> <i>s</i>: a weighted sum of six standardised features.</li>
-        <li>The chance to win is the softmax of the scores.</li>
-        <li>The six weights are learned from past races by minimising the cross-entropy plus a Ridge penalty (λ). We coded the gradient by hand.</li>
-        <li>Before each race, we <b>simulate it 10,000 times</b>, with retirements, and count.</li></ul></div>
-    </div>
-    <div class="panel">
-      <h3>The formula and its six weights</h3>
-      <div class="formula"><span>score = Σ weight × (value − mean) / SD</span><span>P(win) = e<sup>score</sup> / Σ e<sup>score</sup></span><span>P(X ahead of Y) = 1 / (1 + e<sup>−(score X − score Y)</sup>)</span></div>
-      <div class="tablewrap"><table>
-        <thead><tr><th>Feature</th><th class="num">Weight θ</th><th class="num">Mean</th><th class="num">SD</th><th>How to read the weight</th></tr></thead>
-        <tbody id="paramRows"></tbody>
-      </table></div>
-      <p class="small" style="margin:8px 0 0" id="paramNote"></p>
-    </div>
-    <div class="panel play">
-      <span class="playtag">Try it</span>
-      <h3>Play with model A: São Paulo 2026</h3>
-      <p class="small">Pick a driver. The table shows the whole calculation of his score. Then <b>move the sliders</b>: change what he did before the race, or change the weights of the model itself, and watch his score, his predicted place and the whole forecast move.</p>
-      <div style="display:flex;gap:10px;align-items:end;flex-wrap:wrap"><div style="flex:1;min-width:240px;max-width:380px"><label for="exDriver">Driver</label><select id="exDriver"></select></div>
-        <button class="btn2" id="exReset">Reset everything</button></div>
-      <div class="grid2" style="margin-top:14px">
-        <div>
-          <h4>1. What he did before the race</h4>
-          <div id="exSliders"></div>
-          <h4 style="margin-top:16px">2. His score, line by line</h4>
-          <div class="tablewrap"><table>
-            <thead><tr><th>Feature</th><th class="num">Value</th><th class="num">Standardised</th><th class="num">× weight</th><th class="num">= adds</th></tr></thead>
-            <tbody id="exRows"></tbody>
-          </table></div>
-          <h4 style="margin-top:16px">3. The weights of the model (what if we changed them?)</h4>
-          <div id="exWeights"></div>
-          <p class="small" style="margin:6px 0 0">Example: put the weight of the grid at 0 to get a model that ignores the grid, or put the three others at 0 to get a model that only knows the grid.</p>
-        </div>
-        <div>
-          <div id="exOut"></div>
-          <h4 style="margin-top:14px">The whole forecast with these values</h4>
-          <div id="exRank"></div>
-        </div>
-      </div>
-    </div>
-    <div class="pair">
-      <div class="x res"><span class="t">Result</span><p id="exRes"></p></div>
-      <div class="x mean"><span class="t">What it means</span><p>Model A does not ignore the grid: the grid is one of its inputs. But it can <b>correct</b> the grid when a fast car starts at the back (a bad qualifying, a penalty) or when a slow car starts too high. That is where it can beat model B. And because the model is only six weights, we can explain every forecast, as above.</p></div>
+<section class="stp" data-title="Model A">
+  <div class="eyebrow">Step 4 · softmax ranking</div>
+  <h2>Model A: one score per driver</h2>
+  <p class="why"><b>Why:</b> logistic regression answers yes/no; a race is an order. Softmax over the drivers' scores gives the order and the chances. <span style="white-space:nowrap">score = Σ weight × standardised value.</span></p>
+  <div class="grid2">
+    <div class="panel"><span class="try">Try it</span>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px"><select id="exDriver" aria-label="Driver"></select><button class="btn2" id="exReset">Reset</button></div>
+      <div class="small"><b>What he did before the race</b> (São Paulo 2026)</div>
+      <div id="exSliders"></div>
+      <div class="small" style="margin-top:8px"><b>The weights of the model</b> (what if we changed them?)</div>
+      <div id="exWeights"></div></div>
+    <div class="panel stack">
+      <div id="exOut"></div>
+      <div class="scrollbox" id="exRank"></div>
     </div>
   </div>
+  <div class="take" style="margin-top:12px"><b class="t">Takeaway</b><span id="t4"></span></div>
+  <details style="margin-top:12px"><summary>The calculation, line by line</summary>
+    <div class="tablewrap"><table><thead><tr><th>Feature</th><th class="num">Value</th><th class="num">Standardised</th><th class="num">× weight</th><th class="num">= adds</th></tr></thead><tbody id="exRows"></tbody></table></div>
+    <p class="small" style="margin:6px 0 0" id="paramNote"></p></details>
 </section>
 
 <!-- ============================================================ 5 CHECK -->
-<section id="check">
-  <div class="wrap stack">
-    <div><div class="step">Step 5 of 9 · model comparison</div>
-    <h2>Check: would another model of the course do better?</h2></div>
-    <div class="pair">
-      <div class="x why"><span class="t">Why we do this</span><p>We chose model A. But maybe a tree, a random forest, KNN, a kernel method or a neural network predicts races better? To be sure, we give the <b>same data and the same test</b> to ten other models from the course. They are a <b>check</b>; they are not used for the forecasts.</p></div>
-      <div class="x did"><span class="t">What we do</span><p>As in the labs: for each model we <b>tune its main setting</b> (tree depth, number of neighbours k, number of trees, penalty λ…), compare the score on the training data with the score on hidden data, keep the best setting, then put all the models in <b>one summary table</b>.</p></div>
-    </div>
-    <div class="panel">
-      <h3>5a. Tuning each model: the bias–variance trade-off</h3>
-      <p class="small">Click a model. Each one shows the same thing: how its main setting was chosen.</p>
-      <div class="tabs" id="tuneTabs"></div>
-      <div class="grid2">
-        <div><figure><figcaption id="tuneTitle"></figcaption><div class="sub" id="tuneSub"></div><div id="tuneChart"></div><div class="legend" id="tuneLegend"></div></figure></div>
-        <div class="stack" style="--g:10px">
-          <div class="x did" style="background:var(--track)"><span class="t">The setting</span><p id="tuneDid"></p></div>
-          <div class="x res"><span class="t">Result</span><p id="tuneRes"></p></div>
-          <div class="x mean"><span class="t">What it means</span><p id="tuneMean"></p></div>
-        </div>
-      </div>
-    </div>
-    <div class="panel">
-      <h3>5b. Summary table: all models on races they had never seen</h3>
-      <p class="small">Pairs in the right order (%). CV = cross-validation on 2014–2019 (used to choose the setting). “Numbers learned” shows how simple or flexible each model is.</p>
-      <div class="tablewrap"><table>
-        <thead><tr><th>Model</th><th class="hide-s">Course</th><th class="hide-s">Setting used</th><th class="hide-s">Numbers learned</th><th class="num">CV</th><th>Test 1: 2020–25</th><th>Test 2: 2026</th><th class="num hide-s">Points scorers</th></tr></thead>
-        <tbody id="modelRows"></tbody>
-      </table></div>
-    </div>
-    <div class="pair">
-      <div class="x res"><span class="t">Result</span><p id="chkRes"></p></div>
-      <div class="x mean"><span class="t">What it means</span><p><b>The information matters more than the algorithm.</b> Simple linear models with 13 numbers do as well as a forest with thousands of nodes: once a model knows the grid, the pace and the team's strength, extra flexibility adds variance but removes little bias. So we keep <b class="ga">model A</b>: it is as good as the others, it has only six weights that we can read, and it gives probabilities (to win, to score, to beat a rival), which a single predicted position cannot give.</p></div>
-    </div>
-    <div class="panel">
-      <h3>5c. The same question as a classification: will this driver score points (top 10)?</h3>
-      <p class="small">As in the tree lab, we look at the <b>confusion matrix</b> and at <b>ROC-AUC</b>, on the <span id="clsN"></span> starts of 2020–2025. A driver is predicted “in the points” when his probability is at least 50% (for the grid: when he starts in the top 10).</p>
-      <div class="x did play" style="background:var(--paper);margin-bottom:12px"><span class="playtag">Try it</span>
-        <div class="sl" style="grid-template-columns:auto 1fr;border:0"><label for="thr" style="margin:0">A driver is predicted “in the points” when his probability is at least <b id="thrVal" style="font-size:18px;color:var(--ink)">50%</b></label><input type="range" id="thr" min="5" max="95" step="5" value="50"></div>
-        <p class="small" id="thrNote" style="margin:0"></p></div>
-      <div class="grid3" id="cmGrid"></div>
-      <div class="grid2" style="margin-top:16px">
-        <div><figure><figcaption>Chart 5c. ROC curves</figcaption><div class="sub">The closer to the top-left corner, the better. AUC = area under the curve</div><div id="cRoc"></div><div class="legend" id="rocLegend"></div></figure></div>
-        <div class="stack">
-          <div class="x res"><span class="t">Result</span><p id="clsRes"></p></div>
-          <div class="x mean"><span class="t">What it means</span><p>Seen as a classifier, the learned models also beat the grid: they are right about more drivers. The conclusion does not depend on the way we measure.</p></div>
-        </div>
-      </div>
-    </div>
+<section class="stp" data-title="Other models">
+  <div class="eyebrow">Step 5 · model comparison</div>
+  <h2>Would another model do better?</h2>
+  <p class="why"><b>Why:</b> to check model A, we gave the same data to ten other models of the course. Each has a setting to tune.</p>
+  <div class="grid2">
+    <div class="panel"><span class="try">Try it: tune a model</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px" id="tuneBtns"></div>
+      <div class="sl" style="grid-template-columns:auto 1fr"><label for="tuneSl" id="tuneLab"></label><input type="range" id="tuneSl" min="0" max="10" value="0"></div>
+      <div id="tuneChart"></div>
+      <div class="legend"><span><i style="background:var(--grey)"></i>races it trained on</span><span><i style="background:var(--a)"></i>races it has never seen</span></div>
+      <div class="live" style="margin-top:6px" id="tuneLive"></div></div>
+    <div class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><b>Pairs in the right order, unseen races</b>
+        <span><button class="btn2 on" id="lb1">2020–25</button> <button class="btn2" id="lb2">2026</button></span></div>
+      <div id="lbRows" style="margin-top:8px"></div></div>
   </div>
+  <div class="take" style="margin-top:12px"><b class="t">Takeaway</b><span id="t5"></span></div>
+  <details style="margin-top:12px"><summary>Same question as a classification: will he score points? (confusion matrix, ROC)</summary>
+    <div class="sl" style="grid-template-columns:auto 1fr"><label for="thr">“In the points” when the probability is at least <b id="thrVal" style="font-size:18px;color:var(--ink)">50%</b></label><input type="range" id="thr" min="5" max="95" step="5" value="50"></div>
+    <div class="grid2"><div class="grid2" style="gap:10px" id="cmGrid"></div><div><div id="cRoc"></div><div class="legend" id="rocLegend"></div></div></div>
+    <p class="small" style="margin:6px 0 0" id="thrNote"></p></details>
 </section>
 
 <!-- ============================================================ 6 MATTERS -->
-<section id="matters">
-  <div class="wrap stack">
-    <div><div class="step">Step 6 of 9 · interpretation</div>
-    <h2>What matters beyond the grid?</h2></div>
-    <div class="pair">
-      <div class="x why"><span class="t">Why we do this</span><p>Our professor suggested: <i>“a random forest with feature importance might show naturally from the data”</i> which information counts. We also want to check that model A's six features are the right ones.</p></div>
-      <div class="x did"><span class="t">What we do</span><p><b>Permutation importance.</b> We take the random forest of step 5. On the unseen seasons 2020–2025, we shuffle one feature among the drivers of each race (so it becomes useless) and measure how many pairs the forest now gets wrong. A big loss = an important feature. We also draw a small <b>decision tree</b>, because its rules can be read.</p></div>
-    </div>
-    <div class="panel"><figure><figcaption>Chart 6a. Random forest: permutation importance</figcaption><div class="sub">Percentage points of pairs lost when the feature is shuffled</div><div id="cImp" style="max-width:760px"></div></figure></div>
-    <div class="panel"><figure><figcaption>Chart 6b. A decision tree you can read (first three levels)</figcaption><div class="sub">Each box asks a question: go left if yes, right if no. Blue boxes: the average finishing position of those drivers (retirements counted last)</div><div class="tree" id="cTree" style="margin-top:10px"></div></figure></div>
-    <div class="pair">
-      <div class="x res"><span class="t">Result</span><p id="impRes"></p></div>
-      <div class="x mean"><span class="t">What it means</span><p>After the grid, what helps is the <b>qualifying gap</b> (how fast the driver really was, not only his position) and the <b>strength of the team</b>. The other statistics are redundant once these are known, exactly what PCA said in step 3. This confirms model A's short list of features: grid, the two lap gaps, team points and the car family.</p></div>
-    </div>
+<section class="stp" data-title="What matters">
+  <div class="eyebrow">Step 6 · interpretation</div>
+  <h2>What matters beyond the grid?</h2>
+  <p class="why"><b>Why:</b> our professor suggested a random forest with feature importance. We shuffle one feature at a time and see how much the forecast gets worse.</p>
+  <div class="grid2">
+    <div class="panel"><figure><figcaption>Pairs lost when a feature is shuffled (percentage points)</figcaption><div id="cImp" style="margin-top:6px"></div></figure></div>
+    <div class="panel"><span class="try">Try it: walk the decision tree</span>
+      <p class="small">Think of a driver and answer the tree's questions.</p>
+      <div id="treePath" class="small"></div>
+      <div class="live" style="margin-top:6px" id="treeQ"></div></div>
   </div>
+  <div class="take" style="margin-top:12px"><b class="t">Takeaway</b><span id="t6"></span></div>
 </section>
-{% endif %}
 
-{% if season %}
 <!-- ============================================================ 7 SEASON -->
-<section id="season">
-  <div class="wrap stack">
-    <div><div class="step">Step 7 of 9 · the real test</div>
-    <h2>The 2026 season, race by race</h2></div>
-    <div class="pair">
-      <div class="x why"><span class="t">Why we do this</span><p>The strongest test is the future. For each of the 20 races of 2026, model A was trained on <b>all the races before it</b> and made its forecast with what was known before the start. Then we compare with the grid and with what really happened.</p></div>
-      <div class="x res"><span class="t">Result</span><p id="seasonRes"></p></div>
-    </div>
-    <div class="grid2">
-      <div class="panel">
-        <h3>Race by race</h3>
-        <div class="tablewrap"><table>
-          <thead><tr><th>Rd</th><th>Grand Prix</th><th class="num">Model A</th><th class="num">Grid (B)</th><th class="c">Better</th><th class="hide-s">Winner</th></tr></thead>
-          <tbody id="seasonRows"></tbody>
-        </table></div>
-        <p class="small" style="margin:8px 0 0">Pairs of drivers in the right order. Red: tracks usually described as hard to overtake.</p>
-      </div>
-      <div class="stack">
-        {% if ml %}
-        <div class="panel"><figure><figcaption>Chart 7. When does model A win big?</figcaption><div class="sub">Gain of model A over the grid in each 2026 race (percentage points), by the number of top-family cars that start 11th or lower. Black lines: averages</div><div id="cTopBack"></div></figure></div>
-        {% endif %}
-        <div class="x mean"><span class="t">What it means</span><p id="seasonMean"></p></div>
-        <div class="panel next" id="next"></div>
-      </div>
+<section class="stp" data-title="2026">
+  <div class="eyebrow">Step 7 · the real test</div>
+  <h2>The 2026 season, race by race</h2>
+  <p class="why"><b>Why:</b> the strongest test is the future. Each 2026 race was predicted before its start, with the earlier races only.</p>
+  <div class="grid2">
+    <div class="panel"><span class="try">Try it: click a race</span>
+      <figure><figcaption>Gain of model A over the grid (percentage points of pairs)</figcaption><div id="cSeason"></div>
+      <div class="legend"><span><i style="background:var(--a)"></i>model A better</span><span><i style="background:var(--b)"></i>grid better</span></div></figure></div>
+    <div class="panel stack">
+      <div class="live" id="seasonSel"></div>
+      <div id="cTopBack"></div>
+      <p class="small" style="margin:0">Each dot is a race, grouped by the number of top cars starting 11th or lower.</p>
     </div>
   </div>
+  <div class="take" style="margin-top:12px"><b class="t">Takeaway</b><span id="t7"></span></div>
 </section>
-{% endif %}
 
-{% if ml %}
 <!-- ============================================================ 8 TRACKS -->
-<section id="tracks">
-  <div class="wrap stack">
-    <div><div class="step">Step 8 of 9 · the decision rule</div>
-    <h2>Which tracks follow the grid?</h2></div>
-    <div class="pair">
-      <div class="x why"><span class="t">Why we do this</span><p>Our professor noted: <i>“Monaco is very grid dependent (many GPs might be similar)”</i>, and asked us to compare the grid rule with the full model on every track. If the grid is better somewhere, we should <b>use the grid there</b>.</p></div>
-      <div class="x did"><span class="t">What we do</span><p id="trkDid"></p></div>
-    </div>
-    <div class="grid2">
-      <div class="panel"><figure><figcaption>Chart 8a. Gain of model A over the grid, track by track</figcaption><div class="sub">Tracks of the 2026 calendar (number of past races in brackets), in percentage points</div><div id="cTrkBars"></div>
-        <div class="legend"><span><i style="background:var(--b)"></i>grid-dependent</span><span><i style="background:var(--a)"></i>model-friendly</span><span><i style="background:var(--grey)"></i>neutral</span></div></figure></div>
-      <div class="panel"><figure><figcaption>Chart 8b. The more a track follows its grid, the less the model gains</figcaption><div class="sub">Each dot is a track. Across: grid dependence (correlation between grid and result). Up: gain of model A. Dashed line: linear regression</div><div id="cTrkScatter"></div></figure></div>
-    </div>
-    <div class="pair">
-      <div class="x res"><span class="t">Result</span><p id="trkRes"></p></div>
-      <div class="x mean"><span class="t">What it means: our rule</span><p id="trkMean"></p></div>
+<section class="stp" data-title="Tracks">
+  <div class="eyebrow">Step 8 · the decision rule</div>
+  <h2>Which tracks follow the grid?</h2>
+  <p class="why"><b>Why:</b> “Monaco is very grid dependent”. We replayed 310 races of 2011–2025 and measured, track by track, whether model A or the grid is better.</p>
+  <div class="grid2">
+    <div class="panel"><span class="try">Try it: click a track</span>
+      <figure><div id="cTrkScatter"></div>
+      <div class="legend"><span><i style="background:var(--b)"></i>grid-dependent</span><span><i style="background:var(--a)"></i>model-friendly</span><span><i style="background:var(--grey)"></i>neutral</span></div></figure></div>
+    <div class="panel stack">
+      <select id="trkSel" aria-label="Track"></select>
+      <div class="live" id="trkCard"></div>
+      <div id="trkNext"></div>
     </div>
   </div>
+  <div class="take" style="margin-top:12px"><b class="t">Takeaway</b><span id="t8"></span></div>
 </section>
-{% endif %}
 
 <!-- ============================================================ 9 REPLAY -->
-<section id="replay">
-  <div class="wrap stack">
-    <div><div class="step">Step 9 of 9 · try it yourself</div>
-    <h2>Replay any Grand Prix</h2>
-    <p class="lede" style="margin:0">Pick a race from 2011 to 2026. Model A's forecast was made with the races before it only, as on the eve of the race; the grid is model B. See which one was closer to what really happened. <span class="small">(Races before 2020 also helped us choose the settings, so the fairest test is from 2020 on.)</span></p></div>
-    <div class="controls" style="margin-bottom:0">
-      <div><label for="year">Season</label><select id="year"></select></div>
-      <div><label for="race">Grand Prix</label><select id="race"></select></div>
-    </div>
-    <div class="grid2">
-      <div class="panel" id="trackCard"></div>
-      <div class="panel" id="scoreCard"></div>
-    </div>
-    <div class="panel">
-      <h3>Driver by driver</h3>
-      <p class="small">Sorted by the real result. <b class="gb">Grid</b>: where the driver started = model B's forecast. <b class="ga">Model A</b>: its predicted position and its chances, from 10,000 simulations. Last column: which forecast was closer for that driver.</p>
-      <div class="tablewrap"><table>
-        <thead><tr><th class="c">Finish</th><th>Driver</th><th class="c">Grid (B)</th><th class="c">Model A</th><th class="num hide-s">Win</th><th class="num hide-s">Top 10</th><th class="c">Closer</th></tr></thead>
-        <tbody id="drivers"></tbody>
-      </table></div>
-    </div>
-    <div class="panel">
-      <h3>Head to head in this race</h3>
-      <p class="small">From the scores of step 4: if both finish, X beats Y with probability 1&nbsp;/&nbsp;(1&nbsp;+&nbsp;e<sup>−(s<sub>X</sub>−s<sub>Y</sub>)</sup>). It opens on the pair where model A disagrees most with the grid; pick any two drivers.</p>
-      <div class="duel">
-        <div><label for="dx">Driver X</label><select id="dx"></select></div>
-        <div class="vs" aria-hidden="true">vs</div>
-        <div><label for="dy">Driver Y</label><select id="dy"></select></div>
-      </div>
-      <div class="duelout" id="duelOut"></div>
+<section class="stp" data-title="Replay">
+  <div class="eyebrow">Step 9 · try it yourself</div>
+  <h2>Replay any Grand Prix since 2011</h2>
+  <p class="why">Model A's forecast uses the races before it only. Which forecast was closer to the real result?</p>
+  <div class="controls">
+    <div><label for="year">Season</label><select id="year"></select></div>
+    <div><label for="race">Grand Prix</label><select id="race"></select></div>
+  </div>
+  <div class="grid2" style="margin-top:12px">
+    <div class="panel" id="trackCard"></div>
+    <div class="panel" id="scoreCard"></div>
+  </div>
+  <div class="grid2" style="margin-top:12px">
+    <div class="panel"><h3>Driver by driver</h3>
+      <div class="tablewrap scrollbox"><table>
+        <thead><tr><th class="c">Finish</th><th>Driver</th><th class="c">Grid</th><th class="c">Model A</th><th class="num hide-s">Win</th><th class="c">Closer</th></tr></thead>
+        <tbody id="drivers"></tbody></table></div></div>
+    <div class="stack">
+      <div class="panel"><h3>Head to head</h3>
+        <div class="duel"><select id="dx" aria-label="Driver X"></select><span class="vs small">vs</span><select id="dy" aria-label="Driver Y"></select></div>
+        <div class="duelout" id="duelOut"></div></div>
+      <div class="panel"><h3>Ask the race engineer (AI)</h3>
+        <div class="askrow"><input type="text" id="q" maxlength="500" placeholder="Why was the model closer in this race?"><button id="askBtn">Ask</button></div>
+        <div class="answer small" id="answer" aria-live="polite"></div></div>
     </div>
   </div>
 </section>
 
-<section id="ask">
-  <div class="wrap">
-    <h2>Ask the race engineer</h2>
-    <p class="lede">An AI assistant (OpenAI API, course <i>Technology with Impact</i>) answers using only the project's numbers and the race you are replaying. It explains them; it does not invent new ones.</p>
-    <div class="panel">
-      <div class="askrow">
-        <input type="text" id="q" maxlength="500" placeholder="Why did the model do better than the grid in this race?">
-        <button id="askBtn">Ask</button>
-      </div>
-      <div class="suggest">
-        <button data-q="In the race I am replaying, why was the model closer or further than the grid?">This race</button>
-        <button data-q="On which tracks do you use the grid instead of the model, and why?">Grid or model?</button>
-        <button data-q="Which features matter most beyond the grid?">What matters?</button>
-        <button data-q="How did model A do against the grid over the 2026 season?">The 2026 season</button>
-      </div>
-      <div class="answer" id="answer" aria-live="polite"></div>
-    </div>
-  </div>
-</section>
-
-<section id="limits">
-  <div class="wrap">
-    <h2>What we cannot claim, and what comes next</h2>
-    <div class="grid3" style="margin-top:12px">
-      <div class="panel"><h4>Small samples</h4><p class="small" style="margin:0">Twenty races in 2026 and about one race per track per year. The choice for Madrid rests on a single race.</p></div>
-      <div class="panel"><h4>What nobody knows before the start</h4><p class="small" style="margin:0">Crashes, safety cars and rain decide many races. No model can know them on Saturday, which limits every forecast.</p></div>
-      <div class="panel"><h4>Next</h4><p class="small" style="margin:0">Forecasts for Las Vegas, Qatar and Abu Dhabi published before each start; give recent races more weight after a rule change; add the weather forecast.</p></div>
-    </div>
-    <p class="small" style="margin-top:14px">Final report, code and data: <a href="{{ report_url }}">{{ report_url }}</a></p>
-  </div>
-</section>
+<div class="navrow" id="stepNav"><button class="btn2" id="prev">← Back</button><span class="small" id="stepPos"></span><button id="next">Next →</button></div>
 </main>
 
-<footer>
-  <div class="wrap">Data: F1DB, the open database of official Formula&nbsp;1 results (CC BY 4.0). Forecasts are probabilities, not certainties. Machine Learning and Technology with Impact project, Bachelor in Applied Mathematics, IE University: Paul Chabert, Luis Díez, Eugenio Galdón Serrano.</div>
-</footer>
+<footer><div class="wrap">Data: F1DB, official Formula&nbsp;1 results (CC BY 4.0). Machine Learning and Technology with Impact project, IE University: Paul Chabert, Luis Díez, Eugenio Galdón Serrano. Code and report: <a href="{{ report_url }}">GitHub</a>.</div></footer>
 
 <script id="season-data" type="application/json">{{ season|tojson }}</script>
 <script id="past-data" type="application/json">{{ past|tojson }}</script>
@@ -614,10 +390,27 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 3
   const pct = p => p == null ? "—" : (p > 0 && p < 0.01 ? "<1%" : Math.round(p * 100) + "%");
   const sg = (v, d = 2) => (v >= 0 ? "+" : "−") + Math.abs(v).toFixed(d);
   const num = v => v.toLocaleString("en-US");
+  const ord = n => n + (n % 10 === 1 && n !== 11 ? "st" : n % 10 === 2 && n !== 12 ? "nd" : n % 10 === 3 && n !== 13 ? "rd" : "th");
   const tag = m => `<b class="${m === "A" ? "ga" : "gb"}">${m === "A" ? "model A" : "model B (grid)"}</b>`;
   const surname = n => { const w = n.replace(/ Jr\.?$/, "").split(" "); const k = w.length > 2 && w[w.length - 2] === w[w.length - 2].toLowerCase() ? 2 : 1; return w.slice(-k).join(" "); };
-  const FAMC = {t: "var(--a)", m: "var(--grey)", u: "var(--b)"};
   const byKey = k => ML.models.find(m => m.key === k);
+
+  // ================================================================ steps
+  const steps = [...document.querySelectorAll(".stp")]; let curStep = 0;
+  $("nav").innerHTML = steps.slice(1).map((s, i) => `<button data-go="${i + 1}"><b>${i + 1}</b>${s.dataset.title}</button>`).join("");
+  function go(i, push) {
+    curStep = Math.max(0, Math.min(steps.length - 1, i));
+    steps.forEach((s, j) => s.classList.toggle("on", j === curStep));
+    document.querySelectorAll("#nav button").forEach((b, j) => b.classList.toggle("on", j + 1 === curStep));
+    $("stepNav").style.display = curStep === 0 ? "none" : "flex";
+    $("prev").disabled = curStep === 0; $("next").disabled = curStep === steps.length - 1;
+    set("stepPos", `Step ${curStep} of ${steps.length - 1}`);
+    if (push !== false) { history.replaceState(null, "", curStep ? "#" + curStep : location.pathname); window.scrollTo(0, 0); }
+    const on = document.querySelector("#nav button.on"); if (on) on.scrollIntoView({block: "nearest", inline: "center"});
+  }
+  document.addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (b) go(+b.dataset.go); });
+  $("prev").onclick = () => go(curStep - 1); $("next").onclick = () => go(curStep + 1);
+  document.addEventListener("keydown", e => { if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return; if (e.key === "ArrowRight") go(curStep + 1); if (e.key === "ArrowLeft") go(curStep - 1); });
 
   // ================================================================ small SVG chart helper
   function nice(min, max, n = 5) {
@@ -628,7 +421,7 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 3
   }
   function plot(id, o) {
     const el = $(id); if (!el) return;
-    const W = o.w || 520, H = o.h || 300, m = Object.assign({l: 54, r: 14, t: 14, b: 44}, o.m || {});
+    const W = o.w || 520, H = o.h || 280, m = Object.assign({l: 50, r: 12, t: 12, b: 42}, o.m || {});
     const fx = o.x.log ? Math.log10 : (v => v);
     const sx = v => m.l + (fx(v) - fx(o.x.min)) / (fx(o.x.max) - fx(o.x.min)) * (W - m.l - m.r);
     const sy = v => H - m.b - (v - o.y.min) / (o.y.max - o.y.min) * (H - m.t - m.b);
@@ -638,351 +431,38 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 3
     yt.forEach(v => { s += `<line class="gridl" x1="${m.l}" x2="${W - m.r}" y1="${sy(v)}" y2="${sy(v)}"/><text x="${m.l - 7}" y="${sy(v) + 4}" text-anchor="end">${fmty(v)}</text>`; });
     xt.forEach(v => { s += `<text x="${sx(v)}" y="${H - m.b + 16}" text-anchor="middle">${fmtx(v)}</text>`; });
     s += `<line class="axis" x1="${m.l}" x2="${W - m.r}" y1="${H - m.b}" y2="${H - m.b}"/>`;
-    if (o.x.title) s += `<text class="axl" x="${(m.l + W - m.r) / 2}" y="${H - 6}" text-anchor="middle">${o.x.title}</text>`;
+    if (o.x.title) s += `<text class="axl" x="${(m.l + W - m.r) / 2}" y="${H - 5}" text-anchor="middle">${o.x.title}</text>`;
     if (o.y.title) s += `<text class="axl" transform="translate(13 ${(m.t + H - m.b) / 2}) rotate(-90)" text-anchor="middle">${o.y.title}</text>`;
     (o.hlines || []).forEach(h => { s += `<line x1="${m.l}" x2="${W - m.r}" y1="${sy(h.y)}" y2="${sy(h.y)}" stroke="${h.color || "var(--ink)"}" stroke-width="${h.width || 1}"/>`; });
     (o.bars || []).forEach(b => { const y0 = sy(Math.max(o.y.min, 0)), y1 = sy(b.y), w = b.w || 14;
-      s += `<rect x="${sx(b.x) - w / 2}" y="${Math.min(y0, y1)}" width="${w}" height="${Math.abs(y0 - y1)}" rx="2" fill="${b.color}" ${b.stroke ? `stroke="${b.stroke}"` : ""}><title>${b.title || ""}</title></rect>`; });
-    (o.points || []).forEach(p => { s += `<circle cx="${sx(p.x)}" cy="${sy(p.y)}" r="${p.r || 3}" fill="${p.color}" fill-opacity="${p.o == null ? 1 : p.o}">${p.title ? `<title>${p.title}</title>` : ""}</circle>`; });
+      s += `<rect ${b.id != null ? `class="hit" data-id="${b.id}"` : ""} x="${sx(b.x) - w / 2}" y="${Math.min(y0, y1)}" width="${w}" height="${Math.max(1.5, Math.abs(y0 - y1))}" rx="2" fill="${b.color}" ${b.stroke ? `stroke="${b.stroke}" stroke-width="${b.sw || 1}"` : ""}><title>${b.title || ""}</title></rect>`; });
+    (o.points || []).forEach(p => { s += `<circle ${p.id != null ? `class="hit" data-id="${p.id}"` : ""} cx="${sx(p.x)}" cy="${sy(p.y)}" r="${p.r || 3}" fill="${p.color}" fill-opacity="${p.o == null ? 1 : p.o}" ${p.ring ? 'stroke="var(--ink)" stroke-width="2.5"' : ""}>${p.title ? `<title>${p.title}</title>` : ""}</circle>`; });
     (o.lines || []).forEach(l => {
       s += `<polyline fill="none" stroke="${l.color}" stroke-width="${l.width || 2.2}" ${l.dash ? 'stroke-dasharray="6 5"' : ""} stroke-linejoin="round" points="${l.pts.map(p => sx(p[0]) + "," + sy(p[1])).join(" ")}"/>`;
-      if (l.dots) l.pts.forEach(p => { s += `<circle cx="${sx(p[0])}" cy="${sy(p[1])}" r="3.2" fill="${l.color}"><title>${fmtx(p[0])}: ${p[1]}</title></circle>`; });
+      if (l.dots) l.pts.forEach(p => { s += `<circle cx="${sx(p[0])}" cy="${sy(p[1])}" r="3" fill="${l.color}"/>`; });
     });
     (o.crosses || []).forEach(c => { const x = sx(c.x), y = sy(c.y), d = 6, pth = `M${x - d} ${y - d}L${x + d} ${y + d}M${x - d} ${y + d}L${x + d} ${y - d}`;
       s += `<path d="${pth}" stroke="var(--ink)" stroke-width="5.5" stroke-linecap="round"/><path d="${pth}" stroke="${c.color}" stroke-width="2.4" stroke-linecap="round"/>`; });
-    (o.marks || []).forEach(k => { s += `<circle cx="${sx(k.x)}" cy="${sy(k.y)}" r="8" fill="none" stroke="${k.color}" stroke-width="2.2"/>` +
-      `<text x="${sx(k.x) + (k.dx || 0)}" y="${sy(k.y) + (k.dy == null ? -14 : k.dy)}" text-anchor="${k.anchor || "middle"}" style="fill:${k.color};font-weight:700">${k.text}</text>`; });
+    (o.marks || []).forEach(k => { s += `<circle cx="${sx(k.x)}" cy="${sy(k.y)}" r="${k.r || 8}" fill="none" stroke="${k.color}" stroke-width="2.4"/>` +
+      (k.text ? `<text x="${sx(k.x) + (k.dx || 0)}" y="${sy(k.y) + (k.dy == null ? -14 : k.dy)}" text-anchor="${k.anchor || "middle"}" style="fill:${k.color};font-weight:700">${k.text}</text>` : ""); });
     (o.texts || []).forEach(t => { s += `<text x="${sx(t.x) + (t.dx || 0)}" y="${sy(t.y) + (t.dy || 0)}" text-anchor="${t.anchor || "start"}" style="fill:${t.color || "var(--ink2)"};${t.bold ? "font-weight:700" : ""}">${t.text}</text>`; });
     el.innerHTML = s + "</svg>";
   }
-  function hbars(id, rows, o) {
-    const el = $(id); if (!el) return;
-    const lo = o.min, hi = o.max, pos = v => 100 * (v - lo) / (hi - lo), z = pos(0);
-    el.innerHTML = rows.map(r => `<div class="hbar"><span class="lab" title="${r.label}">${r.label}</span><span class="trk">` +
-      `<i style="left:${Math.min(z, pos(r.value))}%;width:${Math.abs(pos(r.value) - z)}%;background:${r.color}"></i>${lo < 0 ? `<u style="left:${z}%"></u>` : ""}</span>` +
-      `<span class="val">${o.fmt ? o.fmt(r.value) : r.value}</span></div>`).join("");
-  }
+  const onHit = (id, fn) => $(id).addEventListener("click", e => { const h = e.target.closest(".hit"); if (h) fn(h.dataset.id); });
   const range = (a, pad = 0.08) => { const lo = Math.min(...a), hi = Math.max(...a), p = (hi - lo) * pad || 1; return [lo - p, hi + p]; };
 
-  // ================================================================ START: headline numbers
-  const pooled = rs => ({wa: rs.filter(r => r.right_A > r.right_B).length, wb: rs.filter(r => r.right_B > r.right_A).length, n: rs.length});
-  const since = pooled(PAST.filter(r => r.year >= 2020));
+  // ================================================================ 0 start
+  const sinceR = PAST.filter(r => r.year >= 2020), wa = sinceR.filter(r => r.right_A > r.right_B).length, wb = sinceR.filter(r => r.right_B > r.right_A).length;
   {
-    let cards = "";
-    if (ML) { const a = byKey("Softmax ranking (model A)"), b = byKey("Grid rule");
-      cards += `<div class="panel"><div class="small">Unseen seasons 2020–25: pairs in the right order</div><div class="big ga">${a.t1}%</div><div class="small">model A, against <b class="gb">${b.t1}%</b> for the grid</div></div>`; }
-    if (S) cards += `<div class="panel"><div class="small">Season 2026: pairs in the right order</div><div class="big ga">${S.season.A}%</div><div class="small">model A, against <b class="gb">${S.season.B}%</b> for the grid</div></div>`;
-    cards += `<div class="panel"><div class="small">${since.n} races since 2020: who was closer?</div><div class="big"><span class="ga">${since.wa}</span>–<span class="gb">${since.wb}</span></div><div class="small">races: model A – grid (${since.n - since.wa - since.wb} ties)</div></div>`;
-    cards += `<div class="panel"><div class="small">Tracks where the grid is clearly better</div><div class="big gb">1</div><div class="small">Monaco, out of ${ML ? ML.tracks.list.length : 32} tracks tested</div></div>`;
-    set("stats", cards);
-    set("oneLine", `<b>Yes, a little, and almost everywhere.</b> On races it had never seen, model A puts more pairs of drivers in the right order than the grid` +
-      (ML ? ` (${byKey("Softmax ranking (model A)").t1}% against ${byKey("Grid rule").t1}% on 2020–2025` + (S ? `, ${S.season.A}% against ${S.season.B}% in 2026)` : ")") : "") +
-      `. The gain comes when fast cars start out of position. Only at <b>Monaco</b> is the grid clearly the better forecast, so <b>we use the grid at Monaco and Madrid, and model A everywhere else</b>.`);
+    const a = ML && byKey("Softmax ranking (model A)"), b = ML && byKey("Grid rule");
+    set("chips", (ML ? `<div class="chip"><b><span class="ga">${a.t1}%</span> vs <span class="gb">${b.t1}%</span></b>pairs right, unseen seasons 2020–25</div>` : "") +
+      (S ? `<div class="chip"><b><span class="ga">${S.season.A}%</span> vs <span class="gb">${S.season.B}%</span></b>pairs right, season 2026</div>` : "") +
+      `<div class="chip"><b><span class="ga">${wa}</span>–<span class="gb">${wb}</span></b>races where A / the grid was closer, since 2020</div>` +
+      `<div class="chip"><b class="gb">1 track</b>where the grid is clearly better: Monaco</div>`);
+    set("oneLine", `Yes, a little, almost everywhere. Model A gains when fast cars start out of position. Only at Monaco is the grid better, so <b>we use the grid at Monaco and Madrid, and model A everywhere else</b>.`);
   }
 
-  if (ML) {
-    // ================================================================ 1 DATA
-    const D = ML.data, G = D.by_grid.filter(g => g.grid <= 22);
-    set("dataDid", `We use the official results of every Grand Prix from 2010 to São Paulo 2026 (source: F1DB, an open database): <b>${num(D.starts)} starts</b> by ${D.drivers} drivers in <b>${D.races} races</b>. One row = one driver in one race. What we predict (the target) is his <b>finishing position</b>; the ${D.retired_pct}% of drivers who retire are placed last.`);
-    plot("cGridA", {label: "win and top-10 share by grid position", x: {min: 0.3, max: G.length + 0.7, ticks: [1, 5, 10, 15, 20], title: "Starting position"},
-      y: {min: 0, max: 100, title: "Share of starts (%)"},
-      bars: G.map(g => ({x: g.grid, y: g.top10, w: 15, color: "var(--a-light)", stroke: "var(--a)", title: `P${g.grid}: top 10 in ${g.top10}%`}))
-        .concat(G.map(g => ({x: g.grid, y: g.win, w: 15, color: "var(--a)", title: `P${g.grid}: wins ${g.win}%`})))});
-    plot("cGridB", {label: "average finish by grid position", x: {min: 0.3, max: G.length + 0.7, ticks: [1, 5, 10, 15, 20], title: "Starting position"},
-      y: {min: 0, max: 20, title: "Finishing position"},
-      lines: [{color: "var(--grey)", dash: true, width: 1.5, pts: [[1, 1], [20, 20]]}, {color: "var(--a)", pts: [[1, D.lr.intercept + D.lr.slope], [G.length, D.lr.intercept + D.lr.slope * G.length]]}],
-      points: G.map(g => ({x: g.grid, y: g.finish, r: 3.6, color: "var(--ink)", title: `P${g.grid}: average finish ${g.finish}`})),
-      texts: [{x: 11, y: 4.4, text: `finish = ${D.lr.intercept.toFixed(2)} + ${D.lr.slope.toFixed(2)} × grid`, color: "var(--a)", bold: true}, {x: 11, y: 2.4, text: `R² = ${D.lr.r2.toFixed(2)}`, color: "var(--a)", bold: true}]});
-    const g1 = G[0], g10 = G[9], g11 = G[10];
-    set("dataRes", `The driver on pole wins <b>${Math.round(g1.win)}%</b> of races. Starting 10th gives a ${Math.round(g10.top10)}% chance of points, starting 11th only ${Math.round(g11.top10)}%. The regression line is <b>finish = ${D.lr.intercept.toFixed(2)} + ${D.lr.slope.toFixed(2)} × grid</b> with <b>R² = ${D.lr.r2.toFixed(2)}</b>: one place on the grid is worth about two thirds of a place at the finish, and the grid alone explains ${Math.round(100 * D.lr.r2)}% of the differences in finishing positions.`);
-    set("t1races", ML.test1_races);
-
-    // ================================================================ 3 PCA + K-MEANS
-    const P = ML.pca; let cum = 0; const cumPts = P.explained.map((v, i) => [i + 1, cum += v]);
-    plot("cPcaVar", {label: "explained variance", x: {min: 0.4, max: 7.6, ticks: [1, 2, 3, 4, 5, 6, 7], title: "Principal component"}, y: {min: 0, max: 100, title: "Variance explained (%)"},
-      bars: P.explained.map((v, i) => ({x: i + 1, y: v, w: 36, color: i < 2 ? "var(--a)" : "var(--grey)", title: `PC${i + 1}: ${v}%`})),
-      lines: [{color: "var(--ink)", pts: cumPts, dots: true, width: 1.8}],
-      texts: [{x: 1, y: P.explained[0] / 2, anchor: "middle", text: P.explained[0].toFixed(0) + "%", color: "#fff", bold: true}, {x: 2, y: P.explained[1], dy: -6, anchor: "middle", text: P.explained[1].toFixed(0) + "%", color: "var(--a)", bold: true},
-              {x: 2, y: cumPts[1][1], dy: 20, dx: 12, text: `${cumPts[1][1].toFixed(0)}% after two components`, bold: true, color: "var(--ink)"}]});
-    $("cPcaLoad").innerHTML = P.features.map((f, i) => {
-      const bar = (v, c) => `<span class="trk" style="height:9px"><i style="left:${Math.min(50, 50 + 50 * v)}%;width:${Math.abs(50 * v)}%;background:${c}"></i><u style="left:50%"></u></span>`;
-      return `<div class="hbar" style="grid-template-columns:118px 1fr 96px;margin:8px 0"><span class="lab">${f}</span><span style="display:grid;gap:3px">${bar(P.pc1[i], "var(--a)")}${bar(P.pc2[i], "var(--b)")}</span>` +
-        `<span class="val small">${sg(P.pc1[i])} / ${sg(P.pc2[i])}</span></div>`; }).join("");
-    if (P.scores) {
-      const xs = P.scores.map(s => s[0]), ys = P.scores.map(s => s[1]);
-      plot("cPcaScatter", {w: 760, h: 340, label: "PCA projection", x: {min: Math.floor(Math.min(...xs)), max: Math.ceil(Math.max(...xs)), title: "Component 1: performance (stronger cars →)"},
-        y: {min: Math.floor(Math.min(...ys)), max: Math.ceil(Math.max(...ys)), title: "Component 2: reliability"},
-        points: P.scores.map(s => ({x: s[0], y: s[1], r: 2.6, o: 0.5, color: FAMC[s[2]]}))});
-    } else $("pcaScatterPanel").style.display = "none";
-    const mech = P.features.findIndex(f => /mech/i.test(f));
-    set("pcaRes", `On ${num(P.n)} team-race rows, the first component alone carries <b>${P.explained[0].toFixed(0)}%</b> of the variance and the second <b>${P.explained[1].toFixed(0)}%</b>: together <b>${cumPts[1][1].toFixed(0)}%</b>. Component 1 mixes points, top-10 rate, podium rate, average finish and grid: it is the car's <b>performance</b>. Component 2 is almost only mechanical failures (loading ${Math.abs(P.pc2[mech]).toFixed(2)}): it is the car's <b>reliability</b>.`);
-
-    const K = ML.kmeans, kc = K.curve, k3 = kc.find(k => k.k === 3), bestK = kc.reduce((a, b) => b.silhouette > a.silhouette ? b : a);
-    const KM = {l: 58, r: 12, t: 14, b: 44};
-    plot("cElbow", {w: 340, h: 270, m: KM, label: "elbow plot", x: {min: 1.6, max: 8.4, ticks: [2, 3, 4, 5, 6, 7, 8], title: "Number of clusters k"}, y: {min: 0, max: Math.ceil(kc[0].inertia / 1000) * 1000, title: "Inertia", fmt: v => num(v)},
-      lines: [{color: "var(--ink2)", pts: kc.map(k => [k.k, k.inertia]), dots: true}], marks: [{x: 3, y: k3.inertia, color: "var(--a)", text: "elbow at k = 3", dx: 12, dy: -12, anchor: "start"}]});
-    const sr = range(kc.map(k => k.silhouette), 0.15);
-    plot("cSil", {w: 340, h: 270, m: KM, label: "silhouette", x: {min: 1.6, max: 8.4, ticks: [2, 3, 4, 5, 6, 7, 8], title: "Number of clusters k"}, y: {min: sr[0], max: sr[1], title: "Silhouette score", fmt: v => v.toFixed(2)},
-      lines: [{color: "var(--a)", pts: kc.map(k => [k.k, k.silhouette]), dots: true}], marks: [{x: bestK.k, y: bestK.silhouette, color: "var(--a)", text: `best: k = ${bestK.k}`, dx: 13, dy: 4, anchor: "start"}]});
-    const fam = Object.fromEntries(K.families.map(f => [f.family[0], f]));
-    // k-means in the browser, on the same two standardised variables (each dot weighted by the number of team-races it stands for)
-    const KP = K.points, wsum = KP.reduce((t, p) => t + p[3], 0), wm = j => KP.reduce((t, p) => t + p[3] * p[j], 0) / wsum;
-    const mu = [wm(0), wm(1)], sd = [0, 1].map(j => Math.sqrt(KP.reduce((t, p) => t + p[3] * (p[j] - mu[j]) ** 2, 0) / wsum));
-    const Z = KP.map(p => [(p[0] - mu[0]) / sd[0], (p[1] - mu[1]) / sd[1]]), d2 = (a, b) => (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2;
-    function kmeansJS(k) {
-      let best = null;
-      for (let run = 0; run < 8; run++) {
-        let seed = 1000 * k + run; const rnd = () => { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; };
-        let C = [Z[Math.floor(rnd() * Z.length)]];
-        while (C.length < k) { const w = Z.map((z, i) => KP[i][3] * Math.min(...C.map(c => d2(z, c)))), tot = w.reduce((a, b) => a + b, 0); let r = rnd() * tot, i = 0; while (i < w.length - 1 && (r -= w[i]) > 0) i++; C.push(Z[i]); }
-        let lab = [];
-        for (let it = 0; it < 40; it++) {
-          lab = Z.map(z => { let b = 0, bd = Infinity; C.forEach((c, j) => { const d = d2(z, c); if (d < bd) { bd = d; b = j; } }); return b; });
-          C = C.map((c, j) => { let sx = 0, sy = 0, n = 0; Z.forEach((z, i) => { if (lab[i] === j) { sx += KP[i][3] * z[0]; sy += KP[i][3] * z[1]; n += KP[i][3]; } }); return n ? [sx / n, sy / n] : c; });
-        }
-        const inertia = Z.reduce((t, z, i) => t + KP[i][3] * d2(z, C[lab[i]]), 0);
-        if (!best || inertia < best.inertia) best = {C, lab, inertia};
-      }
-      return best;
-    }
-    const PAL = ["var(--a)", "var(--grey)", "var(--b)", "var(--violet)", "var(--ok)", "var(--kerb)", "var(--ink2)", "#c9a227"];
-    function drawK(k) {
-      let r = kmeansJS(k), cen = r.C.map((c, j) => ({j, pts: c[0] * sd[0] + mu[0], fail: c[1] * sd[1] + mu[1]}));
-      if (k === 3) {                                   // k = 3: show exactly the families and centres used by model A (table below)
-        const idx = {t: 0, m: 1, u: 2}; r = {lab: KP.map(p => idx[p[2]])};
-        cen = ["t", "m", "u"].map((f, j) => ({j, pts: fam[f].points, fail: fam[f].fail_pct}));
-      }
-      const order = k === 3 ? [...cen].sort((a, b) => b.pts - a.pts).sort((a, b) => (a.fail > 15) - (b.fail > 15)) : [...cen].sort((a, b) => b.pts - a.pts);
-      const colOf = {}; order.forEach((c, i) => colOf[c.j] = PAL[i]);
-      plot("cFam", {w: 340, h: 250, m: KM, label: "car families", x: {min: -1, max: 46, title: "Team points per race"}, y: {min: -3, max: 80, title: "Mechanical failures (%)"},
-        points: KP.map((p, i) => ({x: p[0], y: p[1], r: 2.4, o: 0.5, color: colOf[r.lab[i]]})).filter(p => p.y <= 80),
-        crosses: cen.map(c => ({x: c.pts, y: Math.min(c.fail, 78), color: colOf[c.j]}))});
-      const cv = kc.find(x => x.k === k);
-      set("kVal", k);
-      set("kNote", `<b>k = ${k}</b>: inertia ${num(Math.round(cv.inertia))}, silhouette <b>${cv.silhouette.toFixed(3)}</b>${k === bestK.k ? " (the best: this is the k we use)" : ` (lower than ${bestK.silhouette.toFixed(3)} at k = ${bestK.k})`}. Centres: ` +
-        order.map(c => `<span style="color:${colOf[c.j]};font-weight:700">${c.pts.toFixed(1)} pts, ${Math.round(c.fail)}% failures</span>`).join(" · ") +
-        (k > 3 ? ". More families cut the same cars into thinner slices, without a clearer separation." : k === 2 ? "." : "."));
-    }
-    $("kSlider").oninput = e => drawK(+e.target.value); drawK(3);
-    const famName = {top: '<b class="ga">Top cars</b>', midfield: "<b>Midfield</b>", unreliable: '<b class="gb">Unreliable cars</b>'};
-    set("famRows", K.families.map(f => `<tr><td>${famName[f.family]}</td><td class="num">${f.points.toFixed(1)}</td><td class="num">${f.fail_pct}%</td><td class="num"><b>${f.top10_pct}%</b> of their starts</td></tr>`).join(""));
-    set("kmRes", `The inertia drops sharply up to k = 3 and then flattens (the <b>elbow</b>). The <b>silhouette score</b> is highest at k = ${bestK.k} (${bestK.silhouette.toFixed(3)}). With three families, top cars score ${fam.t.points.toFixed(1)} points per race and finish in the top 10 in <b>${fam.t.top10_pct}%</b> of their starts; midfield cars ${fam.m.top10_pct}%; unreliable cars, which break down in ${fam.u.fail_pct}% of their starts, ${fam.u.top10_pct}%.`);
-
-    // ================================================================ 4 MODEL A
-    const MA = ML.modelA, READ = {grid: "negative: starting further back lowers the score", quali_gap: "negative: a slower qualifying lap lowers the score",
-      practice_gap: "negative: a slower practice lap lowers the score", car_perf: "positive: a team that scores more points raises the score",
-      tier_top: "almost zero: team points already say it", tier_unrel: "almost zero: reliability acts through the retirements of the simulation"};
-    set("paramRows", MA.params.map(p => `<tr><td><b>${p.label}</b></td><td class="num"><b class="${p.theta < -0.1 ? "gb" : p.theta > 0.1 ? "ga" : ""}">${sg(p.theta)}</b></td><td class="num">${p.mean}</td><td class="num">${p.sd}</td><td class="small">${READ[p.key]}</td></tr>`).join(""));
-    const lcv = MA.lambda_cv.map(c => c.cv);
-    set("paramNote", `Weights learned on the <b>${MA.races} races before São Paulo 2026</b>; the model is re-trained before every race and the weights barely move. Penalty <b>λ = ${MA.lambda}</b>, chosen by cross-validation among ${MA.lambda_cv.map(c => c.lambda).join(", ")}: the score hardly changes (${Math.min(...lcv)}–${Math.max(...lcv)}% of pairs right), so we keep a middle value. In the simulation, a driver retires with probability = his team's mechanical-failure rate + ${MA.crash_pct}% (crash rate of the last three seasons).`);
-    const EX = ML.example.drivers, CK = [["grid", "Grid position", d => d.grid, 0], ["quali_gap", "Qualifying gap (%)", d => d.quali_gap, 2], ["practice_gap", "Practice gap (%)", d => d.practice_gap, 2],
-      ["car_perf", "Team points per race", d => d.team_points, 1], ["tier_top", "Top car", d => d.family === "top" ? 1 : 0, 0], ["tier_unrel", "Unreliable car", d => d.family === "unreliable" ? 1 : 0, 0]];
-    $("exDriver").innerHTML = EX.map((d, i) => `<option value="${i}">${d.driver} (${d.team}, started P${d.grid})</option>`).join("");
-    const RAW = MA.raw, KEYS = ["grid", "quali_gap", "practice_gap", "car_perf", "tier_top", "tier_unrel"];
-    const W0 = Object.fromEntries(KEYS.map(k => [k, RAW[k].theta])), FAMS = {top: "Top car", midfield: "Midfield", unreliable: "Unreliable car"};
-    const SL = [["grid", "Grid position", 1, 22, 1, 0, v => "P" + v], ["quali_gap", "Qualifying gap", 0, 5, 0.05, 2, v => v.toFixed(2) + "%"],
-                ["practice_gap", "Practice gap", 0, 5, 0.05, 2, v => v.toFixed(2) + "%"], ["team_points", "Team points per race", 0, 43, 0.5, 1, v => v.toFixed(1)]];
-    const WSL = [["grid", "Grid"], ["quali_gap", "Qualifying gap"], ["practice_gap", "Practice gap"], ["car_perf", "Team points"]];
-    let W = Object.assign({}, W0), cur = null, me = 0;
-    const base = d => ({grid: d.grid, quali_gap: d.quali_gap, practice_gap: d.practice_gap, team_points: d.team_points, family: d.family});
-    const zOf = (d, v) => { const b = base(d), f = x => x ? 1 : 0;                     // standardised features: stored value + the change made with the sliders
-      return {grid: d.z.grid + (v.grid - b.grid) / RAW.grid.sd, quali_gap: d.z.quali_gap + (v.quali_gap - b.quali_gap) / RAW.quali_gap.sd,
-        practice_gap: d.z.practice_gap + (v.practice_gap - b.practice_gap) / RAW.practice_gap.sd, car_perf: d.z.car_perf + (v.team_points - b.team_points) / RAW.car_perf.sd,
-        tier_top: d.z.tier_top + (f(v.family === "top") - f(b.family === "top")) / RAW.tier_top.sd, tier_unrel: d.z.tier_unrel + (f(v.family === "unreliable") - f(b.family === "unreliable")) / RAW.tier_unrel.sd}; };
-    const scoreOf = z => KEYS.reduce((t, k) => t + W[k] * z[k], 0);
-    const pairsRight = (rows, key) => { let right = 0, n = 0;                           // rows: {key value (higher = predicted ahead), finish}
-      for (let i = 0; i < rows.length; i++) for (let j = i + 1; j < rows.length; j++) { const a = rows[i], b = rows[j]; if (!a.finish && !b.finish) continue; n++;
-        const fa = a.finish || 99, fb = b.finish || 99, pa = a[key] !== b[key] ? a[key] > b[key] : a.grid < b.grid; if (pa === (fa < fb)) right++; }
-      return [right, n]; };
-    function buildControls() {
-      set("exSliders", SL.map(([k, lab, lo, hi, st, , fmt]) => `<div class="sl"><label for="s_${k}" style="margin:0">${lab}</label><input type="range" id="s_${k}" data-k="${k}" min="${lo}" max="${hi}" step="${st}" value="${cur[k]}"><b class="v" id="sv_${k}">${fmt(cur[k])}</b></div>`).join("") +
-        `<div class="sl"><label for="s_family" style="margin:0">Car family</label><select id="s_family" style="padding:5px 8px">${Object.keys(FAMS).map(f => `<option value="${f}" ${f === cur.family ? "selected" : ""}>${FAMS[f]}</option>`).join("")}</select><span></span></div>`);
-      set("exWeights", WSL.map(([k, lab]) => `<div class="sl"><label for="w_${k}" style="margin:0">Weight: ${lab}</label><input type="range" id="w_${k}" data-w="${k}" min="-1" max="1" step="0.01" value="${W[k].toFixed(2)}"><b class="v" id="wv_${k}">${sg(W[k])}</b></div>`).join(""));
-    }
-    function renderSim() {
-      const d = EX[me], z = zOf(d, cur), changedV = JSON.stringify(cur) !== JSON.stringify(base(d)), changedW = KEYS.some(k => Math.abs(W[k] - W0[k]) > 0.004);
-      SL.forEach(([k, , , , , , fmt]) => set("sv_" + k, fmt(cur[k]))); WSL.forEach(([k]) => set("wv_" + k, sg(W[k])));
-      const LAB = {grid: ["Grid position", cur.grid.toFixed(0)], quali_gap: ["Qualifying gap (%)", cur.quali_gap.toFixed(2)], practice_gap: ["Practice gap (%)", cur.practice_gap.toFixed(2)],
-        car_perf: ["Team points per race", cur.team_points.toFixed(1)], tier_top: ["Top car", cur.family === "top" ? "1" : "0"], tier_unrel: ["Unreliable car", cur.family === "unreliable" ? "1" : "0"]};
-      const s = scoreOf(z);
-      set("exRows", KEYS.map(k => { const c = W[k] * z[k];
-        return `<tr><td>${LAB[k][0]}</td><td class="num">${LAB[k][1]}</td><td class="num">${sg(z[k])}</td><td class="num">× ${sg(W[k])}</td><td class="num"><b class="${c > 0.005 ? "ga" : c < -0.005 ? "gb" : ""}">${sg(c)}</b></td></tr>`; }).join("") +
-        `<tr class="hl"><td colspan="4"><b>Score s = the sum</b></td><td class="num"><b>${sg(s)}</b></td></tr>`);
-      const field = EX.map((x, i) => ({name: x.driver, grid: i === me ? cur.grid : x.grid, finish: x.finish, s: i === me ? s : scoreOf(x.z), me: i === me, neg: -(i === me ? cur.grid : x.grid)}));
-      const order = [...field].sort((a, b) => b.s - a.s || a.grid - b.grid), place = order.findIndex(f => f.me) + 1;
-      const tot = field.reduce((t, f) => t + Math.exp(f.s), 0), pw = Math.exp(s) / tot, pole = order[0].me ? order[1] : order[0];
-      const [ra, n] = pairsRight(field, "s"), [rg] = pairsRight(field, "neg");
-      set("exOut", `<div class="grid3" style="gap:10px;grid-template-columns:repeat(3,1fr)"><div class="mini"><div class="small">Grid (model B)</div><div class="big gb">P${cur.grid}</div></div>` +
-        `<div class="mini"><div class="small">Model A</div><div class="big ga">P${place}</div></div>` +
-        `<div class="mini"><div class="small">Real result</div><div class="big">${d.finish ? "P" + d.finish : "out"}</div></div></div>` +
-        `<p style="margin:10px 0 6px">Score <b>${sg(s)}</b> → model A puts him <b class="ga">${place}${place === 1 ? "st" : place === 2 ? "nd" : place === 3 ? "rd" : "th"} of ${field.length}</b>. Chance to win if nobody retires: e<sup>s</sup> / Σ e<sup>s</sup> = <b>${(100 * pw).toFixed(1)}%</b>.` +
-        ` Against ${surname(pole.name)} (score ${sg(pole.s)}), he is ahead with probability <b>${Math.round(100 / (1 + Math.exp(-(s - pole.s))))}%</b>.</p>` +
-        `<div class="mini" style="margin-top:8px"><div class="small">Pairs of drivers in the right order in this race, with these values</div>` +
-        `<div style="font-size:22px;font-weight:900"><span class="ga">Model A: ${ra} of ${n} (${(100 * ra / n).toFixed(1)}%)</span></div><div class="small">Grid (model B): <b class="gb">${rg} of ${n} (${(100 * rg / n).toFixed(1)}%)</b>` +
-        (changedV ? ` · you changed the driver's values: this is a “what if”` : "") + (changedW ? ` · weights changed` : "") + `</div></div>` +
-        (!changedV && !changedW ? `<p class="small" style="margin-top:8px">These are the real values. Here drivers are ordered by score only. In the full model the race is also simulated 10,000 times with retirements: he wins in <b>${d.p_win}%</b>, finishes in the top 10 in <b>${d.p_top10}%</b>, retires in <b>${d.p_retire}%</b>, and is ranked <b>P${d.rank}</b>.</p>` : ""));
-      set("exRank", `<div class="rk h"><span>#</span><span>Driver</span><span>Score</span><span>Finished</span></div>` + order.map((f, i) =>
-        `<div class="rk ${f.me ? "me" : ""}"><span>${i + 1}</span><span>${f.name}</span><span>${sg(f.s)}</span><span>${f.finish ? "P" + f.finish : "retired"}</span></div>`).join(""));
-    }
-    function pick(i) { me = i; cur = base(EX[me]); buildControls(); renderSim(); }
-    $("exSliders").addEventListener("input", e => { const t = e.target; if (t.dataset.k) cur[t.dataset.k] = +t.value; else if (t.id === "s_family") cur.family = t.value; renderSim(); });
-    $("exSliders").addEventListener("change", e => { if (e.target.id === "s_family") { cur.family = e.target.value; renderSim(); } });
-    $("exWeights").addEventListener("input", e => { const t = e.target; if (t.dataset.w) { W[t.dataset.w] = +t.value; renderSim(); } });
-    $("exDriver").onchange = () => pick(+$("exDriver").value);
-    $("exReset").onclick = () => { W = Object.assign({}, W0); pick(me); };
-    const ver = Math.max(0, EX.findIndex(d => /Verstappen/.test(d.driver))); $("exDriver").value = ver; pick(ver);
-    const V = EX[ver], hulk = EX.find(d => d.grid === 4);
-    set("exRes", `Take <b>${V.driver}</b>: he started <b>${V.grid}th</b> after a bad qualifying, so the grid and the qualifying gap pull his score down (${sg(V.contrib.grid)} and ${sg(V.contrib.quali_gap)}). But his practice lap was fast (${sg(V.contrib.practice_gap)}) and his team is strong (${sg(V.contrib.car_perf)}). Total: <b>${sg(V.score)}</b>, higher than ${surname(hulk.driver)}, who started 4th in a weak car (${sg(hulk.score)}). Model A ranked ${surname(V.driver)} <b>${V.rank}th</b>, not ${V.grid}th. He finished <b>${V.finish === 2 ? "second" : "P" + V.finish}</b>.`);
-
-    // ================================================================ 5 CHECK: tuning tabs
-    const T = ML.tuning, heat = (cells, rowKey, colKey, rowLab, colLab, best) => {
-      const rows = [...new Set(cells.map(c => c[rowKey]))], cols = [...new Set(cells.map(c => c[colKey]))], vs = cells.map(c => c.cv), lo = Math.min(...vs), hi = Math.max(...vs);
-      return `<table class="heat" style="margin-top:10px"><thead><tr><th></th>${cols.map(c => `<th>${colLab(c)}</th>`).join("")}</tr></thead><tbody>` + rows.map(r => `<tr><th style="text-align:right">${rowLab(r)}</th>` +
-        cols.map(c => { const x = cells.find(k => k[rowKey] === r && k[colKey] === c), a = 0.1 + 0.55 * (x.cv - lo) / (hi - lo || 1);
-          return `<td class="${best(x) ? "best" : ""}" style="background:color-mix(in srgb, var(--a) ${Math.round(100 * a)}%, transparent)">${x.cv.toFixed(1)}%</td>`; }).join("") + "</tr>").join("") + "</tbody></table>"; };
-    const curve = (t, xo, bestLab, dy) => { const all = t.train ? t.train.concat(t.cv) : t.cv, r = range(all, 0.1), bi = t.x.indexOf(t.best);
-      plot("tuneChart", {label: "validation curve", x: xo, y: {min: Math.floor(r[0]), max: Math.ceil(r[1]), title: "Pairs in the right order (%)"},
-        lines: (t.train ? [{color: "var(--grey)", pts: t.x.map((x, i) => [x, t.train[i]]), dots: true}] : []).concat([{color: "var(--a)", pts: t.x.map((x, i) => [x, t.cv[i]]), dots: true, width: 2.6}]),
-        marks: [{x: t.best, y: t.cv[bi], color: "var(--a)", text: bestLab, dy: dy == null ? 24 : dy, dx: dy === 44 ? -20 : 0}]}); };
-    const LEG2 = '<span><i style="background:var(--grey)"></i>training seasons</span><span><i style="background:var(--a)"></i>hidden season (cross-validation)</span>';
-    const at = (t, x, k) => t[k][t.x.indexOf(x)], kcell = (l, g) => T.kernel.cells.find(c => c.lambda === l && c.gamma === g).cv, fcell = (l, m) => T.forest.cells.find(c => c.leaf === l && c.mf === m).cv;
-    const gridT1 = byKey("Grid rule").cv;
-    const TABS = [
-      {name: "Decision tree: depth", title: "Chart 5a. Decision tree: pairs right against depth", sub: "Leave-one-season-out cross-validation, 2014–2019", legend: LEG2,
-       draw: () => curve(T.tree, {min: 0.5, max: 12.5, ticks: [1, 2, 4, 6, 8, 10, 12], title: "Tree depth"}, `depth ${T.tree.best} used`, 44),
-       did: "<b>Depth</b> = how many questions the tree may ask in a row. A shallow tree is too simple (bias); a deep tree learns the noise of the training races (variance).",
-       res: `On the training seasons the score keeps rising with depth (${at(T.tree, 1, "train")}% → ${at(T.tree, 12, "train")}%). On the hidden season it peaks at <b>depth ${T.tree.best} (${at(T.tree, T.tree.best, "cv")}%)</b> and then falls to ${at(T.tree, 12, "cv")}% at depth 12.`,
-       mean: "The gap between the grey and the blue curve is <b>overfitting</b>: beyond depth 4 the tree memorises past races instead of learning rules. We keep depth 4."},
-      {name: "KNN: neighbours k", title: "Chart 5a. k-nearest neighbours: pairs right against k", sub: "Features standardised first, as in the KNN lab; Euclidean distance", legend: LEG2,
-       draw: () => curve(T.knn, {min: 4, max: 500, log: true, ticks: [5, 10, 20, 50, 100, 200, 400], title: "Number of neighbours k (log scale)"}, `k = ${T.knn.best} used`, 24),
-       did: "KNN predicts a driver's finish as the <b>average finish of the k most similar past starts</b> (similar grid, pace, team). Small k = very flexible; large k = very smooth. We standardise the features first because KNN works with distances.",
-       res: `With k = 5 the model is excellent on the training data (${at(T.knn, 5, "train")}%) but poor on the hidden season (<b>${at(T.knn, 5, "cv")}%</b>, worse than the grid's ${gridT1}%). The score rises with k and is best at <b>k = ${T.knn.best} (${at(T.knn, T.knn.best, "cv")}%)</b>.`,
-       mean: "Races are noisy: five similar past starts are not enough to average out the luck. Averaging over 200 neighbours removes the variance. It is the same trade-off as the tree, seen from the other side."},
-      {name: "Gradient boosting: trees", title: "Chart 5a. Gradient boosting: pairs right against the number of trees", sub: "Learning rate 0.03, trees of depth 4", legend: LEG2,
-       draw: () => curve(T.boosting, {min: 8, max: 1000, log: true, ticks: [10, 25, 50, 100, 200, 400, 800], title: "Number of trees (log scale)"}, "100 trees used"),
-       did: "Boosting adds small trees one after the other, each correcting the errors left by the previous ones. The settings are the <b>number of trees</b>, the <b>learning rate</b> and the depth.",
-       res: `The hidden-season score peaks at <b>100 trees (${at(T.boosting, 100, "cv")}%)</b>. With 800 trees the training score reaches ${at(T.boosting, 800, "train")}% but the hidden-season score falls to ${at(T.boosting, 800, "cv")}%.`,
-       mean: "More trees always fit the past better, but after about 100 they start fitting noise. Cross-validation tells us when to stop."},
-      {name: "Ridge and Lasso: λ", title: "Chart 5a. Ridge and Lasso: pairs right against the penalty λ", sub: "Hidden-season score (cross-validation)",
-       legend: '<span><i style="background:var(--a)"></i>Ridge</span><span><i style="background:var(--ok)"></i>Lasso</span>',
-       draw: () => { const r = range(T.ridge.cv.concat(T.lasso.cv), 0.1);
-         plot("tuneChart", {label: "ridge and lasso", x: {min: 0.00007, max: 15000, log: true, ticks: [0.0001, 0.01, 1, 100, 10000], fmt: v => String(v), title: "Penalty λ (log scale)"},
-           y: {min: Math.floor(r[0] * 2) / 2, max: Math.ceil(r[1] * 2) / 2, title: "Pairs in the right order (%)"},
-           lines: [{color: "var(--a)", pts: T.ridge.x.map((x, i) => [x, T.ridge.cv[i]]), dots: true}, {color: "var(--ok)", pts: T.lasso.x.map((x, i) => [x, T.lasso.cv[i]]), dots: true}],
-           marks: [{x: T.ridge.best, y: at(T.ridge, T.ridge.best, "cv"), color: "var(--a)", text: "Ridge: λ = 3.2 used", dy: -14, dx: 30}, {x: T.lasso.best, y: at(T.lasso, T.lasso.best, "cv"), color: "var(--ok)", text: "Lasso: λ = 0.01 used", dy: 34, dx: -24}]}); },
-       did: "Both are linear regression with a penalty on large weights. <b>Ridge</b> shrinks all the weights; <b>Lasso</b> can set useless weights to exactly zero. λ is the strength of the penalty.",
-       res: `Both curves are <b>almost flat</b> at about ${at(T.ridge, T.ridge.best, "cv")}% while the penalty is small. They fall only when it becomes too strong: Lasso beyond λ ≈ 0.3 (it starts deleting useful features), Ridge beyond λ ≈ 300. Settings used: Ridge λ = 3.2, Lasso λ = 0.01.`,
-       mean: "With 12 features and thousands of starts, plain linear regression does not overfit, so the penalty has little to remove. A useful finding: the problem is simple enough for a linear model."},
-      {name: "Kernel ridge: λ and γ", title: "Chart 5a. Kernel ridge regression (RBF kernel): grid search", sub: "Hidden-season score for each pair of settings; outlined: the pair used",
-       draw: () => { $("tuneChart").innerHTML = heat(T.kernel.cells, "lambda", "gamma", r => "λ = " + r, c => "γ = " + c, x => x.lambda === T.kernel.best.alpha && x.gamma === T.kernel.best.gamma); },
-       did: "As in the kernel lab: Ridge regression on <b>similarities between starts</b> (RBF kernel). γ sets how local the similarity is (γ = 1/(2σ²), so a large γ is a small bandwidth σ); λ is the regularisation. We try every pair: a <b>grid search</b>.",
-       res: `Pair used: <b>λ = ${T.kernel.best.alpha}, γ = ${T.kernel.best.gamma}</b> (${kcell(T.kernel.best.alpha, T.kernel.best.gamma)}%). With a very local kernel and little regularisation (λ = 0.1, γ = 0.1), the score drops to ${kcell(0.1, 0.1)}%.`,
-       mean: "A very local kernel behaves like KNN with few neighbours: it overfits. The best kernels are wide and smooth, which again says that the relation is close to linear."},
-      {name: "Random forest: leaf size", title: "Chart 5a. Random forest (300 trees): grid search", sub: "Hidden-season score for each pair of settings; outlined: the pair used",
-       draw: () => { $("tuneChart").innerHTML = heat(T.forest.cells, "leaf", "mf", r => "leaves ≥ " + r + " starts", c => (c < 0.5 ? "⅓" : "⅔") + " of the features per split", x => x.leaf === T.forest.best.leaf && x.mf === T.forest.best.mf); },
-       did: "A random forest averages 300 trees, each grown on a random sample of the starts and choosing among a random part of the features at each split. We tune the <b>minimum leaf size</b> and the <b>share of features</b> tried per split.",
-       res: `Pair used: <b>leaves of at least ${T.forest.best.leaf} starts, ⅓ of the features</b>. Larger leaves are better (${fcell(5, 0.33)}% → ${fcell(50, 0.33)}%).`,
-       mean: `Averaging many trees reduces the variance of a single tree: the forest (${fcell(50, 0.33)}%) beats the single tree (${at(T.tree, T.tree.best, "cv")}%). Even so, it prefers large leaves, that is, smooth predictions.`}];
-    $("tuneTabs").innerHTML = TABS.map((t, i) => `<button data-i="${i}">${t.name}</button>`).join("");
-    function showTab(i) { const t = TABS[i];
-      document.querySelectorAll("#tuneTabs button").forEach((b, j) => b.classList.toggle("on", j === i));
-      set("tuneTitle", t.title); set("tuneSub", t.sub); set("tuneLegend", t.legend || ""); set("tuneDid", t.did); set("tuneRes", t.res); set("tuneMean", t.mean); t.draw(); }
-    $("tuneTabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) showTab(+b.dataset.i); });
-    showTab(0);
-
-    // ---------------------------------------------------------------- summary table
-    const gridM = byKey("Grid rule"), learned = ML.models.filter(m => m.key !== "Grid rule");
-    const bar = (v, lo, hi, c) => `<span class="mlbar"><i style="width:${Math.max(3, Math.min(100, 100 * (v - lo) / (hi - lo)))}%;background:${c}"></i></span><b>${v.toFixed(1)}%</b>`;
-    const mc = m => m.key === "Grid rule" ? "var(--b)" : /model A/.test(m.key) ? "var(--a)" : "var(--grey)";
-    set("modelRows", ML.models.map((m, i) => (i === 2 ? `<tr><td colspan="8" class="small" style="padding-top:14px"><b>Ten other models of the course, used only as a check</b></td></tr>` : "") +
-      `<tr class="${m.key === "Grid rule" ? "hlb" : /model A/.test(m.key) ? "hl" : ""}"><td><b>${m.name}</b></td><td class="hide-s small">${m.session}</td><td class="hide-s small">${m.setting}</td><td class="hide-s small">${m.learned}</td>` +
-      `<td class="num">${m.cv.toFixed(1)}%</td><td style="white-space:nowrap">${bar(m.t1, 74, 78.5, mc(m))}</td><td style="white-space:nowrap">${bar(m.t2, 76, 82, mc(m))}</td><td class="num hide-s" style="white-space:nowrap">${m.scorers1.toFixed(2)} / 10</td></tr>`).join(""));
-    const t1 = learned.map(m => m.t1), t2 = learned.map(m => m.t2), lin = byKey("Linear regression"), rf = byKey("Random forest"), mA = byKey("Softmax ranking (model A)");
-    set("chkRes", `<b>All eleven learned models beat the grid</b>, on both tests: ${Math.min(...t1).toFixed(1)}–${Math.max(...t1).toFixed(1)}% against ${gridM.t1}% on 2020–2025, and ${Math.min(...t2).toFixed(1)}–${Math.max(...t2).toFixed(1)}% against ${gridM.t2}% in 2026. But they are <b>very close to each other</b>: only ${(Math.max(...t1) - Math.min(...t1)).toFixed(1)} points separate the best from the worst on test 1. Linear regression (${lin.t1}%) does as well as the random forest (${rf.t1}%). Model A: ${mA.t1}% and ${mA.t2}%.`);
-
-    // ---------------------------------------------------------------- classification view
-    const C = ML.classification; set("clsN", num(C.grid.n));
-    const RC = {grid: "var(--b)", logistic: "var(--ok)", A: "var(--a)"};
-    function drawCls(t) {
-      const at = k => { if (k === "grid") return C.grid; const r = C[k].thresholds.find(x => x[0] === t), [, tp, fp, fn, tn] = r, n = tp + fp + fn + tn;
-        return {label: C[k].label, tp, fp, fn, tn, accuracy: (100 * (tp + tn) / n).toFixed(1), precision: tp + fp ? (100 * tp / (tp + fp)).toFixed(1) : "–", recall: (100 * tp / (tp + fn)).toFixed(1),
-                f1: (100 * 2 * tp / (2 * tp + fp + fn)).toFixed(1), auc: C[k].auc}; };
-      const M3 = {grid: at("grid"), logistic: at("logistic"), A: at("A")};
-      set("cmGrid", ["grid", "logistic", "A"].map(k => { const c = M3[k];
-        return `<div><h4 class="${k === "grid" ? "gb" : k === "A" ? "ga" : ""}">${c.label}${k === "grid" ? " (fixed rule)" : ""}</h4><div class="cm"><span></span><span class="h">predicted:<br>no points</span><span class="h">predicted:<br>points</span>` +
-          `<span class="h">really<br>no points</span><span class="v good">${num(c.tn)}</span><span class="v err">${num(c.fp)}</span>` +
-          `<span class="h">really<br>points</span><span class="v err">${num(c.fn)}</span><span class="v good">${num(c.tp)}</span></div>` +
-          `<p class="small" style="margin:0">Accuracy <b>${c.accuracy}%</b> · precision ${c.precision}% · recall ${c.recall}% · F1 <b>${c.f1}%</b> · AUC <b>${c.auc.toFixed(3)}</b></p></div>`; }).join(""));
-      plot("cRoc", {label: "ROC curves", h: 330, x: {min: 0, max: 1, title: "False positive rate"}, y: {min: 0, max: 1, title: "True positive rate"},
-        lines: [{color: "var(--grey)", dash: true, width: 1.2, pts: [[0, 0], [1, 1]]}].concat(["grid", "logistic", "A"].map(k => ({color: RC[k], pts: C[k].roc}))),
-        marks: ["logistic", "A"].map(k => ({x: M3[k].fp / (M3[k].fp + M3[k].tn), y: M3[k].tp / (M3[k].tp + M3[k].fn), color: RC[k], text: ""}))});
-      set("thrVal", t + "%");
-      const a = M3.A;
-      set("thrNote", `At ${t}%, model A promises points to <b>${num(a.tp + a.fp)}</b> drivers: <b>${a.precision}%</b> of them really score (precision) and it finds <b>${a.recall}%</b> of the real points scorers (recall). ` +
-        (t < 50 ? "A lower threshold promises points to more drivers: recall goes up, precision goes down." : t > 50 ? "A higher threshold promises points only to the safest drivers: precision goes up, recall goes down." : "Move the slider: the circles on the ROC curves move with it.") +
-        " The AUC does not change: it summarises all thresholds at once.");
-    }
-    $("thr").oninput = e => drawCls(+e.target.value); drawCls(50);
-    set("rocLegend", ["grid", "logistic", "A"].map(k => `<span><i style="background:${RC[k]}"></i>${C[k].label}: AUC ${C[k].auc.toFixed(3)}</span>`).join(""));
-    set("clsRes", `At the usual 50% threshold: the rule “top 10 on the grid = top 10 finishers” is right for <b>${C.grid.accuracy}%</b> of drivers (blue cells). Logistic regression is right for <b>${C.logistic.accuracy}%</b> and model A for <b>${C.A.accuracy}%</b>. Total errors (red cells): ${num(C.grid.fp + C.grid.fn)} for the grid, ${num(C.logistic.fp + C.logistic.fn)} for logistic regression, ${num(C.A.fp + C.A.fn)} for model A. AUC: ${C.grid.auc.toFixed(3)} for the grid, ${C.logistic.auc.toFixed(3)} for logistic regression, ${C.A.auc.toFixed(3)} for model A.`);
-
-    // ================================================================ 6 WHAT MATTERS
-    const IMP = ML.importance, imax = IMP[0].pp;
-    hbars("cImp", IMP.map(r => ({label: r.feature, value: r.pp, color: r.pp > 0.4 ? "var(--a)" : "var(--grey)"})), {min: -0.3, max: imax * 1.05, fmt: v => v.toFixed(2).replace("-", "−")});
-    const unit = k => /gap/.test(k) ? "%" : "";
-    const tnode = (n, e) => n.leaf ? `<div class="tnode" data-e="${e}"><div class="tbox leaf">finish ≈ <b>${n.finish.toFixed(1)}</b><br><span style="font-weight:400">${num(n.n)} starts</span></div></div>` :
-      `<div class="tnode" data-e="${e}"><div class="tbox">${n.feature}<br>≤ ${n.thr}${unit(n.key)} ?</div><div class="tkids">${tnode(n.yes, "yes")}${tnode(n.no, "no")}</div></div>`;
-    if (ML.tree) $("cTree").innerHTML = `<div style="min-width:820px">${tnode(ML.tree, "")}</div>`;
-    const ip = k => IMP.find(r => r.feature === k).pp, rest = IMP.filter(r => !["Grid position", "Qualifying gap", "Team points", "Team avg. grid", "Practice gap"].includes(r.feature));
-    set("impRes", `The <b>grid</b> is by far the most important feature (${ip("Grid position").toFixed(2)} points lost when shuffled). Then come the <b>qualifying gap</b> (${ip("Qualifying gap").toFixed(2)}), <b>team points</b> (${ip("Team points").toFixed(2)}) and the team's average grid (${ip("Team avg. grid").toFixed(2)}); the practice gap adds ${ip("Practice gap").toFixed(2)}. Every other statistic costs at most ${Math.max(...rest.map(r => r.pp)).toFixed(2)}. The tree tells the same story: its first question is the grid; among the front runners it then asks for the qualifying gap, and further back for the strength of the team.`);
-  }
-
-  // ================================================================ 7 SEASON
-  if (S) {
-    const s = S.season;
-    $("seasonRows").innerHTML = S.races.map(r => {
-      const b = r.better === "A" ? '<span class="pill A">A</span>' : r.better === "B" ? '<span class="pill B">grid</span>' : '<span class="pill T">tie</span>';
-      return `<tr><td>${r.round}</td><td class="${r.hard ? "hard" : ""}">${r.name}</td><td class="num">${r.A.toFixed(1)}%</td><td class="num">${r.B.toFixed(1)}%</td><td class="c">${b}</td><td class="hide-s">${surname(r.winner)}</td></tr>`;
-    }).join("");
-    set("seasonRes", `Over the ${s.races} races, model A puts <b>${s.A}%</b> of pairs in the right order against <b>${s.B}%</b> for the grid, and finds <b>${s.scorers_A.toFixed(1)}</b> of the 10 points scorers per race against ${s.scorers_B.toFixed(1)}. Counted race by race it is close: model A is better in <b>${s.A_better}</b> races, the grid in <b>${s.B_better}</b> (${s.ties} tie). But the grid wins by small margins (at most +${s.best_B.gain} points, ${s.best_B.name}) and model A by large ones (up to <b>+${s.best_A.gain}</b> points, ${s.best_A.name}).`);
-    if (ML) {
-      const TB = ML.top_back, jit = i => ((i * 37) % 11 - 5) / 30, gs = TB.races.map(r => r.gain), yr = range(gs, 0.08);
-      plot("cTopBack", {label: "gain by top cars out of position", h: 290, x: {min: -0.5, max: 2.7, ticks: [0, 1, 2], fmt: v => ["none", "one", "two or more"][v], title: "Top-family cars starting 11th or lower"},
-        y: {min: Math.floor(yr[0]), max: Math.ceil(yr[1]), title: "Gain of model A (points)"}, hlines: [{y: 0, color: "var(--muted)"}],
-        points: TB.races.map((r, i) => ({x: Math.min(r.top_back, 2) + jit(i), y: r.gain, r: 4.5, color: r.gain > 0 ? "var(--a)" : r.gain < 0 ? "var(--b)" : "var(--grey)", title: `${r.gp}: ${sg(r.gain, 1)}`})),
-        lines: TB.groups.map((g, k) => ({color: "var(--ink)", width: 3, pts: [[k - 0.28, g.gain], [k + 0.28, g.gain]]})),
-        texts: TB.groups.map((g, k) => ({x: k + 0.32, y: g.gain, dy: 4, text: sg(g.gain, 1), bold: true, color: "var(--ink)"}))});
-      const g = TB.groups;
-      set("seasonMean", `<b>Model A adds value exactly when the grid is misleading.</b> When no top car starts 11th or lower (${g[0].races} races), the two forecasts are equal (${sg(g[0].gain, 1)} points on average). With one top car out of position (${g[1].races} races), model A gains ${sg(g[1].gain, 1)} points; with two or more (${g[2].races} races), <b>${sg(g[2].gain, 1)}</b>. Example: São Paulo, where Verstappen, Hamilton and Leclerc started at the back (step 4).`);
-    } else set("seasonMean", "Model A adds value when fast cars start out of position.");
-    const n = S.next;
-    if (n) {
-      let fc = '<p class="small" style="margin:0">The full forecast for every driver appears here on Saturday, after qualifying.</p>';
-      if (S.forecast) fc = '<table><thead><tr><th>#</th><th>Driver</th><th class="num">Grid</th><th class="num">Win</th><th class="num">Top 10</th></tr></thead><tbody>' +
-        S.forecast.slice(0, 10).map(d => `<tr><td>${d.predicted_order}</td><td>${d.driver}</td><td class="num">${d.grid}</td><td class="num">${pct(d.A_p_win)}</td><td class="num">${pct(d.A_p_top10)}</td></tr>`).join("") + "</tbody></table>";
-      $("next").innerHTML = `<div class="small">Next race · round ${n.round} · ${n.date}</div><h3 style="font-size:24px">${n.name}</h3><p style="margin:4px 0">We use ${tag(n.model)}.</p><p class="small">${n.why}</p>${fc}`;
-    } else $("next").style.display = "none";
-  }
-
-  // ================================================================ 8 TRACKS
-  if (ML) {
-    const TK = ML.tracks, L = TK.list, CC = {"grid-dependent": "var(--b)", "model-friendly": "var(--a)", "neutral": "var(--grey)"};
-    const cal = L.filter(t => t.cal26).sort((a, b) => b.gain - a.gain), gmax = Math.max(...L.map(t => t.gain)), gmin = Math.min(...L.map(t => t.gain));
-    hbars("cTrkBars", cal.map(t => ({label: `${t.name} (${t.races})`, value: t.gain, color: CC[t["class"]]})), {min: Math.floor(gmin) - 0.5, max: Math.ceil(gmax) + 0.5, fmt: v => sg(v, 1)});
-    const xs = L.map(t => t.rho), x0 = Math.floor(Math.min(...xs) * 20) / 20, x1 = Math.ceil(Math.max(...xs) * 20) / 20, lab = ["Monaco", "Las Vegas", "Zandvoort", "Hungary", "Singapore"];
-    const left = {Zandvoort: 1, Monaco: 1};
-    plot("cTrkScatter", {label: "grid dependence against gain", h: 400, x: {min: x0, max: x1, title: "Grid dependence (correlation grid – result)", fmt: v => v.toFixed(1)}, y: {min: Math.floor(gmin) - 1, max: Math.ceil(gmax) + 1, title: "Gain of model A (points)"},
-      hlines: [{y: 0, color: "var(--muted)"}], lines: [{color: "var(--ink)", dash: true, width: 1.5, pts: [[x0, TK.intercept + TK.slope * x0], [x1, TK.intercept + TK.slope * x1]]}],
-      points: L.map(t => ({x: t.rho, y: t.gain, r: 5, color: CC[t["class"]], title: `${t.name}: ${sg(t.gain, 1)} (${t.races} races)`})),
-      texts: L.filter(t => lab.includes(t.name)).map(t => ({x: t.rho, y: t.gain, dx: left[t.name] ? -9 : 9, dy: t.name === "Singapore" ? 20 : 4, anchor: left[t.name] ? "end" : "start", text: t.name, color: "var(--ink)", bold: true}))
-        .concat([{x: x0, y: Math.floor(gmin) - 1, dx: 8, dy: -8, text: `gain = ${TK.intercept} − ${Math.abs(TK.slope)} × dependence,  R² = ${TK.r2}`, bold: true, color: "var(--ink)"}])});
-    const mon = L.find(t => t.name === "Monaco"), by = n => L.find(t => t.name === n), R = TK.replay, rc = TK.rule_check;
-    set("trkDid", `We <b>replay all ${R.races} races of 2011–2025</b> with model A, each one predicted from the races before it. For every track we average the <b>gain</b> = model A's score minus the grid's score. A track is called <b class="gb">grid-dependent</b> if the gain is clearly below zero (bootstrap test, 5% level), <b class="ga">model-friendly</b> if it is clearly above zero, and <b>neutral</b> otherwise.`);
-    set("trkRes", `Over the ${R.races} races, model A gets ${R.A.toFixed(1)}% of pairs right against ${R.B.toFixed(1)}% for the grid, and is better in ${R.A_better} races (grid: ${R.B_better}). <b>Only Monaco is grid-dependent</b>: there the grid beat model A in ${mon.B} of ${mon.races} races (gain ${sg(mon.gain, 1)} points). ${TK.classes["model-friendly"]} tracks are model-friendly, such as Las Vegas (${sg(by("Las Vegas").gain, 1)}), Zandvoort (${sg(by("Zandvoort").gain, 1)}) and Hungary (${sg(by("Hungary").gain, 1)}), although overtaking is hard at the last two; the other ${TK.classes.neutral} are neutral. Chart 8b: the more a track's results follow its grid, the smaller the gain (R² = ${TK.r2}).`);
-    set("trkMean", `<b>Use the grid (model B) at Monaco, and at Madrid</b>, a new track whose only race the grid won; <b>use model A everywhere else</b>. The idea that every “hard to overtake” track belongs to the grid is not true: only Monaco does. We checked the rule honestly: built with 2011–2019 only and applied to 2020–2025, it scores <b>${rc.rule}%</b>, against ${rc.A}% for model A everywhere and ${rc.B}% for the grid everywhere.`);
-  }
-
-  // ================================================================ 9 REPLAY
+  // ================================================================ 9 replay (works without ml.json)
   const years = [...new Set(PAST.map(r => r.year))].sort((a, b) => b - a);
   $("year").innerHTML = years.map(y => `<option value="${y}">${y}</option>`).join("");
   let current = null;
@@ -998,31 +478,24 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 3
     current = r;
     const cols = r.columns, rows = r.drivers.map(d => Object.fromEntries(cols.map((c, i) => [c, d[i]])));
     const t = r.track || {}, better = r.A > r.B ? "A" : (r.B > r.A ? "B" : "T");
-    $("trackCard").innerHTML = `<div class="small">${r.year} · Round ${r.round} · ${r.date}</div><h3 style="margin-top:2px">${r.gp} Grand Prix</h3>` +
-      `<div class="small">${t.name || ""} <span class="cls ${(t["class"] || "").split(" ")[0]}">${t["class"] || ""}</span></div>` +
-      `<div class="used">${tag(t.model || "A")}</div><div class="small">The model we use on this track (step 8). ${t.why || ""}</div>` +
-      `<p class="small" style="margin:10px 0 0">Model A was trained on the ${r.training_races} races before this one.</p>`;
-    const bar = (lab, v, c) => `<div class="row"><span style="color:${c}">${lab}</span><div class="track"><div class="fill" style="width:${Math.max(0, (v - 40) / 60 * 100)}%;background:${c}"></div></div><span>${v.toFixed(1)}%</span></div>`;
-    const win = rows.find(d => d.finish === 1), fav = rows.slice().sort((a, b) => a.rank_A - b.rank_A)[0];
+    $("trackCard").innerHTML = `<div class="small">${r.year} · round ${r.round} · ${t.name || ""} <span class="cls ${(t["class"] || "").split(" ")[0]}">${t["class"] || ""}</span></div>` +
+      `<h3 style="margin:2px 0 0">${r.gp} Grand Prix</h3><div class="small" style="margin-top:6px">On this track we use</div><div class="used">${tag(t.model || "A")}</div><div class="small">${t.why || ""}</div>`;
+    const bar = (lab, v, c) => `<div class="row"><span style="color:${c}">${lab}</span><div class="trackb"><div class="fill" style="width:${Math.max(0, (v - 40) / 60 * 100)}%;background:${c}"></div></div><span>${v.toFixed(1)}%</span></div>`;
+    const win = rows.find(d => d.finish === 1);
     $("scoreCard").innerHTML = `<h3>Pairs of drivers in the right order</h3><div class="meter">` + bar("Model A", r.A, "var(--a)") + bar("Grid (B)", r.B, "var(--b)") + `</div>` +
-      `<div class="verdict ${better}">${better === "T" ? "A tie: both forecasts were as close." : (better === "A" ? "Model A" : "The grid") + ` was closer to the result: ${Math.abs(r.right_A - r.right_B)} more pairs right out of ${r.pairs}.`}</div>` +
-      `<p class="small" style="margin:10px 0 0">Points scorers found: model A <b class="ga">${r.scorers_A}</b>/10 · grid <b class="gb">${r.scorers_B}</b>/10.<br>` +
-      `Winner: <b>${win ? win.driver : "—"}</b>${win ? ` (started P${win.grid})` : ""} · model A's favourite: <b>${fav.driver}</b> (${pct(fav.p_win)} to win).</p>`;
+      `<div class="verdict ${better}">${better === "T" ? "A tie." : (better === "A" ? "Model A" : "The grid") + ` was closer: ${Math.abs(r.right_A - r.right_B)} more pairs right out of ${r.pairs}.`}</div>` +
+      `<p class="small" style="margin:8px 0 0">Points scorers found: A <b class="ga">${r.scorers_A}</b>/10 · grid <b class="gb">${r.scorers_B}</b>/10 · winner: <b>${win ? win.driver : "—"}</b>${win ? ` (from P${win.grid})` : ""}</p>`;
     const ordered = rows.slice().sort((a, b) => (a.finish || 99) - (b.finish || 99) || a.grid - b.grid);
     $("drivers").innerHTML = ordered.map(d => {
-      let closer = "—", c = "T";
-      if (d.finish) { const ea = Math.abs(d.rank_A - d.finish), eb = Math.abs(d.grid - d.finish); c = ea < eb ? "A" : (eb < ea ? "B" : "T"); closer = c === "A" ? "A" : (c === "B" ? "grid" : "="); }
-      return `<tr><td class="c"><b>${d.finish ? "P" + d.finish : "DNF"}</b></td>` +
-        `<td><div class="drv"><span class="tag" style="background:${col(d.team)}"></span><span>${d.driver}<br><span class="team">${d.team}</span></span></div></td>` +
-        `<td class="c gb"><b>P${d.grid}</b></td><td class="c ga"><b>P${d.rank_A}</b></td>` +
-        `<td class="num hide-s">${pct(d.p_win)}<div class="minibar"><i style="width:${d.p_win * 100}%"></i></div></td>` +
-        `<td class="num hide-s">${pct(d.p_top10)}<div class="minibar"><i style="width:${d.p_top10 * 100}%"></i></div></td>` +
-        `<td class="c">${d.finish ? `<span class="pill ${c}">${closer}</span>` : ""}</td></tr>`;
+      let closer = "", c = "T";
+      if (d.finish) { const ea = Math.abs(d.rank_A - d.finish), eb = Math.abs(d.grid - d.finish); c = ea < eb ? "A" : (eb < ea ? "B" : "T"); closer = `<span class="pill ${c}">${c === "A" ? "A" : c === "B" ? "grid" : "="}</span>`; }
+      return `<tr><td class="c"><b>${d.finish ? "P" + d.finish : "DNF"}</b></td><td><div class="drv"><span class="tag" style="background:${col(d.team)}"></span><span>${d.driver} <span class="team">${d.team}</span></span></div></td>` +
+        `<td class="c gb"><b>P${d.grid}</b></td><td class="c ga"><b>P${d.rank_A}</b></td><td class="num hide-s">${pct(d.p_win)}</td><td class="c">${closer}</td></tr>`;
     }).join("");
     current.rows = rows.slice().sort((a, b) => a.grid - b.grid);
-    const opts = current.rows.map((d, i) => `<option value="${i}">${d.driver} (grid P${d.grid})</option>`).join("");
+    const opts = current.rows.map((d, i) => `<option value="${i}">${d.driver} (P${d.grid})</option>`).join("");
     $("dx").innerHTML = opts; $("dy").innerHTML = opts;
-    let bx = 1, by = 0, best = 0.5;       // the pair where model A disagrees most with the grid (chosen without looking at the result)
+    let bx = 1, by = 0, best = 0.5;       // opens on the pair where model A disagrees most with the grid
     current.rows.forEach((x, i) => current.rows.forEach((y, j) => { if (x.grid > y.grid) { const p = 1 / (1 + Math.exp(-(x.score - y.score))); if (p > best) { best = p; bx = i; by = j; } } }));
     $("dx").value = bx; $("dy").value = by; duel();
   }
@@ -1032,38 +505,274 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 3
     if (x === y) { $("duelOut").innerHTML = `<div class="mini">Pick two different drivers.</div>`; return; }
     const p = 1 / (1 + Math.exp(-(x.score - y.score))), aPick = p >= 0.5 ? x : y, gPick = x.grid < y.grid ? x : y;
     const both = x.finish && y.finish, realPick = both ? (x.finish < y.finish ? x : y) : null;
-    let real, note;
-    if (both) { real = `${surname(realPick.driver)} ahead`; note = `finished P${realPick.finish} vs P${(realPick === x ? y : x).finish}`; }
-    else if (x.finish || y.finish) { real = `${surname(x.finish ? y.driver : x.driver)} retired`; note = "a retirement: this pair is not scored"; }
-    else { real = "Both retired"; note = "this pair is not scored"; }
-    const mark = pick => !both ? "" : (pick === realPick ? ` <span class="ok">✔ right</span>` : ` <span class="ko">✘ wrong</span>`);
+    const real = both ? `${surname(realPick.driver)}` : (x.finish || y.finish) ? `${surname(x.finish ? y.driver : x.driver)} retired` : "Both retired";
+    const mark = pick => !both ? "" : (pick === realPick ? ` <span class="ok">✔</span>` : ` <span class="ko">✘</span>`);
     $("duelOut").innerHTML =
-      `<div class="mini"><div class="small">Model A</div><div class="big ga" style="font-size:28px">${surname(aPick.driver)} ahead</div><div class="small">${pct(Math.max(p, 1 - p))} chance, if both finish${mark(aPick)}</div></div>` +
-      `<div class="mini"><div class="small">Grid (model B)</div><div class="big gb" style="font-size:28px">${surname(gPick.driver)} ahead</div><div class="small">started P${gPick.grid} vs P${(gPick === x ? y : x).grid}${mark(gPick)}</div></div>` +
-      `<div class="mini"><div class="small">Real result</div><div class="big" style="font-size:28px">${real}</div><div class="small">${note}</div></div>`;
+      `<div class="mini"><div class="small">Model A${mark(aPick)}</div><b class="ga" style="font-size:19px">${surname(aPick.driver)}</b><div class="small">${pct(Math.max(p, 1 - p))} chance</div></div>` +
+      `<div class="mini"><div class="small">Grid${mark(gPick)}</div><b class="gb" style="font-size:19px">${surname(gPick.driver)}</b><div class="small">P${gPick.grid} vs P${(gPick === x ? y : x).grid}</div></div>` +
+      `<div class="mini"><div class="small">Really ahead</div><b style="font-size:19px">${real}</b><div class="small">${both ? `P${realPick.finish} vs P${(realPick === x ? y : x).finish}` : "not scored"}</div></div>`;
   }
+  function gotoRace(id) { const r = PAST.find(x => x.id === id); if (!r) return; $("year").value = r.year; fillRaces(r.year, r.id); showRace(); go(9); }
   $("year").onchange = () => { fillRaces($("year").value); showRace(); };
   $("race").onchange = showRace; $("dx").onchange = duel; $("dy").onchange = duel;
   const start = PAST.find(r => r.year === 2026 && r.gp === "São Paulo") || PAST[PAST.length - 1];
   if (start) { $("year").value = start.year; fillRaces(start.year, start.id); showRace(); }
-
-  // ================================================================ ask
   async function ask(q) {
-    $("q").value = q; $("askBtn").disabled = true; $("answer").className = "answer"; $("answer").textContent = "Thinking...";
+    $("askBtn").disabled = true; $("answer").className = "answer small"; $("answer").textContent = "Thinking...";
     try {
       const res = await fetch("api/ask", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({question: q, race: current ? current.id : null})});
-      const r = await res.json();
-      if (!res.ok) throw new Error(r.error || "The AI box is unavailable right now.");
+      const r = await res.json(); if (!res.ok) throw new Error(r.error || "The AI box is unavailable right now.");
       $("answer").textContent = r.answer;
-    } catch (e) {
-      $("answer").className = "answer err";
-      $("answer").textContent = (e.message && e.message !== "Failed to fetch") ? e.message : "The AI box runs on the live website only.";
-    }
+    } catch (e) { $("answer").className = "answer small err"; $("answer").textContent = (e.message && e.message !== "Failed to fetch") ? e.message : "The AI box runs on the live website only."; }
     $("askBtn").disabled = false;
   }
   $("askBtn").onclick = () => $("q").value.trim() && ask($("q").value.trim());
   $("q").addEventListener("keydown", e => { if (e.key === "Enter" && $("q").value.trim()) ask($("q").value.trim()); });
-  document.querySelectorAll(".suggest button").forEach(b => b.onclick = () => ask(b.dataset.q));
+
+  const h0 = parseInt(location.hash.slice(1), 10); go(isNaN(h0) ? 0 : h0, false);
+  if (!ML) return;
+
+  // ================================================================ 1 grid
+  const D = ML.data, G = D.by_grid.filter(g => g.grid <= 22);
+  $("gSl").max = G.length;
+  function drawGrid(g) {
+    const r = G[g - 1], pred = D.lr.intercept + D.lr.slope * g;
+    set("gVal", "P" + g);
+    set("gOut", `<div class="mini"><div class="small">wins the race</div><div class="big ga">${r.win < 1 && r.win > 0 ? r.win.toFixed(1) : Math.round(r.win)}%</div></div>` +
+      `<div class="mini"><div class="small">scores points</div><div class="big">${Math.round(r.top10)}%</div></div>` +
+      `<div class="mini"><div class="small">average finish</div><div class="big">${r.finish.toFixed(1)}</div></div>`);
+    set("gLine", `Linear regression: finish = ${D.lr.intercept.toFixed(2)} + ${D.lr.slope.toFixed(2)} × ${g} = <b>${pred.toFixed(1)}</b> (R² = ${D.lr.r2.toFixed(2)}).`);
+    plot("cGridA", {h: 250, label: "win and top-10 share by grid position", x: {min: 0.3, max: G.length + 0.7, ticks: [1, 5, 10, 15, 20], title: "Starting position"}, y: {min: 0, max: 100, title: "Share of starts (%)"},
+      bars: G.map(x => ({x: x.grid, y: x.top10, w: 15, id: x.grid, color: "var(--a-light)", stroke: x.grid === g ? "var(--ink)" : "var(--a)", sw: x.grid === g ? 2.5 : 1}))
+        .concat(G.map(x => ({x: x.grid, y: x.win, w: 15, id: x.grid, color: "var(--a)"})))});
+  }
+  $("gSl").oninput = e => drawGrid(+e.target.value); onHit("cGridA", id => { $("gSl").value = id; drawGrid(+id); }); drawGrid(1);
+  set("t1", `Pole wins <b>${Math.round(G[0].win)}%</b> of races and the grid alone explains <b>${Math.round(100 * D.lr.r2)}%</b> of the result. Model B is hard to beat, so every number here is shown next to the grid's.`);
+  set("dataLine", `Official results 2010–2026 (F1DB): ${num(D.starts)} starts, ${D.drivers} drivers, ${D.races} races. Target: the finishing position (the ${D.retired_pct}% who retire are placed last).`);
+
+  // ================================================================ 2 scoring game
+  const EX = ML.example.drivers, top5 = EX.filter(d => d.finish && d.finish <= 5).sort((a, b) => a.finish - b.finish);
+  let gOrder = top5.slice().sort((a, b) => a.grid - b.grid);
+  function drawGame() {
+    set("gmRows", gOrder.map((d, i) => `<div class="row"><span>${i + 1}</span><span>${d.driver} <span class="team">grid P${d.grid} · finished P${d.finish}</span></span>` +
+      `<button data-up="${i}" ${i === 0 ? "disabled" : ""} aria-label="Move up">▲</button><button data-dn="${i}" ${i === gOrder.length - 1 ? "disabled" : ""} aria-label="Move down">▼</button></div>`).join(""));
+    let right = 0, n = 0; const bad = [];
+    for (let i = 0; i < gOrder.length; i++) for (let j = i + 1; j < gOrder.length; j++) { n++; if (gOrder[i].finish < gOrder[j].finish) right++; else bad.push(`${surname(gOrder[i].driver)}–${surname(gOrder[j].driver)}`); }
+    set("gmScore", `<span class="${right === n ? "ok" : "ga"}">${right} of ${n} pairs = ${Math.round(100 * right / n)}%</span>`);
+    set("gmPairs", bad.length ? `Wrong pairs: ${bad.join(", ")}.` : "Every pair is in the right order: a perfect forecast.");
+  }
+  $("gmRows").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; const i = b.dataset.up != null ? +b.dataset.up : +b.dataset.dn, j = b.dataset.up != null ? i - 1 : i + 1;
+    [gOrder[i], gOrder[j]] = [gOrder[j], gOrder[i]]; drawGame(); });
+  $("gmB").onclick = () => { gOrder = top5.slice().sort((a, b) => a.grid - b.grid); drawGame(); };
+  $("gmA").onclick = () => { gOrder = top5.map(d => [Math.random(), d]).sort((a, b) => a[0] - b[0]).map(x => x[1]); drawGame(); };
+  drawGame();
+
+  // ================================================================ 3 PCA + k-means
+  const P = ML.pca; let cum = 0; const cumPts = P.explained.map((v, i) => [i + 1, cum += v]);
+  plot("cPcaVar", {h: 300, label: "explained variance", x: {min: 0.4, max: 7.6, ticks: [1, 2, 3, 4, 5, 6, 7], title: "Principal component"}, y: {min: 0, max: 100, title: "Variance explained (%)"},
+    bars: P.explained.map((v, i) => ({x: i + 1, y: v, w: 36, color: i < 2 ? "var(--a)" : "var(--grey)"})), lines: [{color: "var(--ink)", pts: cumPts, dots: true, width: 1.8}],
+    texts: [{x: 1, y: P.explained[0] / 2, anchor: "middle", text: P.explained[0].toFixed(0) + "%", color: "#fff", bold: true}, {x: 2, y: P.explained[1], dy: -6, anchor: "middle", text: P.explained[1].toFixed(0) + "%", color: "var(--a)", bold: true},
+            {x: 2, y: cumPts[1][1], dy: 20, dx: 12, text: `${cumPts[1][1].toFixed(0)}% with two`, bold: true, color: "var(--ink)"}]});
+  set("pcaLine", `Component 1 = <b>performance</b> (points, top-10, podiums). Component 2 = <b>reliability</b> (mechanical failures).`);
+  const K = ML.kmeans, kc = K.curve, bestK = kc.reduce((a, b) => b.silhouette > a.silhouette ? b : a), fam = Object.fromEntries(K.families.map(f => [f.family[0], f]));
+  const KP = K.points, wsum = KP.reduce((t, p) => t + p[3], 0), wm = j => KP.reduce((t, p) => t + p[3] * p[j], 0) / wsum;
+  const mu = [wm(0), wm(1)], sd = [0, 1].map(j => Math.sqrt(KP.reduce((t, p) => t + p[3] * (p[j] - mu[j]) ** 2, 0) / wsum));
+  const Z = KP.map(p => [(p[0] - mu[0]) / sd[0], (p[1] - mu[1]) / sd[1]]), d2 = (a, b) => (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2;
+  function kmeansJS(k) {                                       // k-means in the browser on the two standardised variables (dots weighted by their count)
+    let best = null;
+    for (let run = 0; run < 8; run++) {
+      let seed = 1000 * k + run; const rnd = () => { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; };
+      let C = [Z[Math.floor(rnd() * Z.length)]];
+      while (C.length < k) { const w = Z.map((z, i) => KP[i][3] * Math.min(...C.map(c => d2(z, c)))), tot = w.reduce((a, b) => a + b, 0); let r = rnd() * tot, i = 0; while (i < w.length - 1 && (r -= w[i]) > 0) i++; C.push(Z[i]); }
+      let lab = [];
+      for (let it = 0; it < 40; it++) {
+        lab = Z.map(z => { let b = 0, bd = Infinity; C.forEach((c, j) => { const d = d2(z, c); if (d < bd) { bd = d; b = j; } }); return b; });
+        C = C.map((c, j) => { let x = 0, y = 0, n = 0; Z.forEach((z, i) => { if (lab[i] === j) { x += KP[i][3] * z[0]; y += KP[i][3] * z[1]; n += KP[i][3]; } }); return n ? [x / n, y / n] : c; });
+      }
+      const inertia = Z.reduce((t, z, i) => t + KP[i][3] * d2(z, C[lab[i]]), 0);
+      if (!best || inertia < best.inertia) best = {C, lab, inertia};
+    }
+    return best;
+  }
+  const PAL = ["var(--a)", "var(--grey)", "var(--b)", "var(--violet)", "var(--ok)", "var(--kerb)", "var(--ink2)", "#c9a227"], KM = {l: 46, r: 8, t: 10, b: 42};
+  function drawK(k) {
+    let r = kmeansJS(k), cen = r.C.map((c, j) => ({j, pts: c[0] * sd[0] + mu[0], fail: c[1] * sd[1] + mu[1]}));
+    if (k === 3) { const idx = {t: 0, m: 1, u: 2}; r = {lab: KP.map(p => idx[p[2]])}; cen = ["t", "m", "u"].map((f, j) => ({j, pts: fam[f].points, fail: fam[f].fail_pct})); }   // k = 3: exactly the families used by model A
+    const order = k === 3 ? cen : [...cen].sort((a, b) => b.pts - a.pts), colOf = {}; order.forEach((c, i) => colOf[c.j] = PAL[i]);
+    plot("cFam", {w: 300, h: 260, m: KM, label: "car families", x: {min: -1, max: 46, title: "Team points per race"}, y: {min: -3, max: 80, title: "Mechanical failures (%)"},
+      points: KP.map((p, i) => ({x: p[0], y: p[1], r: 2.4, o: 0.5, color: colOf[r.lab[i]]})).filter(p => p.y <= 80), crosses: cen.map(c => ({x: c.pts, y: Math.min(c.fail, 78), color: colOf[c.j]}))});
+    const sr = range(kc.map(x => x.silhouette), 0.15), cv = kc.find(x => x.k === k);
+    plot("cSil", {w: 300, h: 260, m: KM, label: "silhouette", x: {min: 1.6, max: 8.4, ticks: [2, 3, 4, 5, 6, 7, 8], title: "k"}, y: {min: sr[0], max: sr[1], title: "Silhouette score", fmt: v => v.toFixed(2)},
+      lines: [{color: "var(--a)", pts: kc.map(x => [x.k, x.silhouette]), dots: true}], marks: [{x: k, y: cv.silhouette, color: "var(--ink)", r: 9}]});
+    set("kVal", k);
+    set("kNote", `Silhouette <b>${cv.silhouette.toFixed(3)}</b>${k === bestK.k ? ": the best separation. This is the k we use." : `, lower than ${bestK.silhouette.toFixed(3)} at k = ${bestK.k}.`} ` +
+      (k === 3 ? `Top cars (${fam.t.points.toFixed(1)} pts, ${fam.t.fail_pct}% failures), midfield (${fam.m.points.toFixed(1)} pts), unreliable cars (${fam.u.fail_pct}% failures).` : ""));
+  }
+  $("kSlider").oninput = e => drawK(+e.target.value); drawK(3);
+  set("t3", `Seven statistics are really two ideas: how <b>fast</b> and how <b>reliable</b> a car is (${cumPts[1][1].toFixed(0)}% of the variance). Three families: top cars finish in the top 10 in <b>${fam.t.top10_pct}%</b> of their starts, midfield ${fam.m.top10_pct}%, unreliable cars ${fam.u.top10_pct}%. Model A is told the family of each car.`);
+
+  // ================================================================ 4 model A simulator
+  const MA = ML.modelA, RAW = MA.raw, KEYS = ["grid", "quali_gap", "practice_gap", "car_perf", "tier_top", "tier_unrel"];
+  const W0 = Object.fromEntries(KEYS.map(k => [k, RAW[k].theta])), FAMS = {top: "Top car", midfield: "Midfield", unreliable: "Unreliable car"};
+  const SL = [["grid", "Grid position", 1, 22, 1, v => "P" + v], ["quali_gap", "Qualifying gap", 0, 5, 0.05, v => v.toFixed(2) + "%"],
+              ["practice_gap", "Practice gap", 0, 5, 0.05, v => v.toFixed(2) + "%"], ["team_points", "Team points", 0, 43, 0.5, v => v.toFixed(1)]];
+  const WSL = [["grid", "Grid"], ["quali_gap", "Qualifying gap"], ["practice_gap", "Practice gap"], ["car_perf", "Team points"]];
+  let W = Object.assign({}, W0), cur = null, me = 0;
+  $("exDriver").innerHTML = EX.map((d, i) => `<option value="${i}">${d.driver} (${d.team}, started P${d.grid})</option>`).join("");
+  const base = d => ({grid: d.grid, quali_gap: d.quali_gap, practice_gap: d.practice_gap, team_points: d.team_points, family: d.family});
+  const zOf = (d, v) => { const b = base(d), f = x => x ? 1 : 0;      // standardised features: stored value + the change made with the sliders
+    return {grid: d.z.grid + (v.grid - b.grid) / RAW.grid.sd, quali_gap: d.z.quali_gap + (v.quali_gap - b.quali_gap) / RAW.quali_gap.sd,
+      practice_gap: d.z.practice_gap + (v.practice_gap - b.practice_gap) / RAW.practice_gap.sd, car_perf: d.z.car_perf + (v.team_points - b.team_points) / RAW.car_perf.sd,
+      tier_top: d.z.tier_top + (f(v.family === "top") - f(b.family === "top")) / RAW.tier_top.sd, tier_unrel: d.z.tier_unrel + (f(v.family === "unreliable") - f(b.family === "unreliable")) / RAW.tier_unrel.sd}; };
+  const scoreOf = z => KEYS.reduce((t, k) => t + W[k] * z[k], 0);
+  const pairsRight = (rows, key) => { let right = 0, n = 0;
+    for (let i = 0; i < rows.length; i++) for (let j = i + 1; j < rows.length; j++) { const a = rows[i], b = rows[j]; if (!a.finish && !b.finish) continue; n++;
+      const pa = a[key] !== b[key] ? a[key] > b[key] : a.grid < b.grid; if (pa === ((a.finish || 99) < (b.finish || 99))) right++; }
+    return [right, n]; };
+  function buildControls() {
+    set("exSliders", SL.map(([k, lab, lo, hi, st, fmt]) => `<div class="sl"><label for="s_${k}">${lab}</label><input type="range" id="s_${k}" data-k="${k}" min="${lo}" max="${hi}" step="${st}" value="${cur[k]}"><b class="v" id="sv_${k}">${fmt(cur[k])}</b></div>`).join("") +
+      `<div class="sl"><label for="s_family">Car family</label><select id="s_family" style="padding:4px 8px">${Object.keys(FAMS).map(f => `<option value="${f}" ${f === cur.family ? "selected" : ""}>${FAMS[f]}</option>`).join("")}</select><span></span></div>`);
+    set("exWeights", WSL.map(([k, lab]) => `<div class="sl"><label for="w_${k}">${lab}</label><input type="range" id="w_${k}" data-w="${k}" min="-1" max="1" step="0.01" value="${W[k].toFixed(2)}"><b class="v" id="wv_${k}">${sg(W[k])}</b></div>`).join(""));
+  }
+  function renderSim() {
+    const d = EX[me], z = zOf(d, cur), changed = JSON.stringify(cur) !== JSON.stringify(base(d)) || KEYS.some(k => Math.abs(W[k] - W0[k]) > 0.004);
+    SL.forEach(([k, , , , , fmt]) => set("sv_" + k, fmt(cur[k]))); WSL.forEach(([k]) => set("wv_" + k, sg(W[k])));
+    const LAB = {grid: ["Grid position", cur.grid.toFixed(0)], quali_gap: ["Qualifying gap (%)", cur.quali_gap.toFixed(2)], practice_gap: ["Practice gap (%)", cur.practice_gap.toFixed(2)],
+      car_perf: ["Team points per race", cur.team_points.toFixed(1)], tier_top: ["Top car", cur.family === "top" ? "1" : "0"], tier_unrel: ["Unreliable car", cur.family === "unreliable" ? "1" : "0"]};
+    const s = scoreOf(z);
+    set("exRows", KEYS.map(k => { const c = W[k] * z[k];
+      return `<tr><td>${LAB[k][0]}</td><td class="num">${LAB[k][1]}</td><td class="num">${sg(z[k])}</td><td class="num">× ${sg(W[k])}</td><td class="num"><b class="${c > 0.005 ? "ga" : c < -0.005 ? "gb" : ""}">${sg(c)}</b></td></tr>`; }).join("") +
+      `<tr class="hl"><td colspan="4"><b>Score = the sum</b></td><td class="num"><b>${sg(s)}</b></td></tr>`);
+    const field = EX.map((x, i) => ({name: x.driver, grid: i === me ? cur.grid : x.grid, finish: x.finish, s: i === me ? s : scoreOf(x.z), me: i === me, neg: -(i === me ? cur.grid : x.grid)}));
+    const order = [...field].sort((a, b) => b.s - a.s || a.grid - b.grid), place = order.findIndex(f => f.me) + 1;
+    const tot = field.reduce((t, f) => t + Math.exp(f.s), 0), [ra, n] = pairsRight(field, "s"), [rg] = pairsRight(field, "neg");
+    set("exOut", `<div class="grid3" style="gap:8px"><div class="mini"><div class="small">Grid says</div><div class="big gb">P${cur.grid}</div></div>` +
+      `<div class="mini"><div class="small">Model A says</div><div class="big ga">P${place}</div></div><div class="mini"><div class="small">Really</div><div class="big">${d.finish ? "P" + d.finish : "out"}</div></div></div>` +
+      `<p style="margin:8px 0 6px">Score <b>${sg(s)}</b> · chance to win <b>${(100 * Math.exp(s) / tot).toFixed(1)}%</b></p>` +
+      `<div class="live"><div class="small">Pairs in the right order in this race${changed ? " (what if)" : ""}</div><b class="ga" style="font-size:20px">Model A ${(100 * ra / n).toFixed(1)}%</b> <span class="small">(${ra} of ${n})</span> · <b class="gb">grid ${(100 * rg / n).toFixed(1)}%</b></div>`);
+    set("exRank", `<div class="rk h"><span>#</span><span>Model A's order</span><span>Score</span><span>Finished</span></div>` + order.map((f, i) =>
+      `<div class="rk ${f.me ? "me" : ""}"><span>${i + 1}</span><span>${f.name}</span><span>${sg(f.s)}</span><span>${f.finish ? "P" + f.finish : "retired"}</span></div>`).join(""));
+  }
+  function pick(i) { me = i; cur = base(EX[me]); buildControls(); renderSim(); }
+  $("exSliders").addEventListener("input", e => { const t = e.target; if (t.dataset.k) cur[t.dataset.k] = +t.value; else if (t.id === "s_family") cur.family = t.value; renderSim(); });
+  $("exSliders").addEventListener("change", e => { if (e.target.id === "s_family") { cur.family = e.target.value; renderSim(); } });
+  $("exWeights").addEventListener("input", e => { const t = e.target; if (t.dataset.w) { W[t.dataset.w] = +t.value; renderSim(); } });
+  $("exDriver").onchange = () => pick(+$("exDriver").value);
+  $("exReset").onclick = () => { W = Object.assign({}, W0); pick(me); };
+  const ver = Math.max(0, EX.findIndex(d => /Verstappen/.test(d.driver))); $("exDriver").value = ver; pick(ver);
+  const V = EX[ver];
+  set("t4", `${surname(V.driver)} started ${ord(V.grid)}, but his fast practice lap and strong team lift his score: the full model, with simulated retirements, ranked him ${ord(V.rank)} (9th by score alone) and he finished ${ord(V.finish)}. The model can <b>correct the grid</b> when a fast car starts at the back. Try it: put every weight except the grid at 0 and model A becomes the grid.`);
+  set("paramNote", `Weights learned on the ${MA.races} races before São Paulo 2026 (penalty λ = ${MA.lambda}, chosen by cross-validation). Here drivers are ordered by score; the full model also simulates the race 10,000 times with retirements (each driver retires with probability = his team's failure rate + ${MA.crash_pct}%).`);
+
+  // ================================================================ 5 tuning + leaderboard
+  const T = ML.tuning, TUN = {
+    tree: {name: "Decision tree", lab: "Tree depth", t: T.tree, fmt: v => v, flexHigh: true, x: {min: 0.5, max: 12.5, ticks: [1, 2, 4, 6, 8, 10, 12], title: "Tree depth"}},
+    knn: {name: "KNN", lab: "Neighbours k", t: T.knn, fmt: v => v, flexHigh: false, x: {min: 4, max: 500, log: true, ticks: [5, 10, 20, 50, 100, 200, 400], title: "Number of neighbours k"}},
+    boost: {name: "Gradient boosting", lab: "Number of trees", t: T.boosting, fmt: v => v, flexHigh: true, x: {min: 8, max: 1000, log: true, ticks: [10, 25, 50, 100, 200, 400, 800], title: "Number of trees"}}};
+  let tuneKey = "tree";
+  $("tuneBtns").innerHTML = Object.keys(TUN).map(k => `<button class="btn2" data-t="${k}">${TUN[k].name}</button>`).join("");
+  function drawTune(i) {
+    const c = TUN[tuneKey], t = c.t, r = range(t.train.concat(t.cv), 0.1), x = t.x[i], bi = t.x.indexOf(t.best);
+    plot("tuneChart", {h: 250, label: "validation curve", x: c.x, y: {min: Math.floor(r[0]), max: Math.ceil(r[1]), title: "Pairs right (%)"},
+      lines: [{color: "var(--grey)", pts: t.x.map((v, j) => [v, t.train[j]]), dots: true}, {color: "var(--a)", pts: t.x.map((v, j) => [v, t.cv[j]]), dots: true, width: 2.6}],
+      marks: [{x, y: t.cv[i], color: "var(--ink)", r: 9}, {x, y: t.train[i], color: "var(--ink)", r: 9}]});
+    set("tuneLab", `${c.lab} = <b style="font-size:18px;color:var(--ink)">${x}</b>`);
+    const flex = c.flexHigh ? i > bi : i < bi;
+    set("tuneLive", `Trained races <b>${t.train[i].toFixed(1)}%</b> · unseen races <b class="ga">${t.cv[i].toFixed(1)}%</b><br>` +
+      (i === bi ? `<span class="ok">Best on unseen races: the setting we use.</span>` : flex ? `<span class="ko">Overfitting:</span> it learns its training races by heart and predicts new ones worse.` : `<b>Too simple:</b> it misses part of the signal.`));
+    document.querySelectorAll("#tuneBtns button").forEach(b => b.classList.toggle("on", b.dataset.t === tuneKey));
+  }
+  function setTune(k) { tuneKey = k; const t = TUN[k].t; $("tuneSl").max = t.x.length - 1; $("tuneSl").value = t.x.indexOf(t.best); drawTune(+$("tuneSl").value); }
+  $("tuneBtns").addEventListener("click", e => { const b = e.target.closest("button"); if (b) setTune(b.dataset.t); });
+  $("tuneSl").oninput = e => drawTune(+e.target.value); setTune("tree");
+  function drawLB(key) {
+    const rows = [...ML.models].sort((a, b) => b[key] - a[key]), lo = Math.min(...rows.map(m => m[key])) - 1.2, hi = Math.max(...rows.map(m => m[key])) + 0.3;
+    set("lbRows", rows.map(m => { const g = m.key === "Grid rule", a = /model A/.test(m.key), c = g ? "var(--b)" : a ? "var(--a)" : "var(--grey)";
+      return `<div class="hbar ${g || a ? "me" : ""}"><span class="lab" title="${m.setting}">${g ? "Model B: the grid" : a ? "Model A" : m.name}</span><span class="trk"><i style="left:0;width:${100 * (m[key] - lo) / (hi - lo)}%;background:${c}"></i></span><span class="val" style="color:${g || a ? c : "inherit"}">${m[key].toFixed(1)}%</span></div>`; }).join(""));
+    $("lb1").classList.toggle("on", key === "t1"); $("lb2").classList.toggle("on", key === "t2");
+  }
+  $("lb1").onclick = () => drawLB("t1"); $("lb2").onclick = () => drawLB("t2"); drawLB("t1");
+  const learned = ML.models.filter(m => m.key !== "Grid rule"), t1s = learned.map(m => m.t1);
+  set("t5", `All eleven learned models beat the grid, and they are within <b>${(Math.max(...t1s) - Math.min(...t1s)).toFixed(1)} points</b> of each other: linear regression (13 numbers) does as well as a random forest (thousands of nodes). <b>The information matters more than the algorithm.</b> We keep model A: six weights we can read, and it gives probabilities.`);
+  // classification (in details)
+  const C = ML.classification, RC = {grid: "var(--b)", A: "var(--a)"};
+  function drawCls(t) {
+    const at = k => { if (k === "grid") return C.grid; const [, tp, fp, fn, tn] = C[k].thresholds.find(x => x[0] === t), n = tp + fp + fn + tn;
+      return {label: C[k].label, tp, fp, fn, tn, accuracy: (100 * (tp + tn) / n).toFixed(1), precision: tp + fp ? (100 * tp / (tp + fp)).toFixed(1) : "–", recall: (100 * tp / (tp + fn)).toFixed(1)}; };
+    const M2 = {grid: at("grid"), A: at("A")};
+    set("cmGrid", ["grid", "A"].map(k => { const c = M2[k];
+      return `<div><b class="${k === "grid" ? "gb" : "ga"}">${k === "grid" ? "Grid: top 10 on the grid" : "Model A"}</b><div class="cm"><span></span><span class="h">said<br>no points</span><span class="h">said<br>points</span>` +
+        `<span class="h">no<br>points</span><span class="v good">${num(c.tn)}</span><span class="v err">${num(c.fp)}</span><span class="h">points</span><span class="v err">${num(c.fn)}</span><span class="v good">${num(c.tp)}</span></div>` +
+        `<p class="small" style="margin:0">Right for <b>${c.accuracy}%</b> · precision ${c.precision}% · recall ${c.recall}%</p></div>`; }).join(""));
+    plot("cRoc", {label: "ROC curves", h: 250, x: {min: 0, max: 1, title: "False positive rate"}, y: {min: 0, max: 1, title: "True positive rate"},
+      lines: [{color: "var(--grey)", dash: true, width: 1.2, pts: [[0, 0], [1, 1]]}].concat(["grid", "A"].map(k => ({color: RC[k], pts: C[k].roc}))),
+      marks: [{x: M2.A.fp / (M2.A.fp + M2.A.tn), y: M2.A.tp / (M2.A.tp + M2.A.fn), color: "var(--ink)"}]});
+    set("thrVal", t + "%");
+    set("thrNote", (t < 50 ? "Lower threshold: more drivers promised points, so recall goes up and precision goes down." : t > 50 ? "Higher threshold: only the safest drivers, so precision goes up and recall goes down." : "Move the slider: the circle moves along model A's ROC curve.") + " The AUC summarises all thresholds at once.");
+  }
+  $("thr").oninput = e => drawCls(+e.target.value); drawCls(50);
+  set("rocLegend", ["grid", "A"].map(k => `<span><i style="background:${RC[k]}"></i>${k === "grid" ? "Grid" : "Model A"}: AUC ${C[k].auc.toFixed(3)}</span>`).join(""));
+
+  // ================================================================ 6 importance + tree walk
+  const IMP = ML.importance, imax = IMP[0].pp, ipos = v => 100 * (v + 0.3) / (imax * 1.05 + 0.3);
+  set("cImp", IMP.map(r => `<div class="hbar" style="grid-template-columns:140px 1fr 46px"><span class="lab">${r.feature}</span><span class="trk"><i style="left:${Math.min(ipos(0), ipos(r.pp))}%;width:${Math.abs(ipos(r.pp) - ipos(0))}%;background:${r.pp > 0.4 ? "var(--a)" : "var(--grey)"}"></i><u style="left:${ipos(0)}%"></u></span><span class="val">${r.pp.toFixed(2).replace("-", "−")}</span></div>`).join(""));
+  let tnode = ML.tree, tpath = [];
+  function drawTree() {
+    set("treePath", tpath.length ? tpath.join(" → ") : "Start");
+    if (!tnode) { set("treeQ", "Tree not available."); return; }
+    if (tnode.leaf) set("treeQ", `<div class="small">Drivers like this one finish on average</div><div class="big ga">${tnode.finish.toFixed(1)}</div><div class="small">(${num(tnode.n)} past starts; retirements count as last)</div><button class="btn2" id="treeAgain" style="margin-top:8px">Start again</button>`);
+    else { const u = /gap/.test(tnode.key) ? "%" : ""; set("treeQ", `<div style="font-weight:700;font-size:19px;margin-bottom:8px">${tnode.feature} ≤ ${tnode.thr}${u} ?</div><button data-a="yes">Yes</button> <button data-a="no" class="btn2" style="padding:9px 16px;font-size:inherit">No</button>`); }
+  }
+  $("treeQ").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
+    if (b.id === "treeAgain") { tnode = ML.tree; tpath = []; } else { const u = /gap/.test(tnode.key) ? "%" : ""; tpath.push(`${tnode.feature} ${b.dataset.a === "yes" ? "≤" : ">"} ${tnode.thr}${u}`); tnode = tnode[b.dataset.a]; }
+    drawTree(); });
+  drawTree();
+  const ip = k => IMP.find(r => r.feature === k).pp;
+  set("t6", `The grid matters most (${ip("Grid position").toFixed(2)}), then the <b>qualifying gap</b> (${ip("Qualifying gap").toFixed(2)}) and the <b>strength of the team</b> (${ip("Team points").toFixed(2)}). The other statistics add almost nothing, as PCA said. This is why model A uses only the grid, the two lap gaps, team points and the car family.`);
+
+  // ================================================================ 7 season
+  if (S) {
+    const R = S.races.map(r => Object.assign({gain: +(r.A - r.B).toFixed(1)}, r)), yr = range(R.map(r => r.gain), 0.08);
+    function drawSeason(sel) {
+      plot("cSeason", {h: 280, label: "gain per race", x: {min: 0.3, max: R.length + 0.7, ticks: R.map(r => r.round).filter(v => v % 2 === 1), title: "Round"}, y: {min: Math.floor(yr[0]), max: Math.ceil(yr[1]), title: "Gain of model A (points)"},
+        hlines: [{y: 0, color: "var(--muted)"}], bars: R.map(r => ({x: r.round, y: r.gain, w: 17, id: r.round, color: r.gain > 0 ? "var(--a)" : r.gain < 0 ? "var(--b)" : "var(--grey)", stroke: r.round === sel ? "var(--ink)" : null, sw: 2.5, title: r.name}))});
+      const r = R.find(x => x.round === sel), p = PAST.find(x => x.year === 2026 && x.round === sel);
+      set("seasonSel", `<div class="small">Round ${r.round}</div><b style="font-size:20px" class="${r.hard ? "hard" : ""}">${r.name}</b> <span class="small">won by ${surname(r.winner)}</span><br>` +
+        `Model A <b class="ga">${r.A.toFixed(1)}%</b> · grid <b class="gb">${r.B.toFixed(1)}%</b> → <b>${r.gain > 0 ? "A better by " + r.gain.toFixed(1) : r.gain < 0 ? "grid better by " + (-r.gain).toFixed(1) : "a tie"}</b>` +
+        (p ? ` <button class="btn2" data-replay="${p.id}" style="margin-left:6px">Replay it →</button>` : ""));
+    }
+    onHit("cSeason", id => drawSeason(+id));
+    $("seasonSel").addEventListener("click", e => { const b = e.target.closest("[data-replay]"); if (b) gotoRace(+b.dataset.replay); });
+    drawSeason(R.reduce((a, b) => b.gain > a.gain ? b : a).round);
+    const TB = ML.top_back, jit = i => ((i * 37) % 11 - 5) / 30, yr2 = range(TB.races.map(r => r.gain), 0.08);
+    plot("cTopBack", {label: "gain by top cars out of position", h: 210, x: {min: -0.5, max: 2.7, ticks: [0, 1, 2], fmt: v => ["none", "one", "two or more"][v], title: "Top cars starting 11th or lower"},
+      y: {min: Math.floor(yr2[0]), max: Math.ceil(yr2[1]), title: "Gain (points)"}, hlines: [{y: 0, color: "var(--muted)"}],
+      points: TB.races.map((r, i) => ({x: Math.min(r.top_back, 2) + jit(i), y: r.gain, r: 4.5, color: r.gain > 0 ? "var(--a)" : r.gain < 0 ? "var(--b)" : "var(--grey)", title: r.gp})),
+      lines: TB.groups.map((g, k) => ({color: "var(--ink)", width: 3, pts: [[k - 0.28, g.gain], [k + 0.28, g.gain]]})),
+      texts: TB.groups.map((g, k) => ({x: k + 0.32, y: g.gain, dy: 4, text: sg(g.gain, 1), bold: true, color: "var(--ink)"}))});
+    const s = S.season, g = TB.groups;
+    set("t7", `Over ${s.races} races: <b>${s.A}%</b> for model A against ${s.B}% for the grid. The grid wins ${s.B_better} races by small margins; model A wins ${s.A_better} by large ones. With no top car out of position the two are equal (${sg(g[0].gain, 1)}); with two or more, model A gains <b>${sg(g[2].gain, 1)} points</b>.`);
+  }
+
+  // ================================================================ 8 tracks
+  const TK = ML.tracks, L = TK.list.map((t, i) => Object.assign({i}, t)), CC = {"grid-dependent": "var(--b)", "model-friendly": "var(--a)", "neutral": "var(--grey)"};
+  const xs = L.map(t => t.rho), x0 = Math.floor(Math.min(...xs) * 20) / 20, x1 = Math.ceil(Math.max(...xs) * 20) / 20, gmax = Math.max(...L.map(t => t.gain)), gmin = Math.min(...L.map(t => t.gain));
+  $("trkSel").innerHTML = [...L].sort((a, b) => a.name.localeCompare(b.name)).map(t => `<option value="${t.i}">${t.name}</option>`).join("");
+  function drawTrk(i) {
+    const t = L[i];
+    plot("cTrkScatter", {label: "grid dependence against gain", h: 330, x: {min: x0, max: x1, title: "How much results follow the grid (correlation)", fmt: v => v.toFixed(1)}, y: {min: Math.floor(gmin) - 1, max: Math.ceil(gmax) + 1, title: "Gain of model A (points)"},
+      hlines: [{y: 0, color: "var(--muted)"}], lines: [{color: "var(--ink)", dash: true, width: 1.5, pts: [[x0, TK.intercept + TK.slope * x0], [x1, TK.intercept + TK.slope * x1]]}],
+      points: L.map(p => ({x: p.rho, y: p.gain, r: p.i === i ? 8 : 5.5, id: p.i, color: CC[p["class"]], ring: p.i === i, title: p.name})),
+      texts: [{x: t.rho, y: t.gain, dx: t.rho > 0.78 ? -12 : 12, dy: 4, anchor: t.rho > 0.78 ? "end" : "start", text: t.name, bold: true, color: "var(--ink)"}]});
+    $("trkSel").value = i;
+    const useB = t["class"] === "grid-dependent";
+    set("trkCard", `<b style="font-size:20px">${t.name}</b> <span class="cls ${t["class"]}">${t["class"]}</span><br>${t.races} races replayed: model A closer in <b class="ga">${t.A}</b>, the grid in <b class="gb">${t.B}</b>.<br>` +
+      `Average gain of model A: <b>${sg(t.gain, 1)} points</b>.<br>Here we use ${tag(useB ? "B" : "A")}.`);
+  }
+  onHit("cTrkScatter", id => drawTrk(+id)); $("trkSel").onchange = e => drawTrk(+e.target.value); drawTrk(L.findIndex(t => t.name === "Monaco"));
+  if (S && S.next) set("trkNext", `<div class="small">Next race: <b>${S.next.name}</b> (${S.next.date}). We use ${tag(S.next.model)}.${S.forecast ? "" : " Forecast after qualifying."}</div>`);
+  const mon = L.find(t => t.name === "Monaco"), rc = TK.rule_check;
+  set("t8", `<b>Only Monaco belongs to the grid</b> (grid closer in ${mon.B} of ${mon.races} races). Rule: grid at Monaco and at Madrid (new track, the grid won its only race), model A everywhere else. Checked on 2020–2025: the rule ${rc.rule}%, model A everywhere ${rc.A}%, grid everywhere ${rc.B}%.`);
 })();
 </script>
 </body>
