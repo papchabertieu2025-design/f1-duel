@@ -62,7 +62,7 @@ def run():
     KP = pd.read_csv(ML / "kmeans_before_sao_paulo.csv")
     pts = KP.groupby(["team_points", "team_mech_dnf", "family"]).size().reset_index(name="n")       # unique dots only
     out["kmeans"] = {"curve": [{"k": k["k"], "inertia": round(k["inertia"], 1), "silhouette": round(k["silhouette"], 3)} for k in X["kmeans"]],
-                     "points": [[round(float(r.team_points), 1), r1(r.team_mech_dnf), r.family[0]] for r in pts.itertuples()],
+                     "points": [[round(float(r.team_points), 1), r1(r.team_mech_dnf), r.family[0], int(r.n)] for r in pts.itertuples()],
                      "families": [{"family": f["family"], "points": round(f["team_points"], 1), "fail_pct": round(100 * f["mech_failure_rate"]),
                                    "top10_pct": round(100 * f["top10_rate"]), "team_races": f["team_races"]} for f in A1["families"]]}
     try:                                              # PCA scores of every team-race, coloured by car family (needs the data)
@@ -89,13 +89,16 @@ def run():
     out["modelA"] = {"races": A1["races"], "lambda": A1["l2"], "crash_pct": r1(A1["crash_rate"]),
                      "params": [{"key": k, "label": lab, "theta": round(A1["theta"][k], 2), "mean": round(A1["mean_sd_original_units"][u][0], 2),
                                  "sd": round(A1["mean_sd_original_units"][u][1], 2)} for k, u, lab in keys],
-                     "lambda_cv": [{"lambda": c["params"]["l2"], "cv": r1(c["cv_pair_acc"])} for c in model_file("Softmax ranking (model A)")["cv"]]}
+                     "lambda_cv": [{"lambda": c["params"]["l2"], "cv": r1(c["cv_pair_acc"])} for c in model_file("Softmax ranking (model A)")["cv"]],
+                     # unrounded values, for the "play with model A" simulator on the page
+                     "raw": {k: {"theta": A1["theta"][k], "mean": A1["mean_sd_original_units"][u][0], "sd": A1["mean_sd_original_units"][u][1]}
+                             for k, u, _ in keys}}
     sp = PAR["sao_paulo_2026"]
     rank = {r["driver"]: k + 1 for k, r in enumerate(sorted(sp["drivers"], key=lambda r: r["exp_pos"]))}
     out["example"] = {"race": "São Paulo 2026", "drivers": [
         {"driver": r["driver"], "team": r["team"], "family": r["family"], "grid": r["grid"], "quali_gap": round(r["quali_gap"], 2),
          "practice_gap": round(r["practice_gap"], 2), "team_points": round(r["team_points"], 1),
-         "contrib": {k: round(v, 2) for k, v in r["contrib"].items()}, "score": round(r["score"], 2), "p_retire": r1(r["p_retire"]),
+         "contrib": {k: round(v, 2) for k, v in r["contrib"].items()}, "score": round(r["score"], 2), "z": r["z"], "p_retire": r1(r["p_retire"]),
          "p_win": r1(r["p_win"]), "p_top10": r1(r["p_top10"]), "rank": rank[r["driver"]], "finish": r["finish"]}
         for r in sorted(sp["drivers"], key=lambda r: r["grid"])]}
 
@@ -153,11 +156,17 @@ def run():
         yh = (p.grid <= 10).astype(int).to_numpy() if key == "grid" else (p.prob.to_numpy() >= 0.5).astype(int)
         tp, fp = int(((yh == 1) & (y == 1)).sum()), int(((yh == 1) & (y == 0)).sum())
         fn_, tn = int(((yh == 0) & (y == 1)).sum()), int(((yh == 0) & (y == 0)).sum())
+        thr = None
+        if key != "grid":                              # confusion matrix at every threshold from 5% to 95% (threshold slider on the page)
+            pr = p.prob.to_numpy(); thr = []
+            for t in range(5, 100, 5):
+                h = pr >= t / 100
+                thr.append([t, int((h & (y == 1)).sum()), int((h & (y == 0)).sum()), int((~h & (y == 1)).sum()), int((~h & (y == 0)).sum())])
         fpr, tpr, _ = roc_curve(y, -p.score)
         idx = np.unique(np.round(np.linspace(0, len(fpr) - 1, 60)).astype(int))
         cls[key] = {"label": lab, "tp": tp, "fp": fp, "fn": fn_, "tn": tn, "accuracy": r1((tp + tn) / len(y)), "precision": r1(tp / (tp + fp)),
                     "recall": r1(tp / (tp + fn_)), "f1": r1(2 * tp / (2 * tp + fp + fn_)), "auc": round(float(roc_auc_score(y, -p.score)), 3),
-                    "roc": [[round(float(fpr[i]), 3), round(float(tpr[i]), 3)] for i in idx], "n": int(len(y))}
+                    "roc": [[round(float(fpr[i]), 3), round(float(tpr[i]), 3)] for i in idx], "n": int(len(y)), "thresholds": thr}
     out["classification"] = cls
 
     # ---------------------------------------------------------------- 7. what matters: permutation importance and the tree

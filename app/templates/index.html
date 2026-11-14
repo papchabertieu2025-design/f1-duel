@@ -60,6 +60,15 @@ label{display:block;font-weight:600;font-size:14px;color:var(--ink2);margin-bott
 select,input[type=text]{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink)}
 button{font:inherit;font-weight:700;border:0;border-radius:6px;background:var(--ink);color:var(--paper);padding:10px 18px;cursor:pointer}
 button:disabled{opacity:.5;cursor:wait}
+input[type=range]{width:100%;accent-color:var(--a);margin:0;vertical-align:middle}
+.play{border:2px solid var(--a)}
+.playtag{display:inline-block;background:var(--a);color:#fff;font-weight:900;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:2px 9px;border-radius:999px;margin-bottom:6px}
+.sl{display:grid;grid-template-columns:150px 1fr 64px;gap:10px;align-items:center;font-size:15px;padding:5px 0;border-bottom:1px solid var(--row)}
+.sl b.v{text-align:right}
+.btn2{background:var(--row);color:var(--ink);font-size:14px;padding:7px 12px}
+.rk{display:grid;grid-template-columns:26px 1fr 54px 60px;gap:6px;font-size:14px;padding:2px 6px;border-radius:4px}
+.rk.me{background:var(--a-light);font-weight:700}
+.rk.h{color:var(--muted);font-size:12.5px}
 /* the four explanation blocks */
 .x{border-radius:8px;padding:12px 16px 12px 18px;border-left:5px solid var(--line);background:var(--paper)}
 .x p:last-child,.x ul:last-child{margin-bottom:0}
@@ -202,7 +211,7 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 3
     <div class="x mean" style="margin-top:16px"><span class="t">The answer in one sentence</span>
       <p id="oneLine"></p></div>
     <h3 style="margin-top:26px">How to read this page</h3>
-    <p class="small" style="max-width:74ch">The page follows the project in nine steps. Every step says <b style="color:var(--kerb)">why we do it</b>, <b>what we do</b>, the <b class="ga">result</b> we get and <b style="color:var(--ok)">what it means</b> for the next step.</p>
+    <p class="small" style="max-width:74ch">The page follows the project in nine steps. Every step says <b style="color:var(--kerb)">why we do it</b>, <b>what we do</b>, the <b class="ga">result</b> we get and <b style="color:var(--ok)">what it means</b> for the next step. Boxes marked <span class="playtag" style="margin:0">Try it</span> are interactive: move the sliders and watch the numbers change (families in step 3, model A in step 4, the points threshold in step 5, any race in step 9).</p>
     <div class="road">
       <a href="#data"><b>STEP 1</b>The data<span>Official results, and how good the grid already is</span></a>
       <a href="#score"><b>STEP 2</b>Scoring<span>How we judge a forecast, without cheating</span></a>
@@ -317,7 +326,9 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 3
     <div class="grid3">
       <div class="panel"><figure><figcaption>Chart 3d. Elbow plot</figcaption><div class="sub">Inertia (within-cluster sum of squares) for each number of clusters k</div><div id="cElbow"></div></figure></div>
       <div class="panel"><figure><figcaption>Chart 3e. Silhouette score</figcaption><div class="sub">How well separated the clusters are (higher is better)</div><div id="cSil"></div></figure></div>
-      <div class="panel"><figure><figcaption>Chart 3f. The three families</figcaption><div class="sub">k-means with k = 3. Crosses: the centre of each family</div><div id="cFam"></div></figure></div>
+      <div class="panel play"><figure><span class="playtag">Try it</span><figcaption>Chart 3f. Choose k and watch the families</figcaption>
+        <div class="sl" style="grid-template-columns:auto 1fr;border:0"><label for="kSlider" style="margin:0">k = <b id="kVal" style="font-size:18px;color:var(--ink)">3</b></label><input type="range" id="kSlider" min="2" max="8" step="1" value="3"></div>
+        <div id="cFam"></div><p class="small" id="kNote" style="margin:4px 0 0"></p></figure></div>
     </div>
     <div class="panel">
       <div class="tablewrap"><table>
@@ -354,16 +365,30 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 3
       </table></div>
       <p class="small" style="margin:8px 0 0" id="paramNote"></p>
     </div>
-    <div class="panel">
-      <h3>Worked example: São Paulo 2026, one driver at a time</h3>
-      <p class="small">Pick a driver and follow the calculation line by line. This is everything model A does.</p>
-      <div style="max-width:380px"><label for="exDriver">Driver</label><select id="exDriver"></select></div>
+    <div class="panel play">
+      <span class="playtag">Try it</span>
+      <h3>Play with model A: São Paulo 2026</h3>
+      <p class="small">Pick a driver. The table shows the whole calculation of his score. Then <b>move the sliders</b>: change what he did before the race, or change the weights of the model itself, and watch his score, his predicted place and the whole forecast move.</p>
+      <div style="display:flex;gap:10px;align-items:end;flex-wrap:wrap"><div style="flex:1;min-width:240px;max-width:380px"><label for="exDriver">Driver</label><select id="exDriver"></select></div>
+        <button class="btn2" id="exReset">Reset everything</button></div>
       <div class="grid2" style="margin-top:14px">
-        <div><div class="tablewrap"><table>
-          <thead><tr><th>Feature</th><th class="num">His value</th><th class="num">Standardised</th><th class="num">× weight</th><th class="num">= adds to score</th></tr></thead>
-          <tbody id="exRows"></tbody>
-        </table></div></div>
-        <div id="exOut"></div>
+        <div>
+          <h4>1. What he did before the race</h4>
+          <div id="exSliders"></div>
+          <h4 style="margin-top:16px">2. His score, line by line</h4>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Feature</th><th class="num">Value</th><th class="num">Standardised</th><th class="num">× weight</th><th class="num">= adds</th></tr></thead>
+            <tbody id="exRows"></tbody>
+          </table></div>
+          <h4 style="margin-top:16px">3. The weights of the model (what if we changed them?)</h4>
+          <div id="exWeights"></div>
+          <p class="small" style="margin:6px 0 0">Example: put the weight of the grid at 0 to get a model that ignores the grid, or put the three others at 0 to get a model that only knows the grid.</p>
+        </div>
+        <div>
+          <div id="exOut"></div>
+          <h4 style="margin-top:14px">The whole forecast with these values</h4>
+          <div id="exRank"></div>
+        </div>
       </div>
     </div>
     <div class="pair">
@@ -410,6 +435,9 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 3
     <div class="panel">
       <h3>5c. The same question as a classification: will this driver score points (top 10)?</h3>
       <p class="small">As in the tree lab, we look at the <b>confusion matrix</b> and at <b>ROC-AUC</b>, on the <span id="clsN"></span> starts of 2020–2025. A driver is predicted “in the points” when his probability is at least 50% (for the grid: when he starts in the top 10).</p>
+      <div class="x did play" style="background:var(--paper);margin-bottom:12px"><span class="playtag">Try it</span>
+        <div class="sl" style="grid-template-columns:auto 1fr;border:0"><label for="thr" style="margin:0">A driver is predicted “in the points” when his probability is at least <b id="thrVal" style="font-size:18px;color:var(--ink)">50%</b></label><input type="range" id="thr" min="5" max="95" step="5" value="50"></div>
+        <p class="small" id="thrNote" style="margin:0"></p></div>
       <div class="grid3" id="cmGrid"></div>
       <div class="grid2" style="margin-top:16px">
         <div><figure><figcaption>Chart 5c. ROC curves</figcaption><div class="sub">The closer to the top-left corner, the better. AUC = area under the curve</div><div id="cRoc"></div><div class="legend" id="rocLegend"></div></figure></div>
@@ -697,9 +725,45 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 3
     plot("cSil", {w: 340, h: 270, m: KM, label: "silhouette", x: {min: 1.6, max: 8.4, ticks: [2, 3, 4, 5, 6, 7, 8], title: "Number of clusters k"}, y: {min: sr[0], max: sr[1], title: "Silhouette score", fmt: v => v.toFixed(2)},
       lines: [{color: "var(--a)", pts: kc.map(k => [k.k, k.silhouette]), dots: true}], marks: [{x: bestK.k, y: bestK.silhouette, color: "var(--a)", text: `best: k = ${bestK.k}`, dx: 13, dy: 4, anchor: "start"}]});
     const fam = Object.fromEntries(K.families.map(f => [f.family[0], f]));
-    plot("cFam", {w: 340, h: 270, m: KM, label: "car families", x: {min: -1, max: 46, title: "Team points per race"}, y: {min: -3, max: 80, title: "Mechanical failures (%)"},
-      points: K.points.filter(p => p[1] <= 80).map(p => ({x: p[0], y: p[1], r: 2.4, o: 0.45, color: FAMC[p[2]]})),
-      crosses: K.families.map(f => ({x: f.points, y: f.fail_pct, color: FAMC[f.family[0]]}))});
+    // k-means in the browser, on the same two standardised variables (each dot weighted by the number of team-races it stands for)
+    const KP = K.points, wsum = KP.reduce((t, p) => t + p[3], 0), wm = j => KP.reduce((t, p) => t + p[3] * p[j], 0) / wsum;
+    const mu = [wm(0), wm(1)], sd = [0, 1].map(j => Math.sqrt(KP.reduce((t, p) => t + p[3] * (p[j] - mu[j]) ** 2, 0) / wsum));
+    const Z = KP.map(p => [(p[0] - mu[0]) / sd[0], (p[1] - mu[1]) / sd[1]]), d2 = (a, b) => (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2;
+    function kmeansJS(k) {
+      let best = null;
+      for (let run = 0; run < 8; run++) {
+        let seed = 1000 * k + run; const rnd = () => { seed = (seed * 1664525 + 1013904223) % 4294967296; return seed / 4294967296; };
+        let C = [Z[Math.floor(rnd() * Z.length)]];
+        while (C.length < k) { const w = Z.map((z, i) => KP[i][3] * Math.min(...C.map(c => d2(z, c)))), tot = w.reduce((a, b) => a + b, 0); let r = rnd() * tot, i = 0; while (i < w.length - 1 && (r -= w[i]) > 0) i++; C.push(Z[i]); }
+        let lab = [];
+        for (let it = 0; it < 40; it++) {
+          lab = Z.map(z => { let b = 0, bd = Infinity; C.forEach((c, j) => { const d = d2(z, c); if (d < bd) { bd = d; b = j; } }); return b; });
+          C = C.map((c, j) => { let sx = 0, sy = 0, n = 0; Z.forEach((z, i) => { if (lab[i] === j) { sx += KP[i][3] * z[0]; sy += KP[i][3] * z[1]; n += KP[i][3]; } }); return n ? [sx / n, sy / n] : c; });
+        }
+        const inertia = Z.reduce((t, z, i) => t + KP[i][3] * d2(z, C[lab[i]]), 0);
+        if (!best || inertia < best.inertia) best = {C, lab, inertia};
+      }
+      return best;
+    }
+    const PAL = ["var(--a)", "var(--grey)", "var(--b)", "var(--violet)", "var(--ok)", "var(--kerb)", "var(--ink2)", "#c9a227"];
+    function drawK(k) {
+      let r = kmeansJS(k), cen = r.C.map((c, j) => ({j, pts: c[0] * sd[0] + mu[0], fail: c[1] * sd[1] + mu[1]}));
+      if (k === 3) {                                   // k = 3: show exactly the families and centres used by model A (table below)
+        const idx = {t: 0, m: 1, u: 2}; r = {lab: KP.map(p => idx[p[2]])};
+        cen = ["t", "m", "u"].map((f, j) => ({j, pts: fam[f].points, fail: fam[f].fail_pct}));
+      }
+      const order = k === 3 ? [...cen].sort((a, b) => b.pts - a.pts).sort((a, b) => (a.fail > 15) - (b.fail > 15)) : [...cen].sort((a, b) => b.pts - a.pts);
+      const colOf = {}; order.forEach((c, i) => colOf[c.j] = PAL[i]);
+      plot("cFam", {w: 340, h: 250, m: KM, label: "car families", x: {min: -1, max: 46, title: "Team points per race"}, y: {min: -3, max: 80, title: "Mechanical failures (%)"},
+        points: KP.map((p, i) => ({x: p[0], y: p[1], r: 2.4, o: 0.5, color: colOf[r.lab[i]]})).filter(p => p.y <= 80),
+        crosses: cen.map(c => ({x: c.pts, y: Math.min(c.fail, 78), color: colOf[c.j]}))});
+      const cv = kc.find(x => x.k === k);
+      set("kVal", k);
+      set("kNote", `<b>k = ${k}</b>: inertia ${num(Math.round(cv.inertia))}, silhouette <b>${cv.silhouette.toFixed(3)}</b>${k === bestK.k ? " (the best: this is the k we use)" : ` (lower than ${bestK.silhouette.toFixed(3)} at k = ${bestK.k})`}. Centres: ` +
+        order.map(c => `<span style="color:${colOf[c.j]};font-weight:700">${c.pts.toFixed(1)} pts, ${Math.round(c.fail)}% failures</span>`).join(" · ") +
+        (k > 3 ? ". More families cut the same cars into thinner slices, without a clearer separation." : k === 2 ? "." : "."));
+    }
+    $("kSlider").oninput = e => drawK(+e.target.value); drawK(3);
     const famName = {top: '<b class="ga">Top cars</b>', midfield: "<b>Midfield</b>", unreliable: '<b class="gb">Unreliable cars</b>'};
     set("famRows", K.families.map(f => `<tr><td>${famName[f.family]}</td><td class="num">${f.points.toFixed(1)}</td><td class="num">${f.fail_pct}%</td><td class="num"><b>${f.top10_pct}%</b> of their starts</td></tr>`).join(""));
     set("kmRes", `The inertia drops sharply up to k = 3 and then flattens (the <b>elbow</b>). The <b>silhouette score</b> is highest at k = ${bestK.k} (${bestK.silhouette.toFixed(3)}). With three families, top cars score ${fam.t.points.toFixed(1)} points per race and finish in the top 10 in <b>${fam.t.top10_pct}%</b> of their starts; midfield cars ${fam.m.top10_pct}%; unreliable cars, which break down in ${fam.u.fail_pct}% of their starts, ${fam.u.top10_pct}%.`);
@@ -714,23 +778,59 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 3
     const EX = ML.example.drivers, CK = [["grid", "Grid position", d => d.grid, 0], ["quali_gap", "Qualifying gap (%)", d => d.quali_gap, 2], ["practice_gap", "Practice gap (%)", d => d.practice_gap, 2],
       ["car_perf", "Team points per race", d => d.team_points, 1], ["tier_top", "Top car", d => d.family === "top" ? 1 : 0, 0], ["tier_unrel", "Unreliable car", d => d.family === "unreliable" ? 1 : 0, 0]];
     $("exDriver").innerHTML = EX.map((d, i) => `<option value="${i}">${d.driver} (${d.team}, started P${d.grid})</option>`).join("");
-    const norris = EX.find(d => d.grid === 1);
-    function showEx() {
-      const d = EX[+$("exDriver").value];
-      set("exRows", CK.map(([k, lab, val, dec]) => { const p = MA.params.find(x => x.key === k), v = val(d), z = (v - p.mean) / p.sd, c = d.contrib[k];
-        return `<tr><td>${lab}</td><td class="num">${v.toFixed(dec)}</td><td class="num">${sg(z)}</td><td class="num">× ${sg(p.theta)}</td><td class="num"><b class="${c > 0.005 ? "ga" : c < -0.005 ? "gb" : ""}">${sg(c)}</b></td></tr>`; }).join("") +
-        `<tr class="hl"><td colspan="4"><b>Score s = the sum</b></td><td class="num"><b>${sg(d.score)}</b></td></tr>`);
-      const pN = 1 / (1 + Math.exp(-(d.score - norris.score)));
-      const ea = d.finish ? Math.abs(d.rank - d.finish) : null, eb = d.finish ? Math.abs(d.grid - d.finish) : null;
-      set("exOut", `<div class="grid3" style="gap:10px;grid-template-columns:repeat(3,1fr)"><div class="mini"><div class="small">Grid (model B)</div><div class="big gb">P${d.grid}</div></div>` +
-        `<div class="mini"><div class="small">Model A</div><div class="big ga">P${d.rank}</div></div>` +
-        `<div class="mini"><div class="small">Real result</div><div class="big">${d.finish ? "P" + d.finish : "out"}</div></div></div>` +
-        `<p style="margin-top:10px">${ea == null ? "He retired: no forecast can know that before the start." : ea < eb ? '<span class="ok">Model A was closer than the grid for this driver.</span>' : ea > eb ? "The grid was closer than model A for this driver." : "Both forecasts were as close for this driver."}</p>` +
-        `<p class="small">From the 10,000 simulations: he wins in <b>${d.p_win}%</b>, finishes in the top 10 in <b>${d.p_top10}%</b>, retires in <b>${d.p_retire}%</b>.` +
-        (d !== norris ? `<br>Against the pole sitter ${surname(norris.driver)} (score ${sg(norris.score)}): if both finish, ${surname(d.driver)} is ahead with probability 1 / (1 + e<sup>−(${d.score.toFixed(2)} − ${norris.score.toFixed(2)})</sup>) = <b>${Math.round(100 * pN)}%</b>.` : "") + `</p>` +
-        `<p class="small">“Standardised” = (his value − mean) / SD, with the means and SDs of the table above.</p>`);
+    const RAW = MA.raw, KEYS = ["grid", "quali_gap", "practice_gap", "car_perf", "tier_top", "tier_unrel"];
+    const W0 = Object.fromEntries(KEYS.map(k => [k, RAW[k].theta])), FAMS = {top: "Top car", midfield: "Midfield", unreliable: "Unreliable car"};
+    const SL = [["grid", "Grid position", 1, 22, 1, 0, v => "P" + v], ["quali_gap", "Qualifying gap", 0, 5, 0.05, 2, v => v.toFixed(2) + "%"],
+                ["practice_gap", "Practice gap", 0, 5, 0.05, 2, v => v.toFixed(2) + "%"], ["team_points", "Team points per race", 0, 43, 0.5, 1, v => v.toFixed(1)]];
+    const WSL = [["grid", "Grid"], ["quali_gap", "Qualifying gap"], ["practice_gap", "Practice gap"], ["car_perf", "Team points"]];
+    let W = Object.assign({}, W0), cur = null, me = 0;
+    const base = d => ({grid: d.grid, quali_gap: d.quali_gap, practice_gap: d.practice_gap, team_points: d.team_points, family: d.family});
+    const zOf = (d, v) => { const b = base(d), f = x => x ? 1 : 0;                     // standardised features: stored value + the change made with the sliders
+      return {grid: d.z.grid + (v.grid - b.grid) / RAW.grid.sd, quali_gap: d.z.quali_gap + (v.quali_gap - b.quali_gap) / RAW.quali_gap.sd,
+        practice_gap: d.z.practice_gap + (v.practice_gap - b.practice_gap) / RAW.practice_gap.sd, car_perf: d.z.car_perf + (v.team_points - b.team_points) / RAW.car_perf.sd,
+        tier_top: d.z.tier_top + (f(v.family === "top") - f(b.family === "top")) / RAW.tier_top.sd, tier_unrel: d.z.tier_unrel + (f(v.family === "unreliable") - f(b.family === "unreliable")) / RAW.tier_unrel.sd}; };
+    const scoreOf = z => KEYS.reduce((t, k) => t + W[k] * z[k], 0);
+    const pairsRight = (rows, key) => { let right = 0, n = 0;                           // rows: {key value (higher = predicted ahead), finish}
+      for (let i = 0; i < rows.length; i++) for (let j = i + 1; j < rows.length; j++) { const a = rows[i], b = rows[j]; if (!a.finish && !b.finish) continue; n++;
+        const fa = a.finish || 99, fb = b.finish || 99, pa = a[key] !== b[key] ? a[key] > b[key] : a.grid < b.grid; if (pa === (fa < fb)) right++; }
+      return [right, n]; };
+    function buildControls() {
+      set("exSliders", SL.map(([k, lab, lo, hi, st, , fmt]) => `<div class="sl"><label for="s_${k}" style="margin:0">${lab}</label><input type="range" id="s_${k}" data-k="${k}" min="${lo}" max="${hi}" step="${st}" value="${cur[k]}"><b class="v" id="sv_${k}">${fmt(cur[k])}</b></div>`).join("") +
+        `<div class="sl"><label for="s_family" style="margin:0">Car family</label><select id="s_family" style="padding:5px 8px">${Object.keys(FAMS).map(f => `<option value="${f}" ${f === cur.family ? "selected" : ""}>${FAMS[f]}</option>`).join("")}</select><span></span></div>`);
+      set("exWeights", WSL.map(([k, lab]) => `<div class="sl"><label for="w_${k}" style="margin:0">Weight: ${lab}</label><input type="range" id="w_${k}" data-w="${k}" min="-1" max="1" step="0.01" value="${W[k].toFixed(2)}"><b class="v" id="wv_${k}">${sg(W[k])}</b></div>`).join(""));
     }
-    const ver = Math.max(0, EX.findIndex(d => /Verstappen/.test(d.driver))); $("exDriver").value = ver; $("exDriver").onchange = showEx; showEx();
+    function renderSim() {
+      const d = EX[me], z = zOf(d, cur), changedV = JSON.stringify(cur) !== JSON.stringify(base(d)), changedW = KEYS.some(k => Math.abs(W[k] - W0[k]) > 0.004);
+      SL.forEach(([k, , , , , , fmt]) => set("sv_" + k, fmt(cur[k]))); WSL.forEach(([k]) => set("wv_" + k, sg(W[k])));
+      const LAB = {grid: ["Grid position", cur.grid.toFixed(0)], quali_gap: ["Qualifying gap (%)", cur.quali_gap.toFixed(2)], practice_gap: ["Practice gap (%)", cur.practice_gap.toFixed(2)],
+        car_perf: ["Team points per race", cur.team_points.toFixed(1)], tier_top: ["Top car", cur.family === "top" ? "1" : "0"], tier_unrel: ["Unreliable car", cur.family === "unreliable" ? "1" : "0"]};
+      const s = scoreOf(z);
+      set("exRows", KEYS.map(k => { const c = W[k] * z[k];
+        return `<tr><td>${LAB[k][0]}</td><td class="num">${LAB[k][1]}</td><td class="num">${sg(z[k])}</td><td class="num">× ${sg(W[k])}</td><td class="num"><b class="${c > 0.005 ? "ga" : c < -0.005 ? "gb" : ""}">${sg(c)}</b></td></tr>`; }).join("") +
+        `<tr class="hl"><td colspan="4"><b>Score s = the sum</b></td><td class="num"><b>${sg(s)}</b></td></tr>`);
+      const field = EX.map((x, i) => ({name: x.driver, grid: i === me ? cur.grid : x.grid, finish: x.finish, s: i === me ? s : scoreOf(x.z), me: i === me, neg: -(i === me ? cur.grid : x.grid)}));
+      const order = [...field].sort((a, b) => b.s - a.s || a.grid - b.grid), place = order.findIndex(f => f.me) + 1;
+      const tot = field.reduce((t, f) => t + Math.exp(f.s), 0), pw = Math.exp(s) / tot, pole = order[0].me ? order[1] : order[0];
+      const [ra, n] = pairsRight(field, "s"), [rg] = pairsRight(field, "neg");
+      set("exOut", `<div class="grid3" style="gap:10px;grid-template-columns:repeat(3,1fr)"><div class="mini"><div class="small">Grid (model B)</div><div class="big gb">P${cur.grid}</div></div>` +
+        `<div class="mini"><div class="small">Model A</div><div class="big ga">P${place}</div></div>` +
+        `<div class="mini"><div class="small">Real result</div><div class="big">${d.finish ? "P" + d.finish : "out"}</div></div></div>` +
+        `<p style="margin:10px 0 6px">Score <b>${sg(s)}</b> → model A puts him <b class="ga">${place}${place === 1 ? "st" : place === 2 ? "nd" : place === 3 ? "rd" : "th"} of ${field.length}</b>. Chance to win if nobody retires: e<sup>s</sup> / Σ e<sup>s</sup> = <b>${(100 * pw).toFixed(1)}%</b>.` +
+        ` Against ${surname(pole.name)} (score ${sg(pole.s)}), he is ahead with probability <b>${Math.round(100 / (1 + Math.exp(-(s - pole.s))))}%</b>.</p>` +
+        `<div class="mini" style="margin-top:8px"><div class="small">Pairs of drivers in the right order in this race, with these values</div>` +
+        `<div style="font-size:22px;font-weight:900"><span class="ga">Model A: ${ra} of ${n} (${(100 * ra / n).toFixed(1)}%)</span></div><div class="small">Grid (model B): <b class="gb">${rg} of ${n} (${(100 * rg / n).toFixed(1)}%)</b>` +
+        (changedV ? ` · you changed the driver's values: this is a “what if”` : "") + (changedW ? ` · weights changed` : "") + `</div></div>` +
+        (!changedV && !changedW ? `<p class="small" style="margin-top:8px">These are the real values. Here drivers are ordered by score only. In the full model the race is also simulated 10,000 times with retirements: he wins in <b>${d.p_win}%</b>, finishes in the top 10 in <b>${d.p_top10}%</b>, retires in <b>${d.p_retire}%</b>, and is ranked <b>P${d.rank}</b>.</p>` : ""));
+      set("exRank", `<div class="rk h"><span>#</span><span>Driver</span><span>Score</span><span>Finished</span></div>` + order.map((f, i) =>
+        `<div class="rk ${f.me ? "me" : ""}"><span>${i + 1}</span><span>${f.name}</span><span>${sg(f.s)}</span><span>${f.finish ? "P" + f.finish : "retired"}</span></div>`).join(""));
+    }
+    function pick(i) { me = i; cur = base(EX[me]); buildControls(); renderSim(); }
+    $("exSliders").addEventListener("input", e => { const t = e.target; if (t.dataset.k) cur[t.dataset.k] = +t.value; else if (t.id === "s_family") cur.family = t.value; renderSim(); });
+    $("exSliders").addEventListener("change", e => { if (e.target.id === "s_family") { cur.family = e.target.value; renderSim(); } });
+    $("exWeights").addEventListener("input", e => { const t = e.target; if (t.dataset.w) { W[t.dataset.w] = +t.value; renderSim(); } });
+    $("exDriver").onchange = () => pick(+$("exDriver").value);
+    $("exReset").onclick = () => { W = Object.assign({}, W0); pick(me); };
+    const ver = Math.max(0, EX.findIndex(d => /Verstappen/.test(d.driver))); $("exDriver").value = ver; pick(ver);
     const V = EX[ver], hulk = EX.find(d => d.grid === 4);
     set("exRes", `Take <b>${V.driver}</b>: he started <b>${V.grid}th</b> after a bad qualifying, so the grid and the qualifying gap pull his score down (${sg(V.contrib.grid)} and ${sg(V.contrib.quali_gap)}). But his practice lap was fast (${sg(V.contrib.practice_gap)}) and his team is strong (${sg(V.contrib.car_perf)}). Total: <b>${sg(V.score)}</b>, higher than ${surname(hulk.driver)}, who started 4th in a weak car (${sg(hulk.score)}). Model A ranked ${surname(V.driver)} <b>${V.rank}th</b>, not ${V.grid}th. He finished <b>${V.finish === 2 ? "second" : "P" + V.finish}</b>.`);
 
@@ -802,16 +902,29 @@ footer{background:var(--paper);border-top:1px solid var(--line);padding:22px 0 3
 
     // ---------------------------------------------------------------- classification view
     const C = ML.classification; set("clsN", num(C.grid.n));
-    set("cmGrid", ["grid", "logistic", "A"].map(k => { const c = C[k];
-      return `<div><h4 class="${k === "grid" ? "gb" : k === "A" ? "ga" : ""}">${c.label}</h4><div class="cm"><span></span><span class="h">predicted:<br>no points</span><span class="h">predicted:<br>points</span>` +
-        `<span class="h">really<br>no points</span><span class="v good">${num(c.tn)}</span><span class="v err">${num(c.fp)}</span>` +
-        `<span class="h">really<br>points</span><span class="v err">${num(c.fn)}</span><span class="v good">${num(c.tp)}</span></div>` +
-        `<p class="small" style="margin:0">Accuracy <b>${c.accuracy}%</b> · precision ${c.precision}% · recall ${c.recall}% · F1 <b>${c.f1}%</b> · AUC <b>${c.auc.toFixed(3)}</b></p></div>`; }).join(""));
     const RC = {grid: "var(--b)", logistic: "var(--ok)", A: "var(--a)"};
-    plot("cRoc", {label: "ROC curves", h: 330, x: {min: 0, max: 1, title: "False positive rate"}, y: {min: 0, max: 1, title: "True positive rate"},
-      lines: [{color: "var(--grey)", dash: true, width: 1.2, pts: [[0, 0], [1, 1]]}].concat(["grid", "logistic", "A"].map(k => ({color: RC[k], pts: C[k].roc})))});
+    function drawCls(t) {
+      const at = k => { if (k === "grid") return C.grid; const r = C[k].thresholds.find(x => x[0] === t), [, tp, fp, fn, tn] = r, n = tp + fp + fn + tn;
+        return {label: C[k].label, tp, fp, fn, tn, accuracy: (100 * (tp + tn) / n).toFixed(1), precision: tp + fp ? (100 * tp / (tp + fp)).toFixed(1) : "–", recall: (100 * tp / (tp + fn)).toFixed(1),
+                f1: (100 * 2 * tp / (2 * tp + fp + fn)).toFixed(1), auc: C[k].auc}; };
+      const M3 = {grid: at("grid"), logistic: at("logistic"), A: at("A")};
+      set("cmGrid", ["grid", "logistic", "A"].map(k => { const c = M3[k];
+        return `<div><h4 class="${k === "grid" ? "gb" : k === "A" ? "ga" : ""}">${c.label}${k === "grid" ? " (fixed rule)" : ""}</h4><div class="cm"><span></span><span class="h">predicted:<br>no points</span><span class="h">predicted:<br>points</span>` +
+          `<span class="h">really<br>no points</span><span class="v good">${num(c.tn)}</span><span class="v err">${num(c.fp)}</span>` +
+          `<span class="h">really<br>points</span><span class="v err">${num(c.fn)}</span><span class="v good">${num(c.tp)}</span></div>` +
+          `<p class="small" style="margin:0">Accuracy <b>${c.accuracy}%</b> · precision ${c.precision}% · recall ${c.recall}% · F1 <b>${c.f1}%</b> · AUC <b>${c.auc.toFixed(3)}</b></p></div>`; }).join(""));
+      plot("cRoc", {label: "ROC curves", h: 330, x: {min: 0, max: 1, title: "False positive rate"}, y: {min: 0, max: 1, title: "True positive rate"},
+        lines: [{color: "var(--grey)", dash: true, width: 1.2, pts: [[0, 0], [1, 1]]}].concat(["grid", "logistic", "A"].map(k => ({color: RC[k], pts: C[k].roc}))),
+        marks: ["logistic", "A"].map(k => ({x: M3[k].fp / (M3[k].fp + M3[k].tn), y: M3[k].tp / (M3[k].tp + M3[k].fn), color: RC[k], text: ""}))});
+      set("thrVal", t + "%");
+      const a = M3.A;
+      set("thrNote", `At ${t}%, model A promises points to <b>${num(a.tp + a.fp)}</b> drivers: <b>${a.precision}%</b> of them really score (precision) and it finds <b>${a.recall}%</b> of the real points scorers (recall). ` +
+        (t < 50 ? "A lower threshold promises points to more drivers: recall goes up, precision goes down." : t > 50 ? "A higher threshold promises points only to the safest drivers: precision goes up, recall goes down." : "Move the slider: the circles on the ROC curves move with it.") +
+        " The AUC does not change: it summarises all thresholds at once.");
+    }
+    $("thr").oninput = e => drawCls(+e.target.value); drawCls(50);
     set("rocLegend", ["grid", "logistic", "A"].map(k => `<span><i style="background:${RC[k]}"></i>${C[k].label}: AUC ${C[k].auc.toFixed(3)}</span>`).join(""));
-    set("clsRes", `The rule “top 10 on the grid = top 10 finishers” is right for <b>${C.grid.accuracy}%</b> of drivers (blue cells). Logistic regression is right for <b>${C.logistic.accuracy}%</b> and model A for <b>${C.A.accuracy}%</b>. Total errors (red cells): ${num(C.grid.fp + C.grid.fn)} for the grid, ${num(C.logistic.fp + C.logistic.fn)} for logistic regression, ${num(C.A.fp + C.A.fn)} for model A. AUC: ${C.grid.auc.toFixed(3)} for the grid, ${C.logistic.auc.toFixed(3)} for logistic regression, ${C.A.auc.toFixed(3)} for model A.`);
+    set("clsRes", `At the usual 50% threshold: the rule “top 10 on the grid = top 10 finishers” is right for <b>${C.grid.accuracy}%</b> of drivers (blue cells). Logistic regression is right for <b>${C.logistic.accuracy}%</b> and model A for <b>${C.A.accuracy}%</b>. Total errors (red cells): ${num(C.grid.fp + C.grid.fn)} for the grid, ${num(C.logistic.fp + C.logistic.fn)} for logistic regression, ${num(C.A.fp + C.A.fn)} for model A. AUC: ${C.grid.auc.toFixed(3)} for the grid, ${C.logistic.auc.toFixed(3)} for logistic regression, ${C.A.auc.toFixed(3)} for model A.`);
 
     // ================================================================ 6 WHAT MATTERS
     const IMP = ML.importance, imax = IMP[0].pp;
