@@ -139,6 +139,17 @@ tr.hl td{background:var(--a-light)}
 .duel{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:end}
 .duelout{margin-top:10px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .scrollbox{max-height:330px;overflow-y:auto}
+.heat{display:grid;gap:2px;font-size:12px;align-items:center}
+.heat .tn{text-align:right;padding-right:6px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px}
+.heat .yr{text-align:center;color:var(--muted);font-size:11px}
+.heat button{padding:0;height:17px;border-radius:3px;min-width:0}
+.heat button.sel{outline:2.5px solid var(--ink);outline-offset:1px}
+.fT{background:var(--a)} .fM{background:var(--grey)} .fU{background:var(--b)} .f0{background:transparent}
+.mcard{border:1px solid var(--line);border-radius:8px;padding:8px 10px;cursor:pointer;background:var(--paper);text-align:left;color:var(--ink);font-weight:400;display:block;width:100%;margin:5px 0}
+.mcard.on{border-color:var(--a);box-shadow:inset 4px 0 0 var(--a)}
+.mcard b.n{font-size:15px} .mcard .sc{float:right;font-weight:900}
+.mcard .trk{display:block;position:relative;height:7px;background:var(--row);border-radius:4px;margin-top:5px;overflow:hidden}
+.mcard .trk i{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
 .askrow{display:flex;gap:8px}
 .answer{margin-top:10px;white-space:pre-wrap}
 .answer.err{color:var(--bad)}
@@ -177,7 +188,7 @@ footer{padding:14px 0 28px;color:var(--muted);font-size:13px}
   </div>
   <div class="chips" id="chips"></div>
   <div class="take" style="margin-top:12px"><b class="t">Answer</b><span id="oneLine"></span></div>
-  <p class="small" style="margin-top:12px">Nine short steps. In each one, <b>move something</b> and read the green line.</p>
+  <p class="small" style="margin-top:12px">Eight short steps. In each one, <b>move something</b> and read the green line.</p>
   <div class="navrow"><span></span><button data-go="1">Start: step 1 →</button></div>
 </section>
 
@@ -226,16 +237,19 @@ footer{padding:14px 0 28px;color:var(--muted);font-size:13px}
 
 <!-- ============================================================ 3 FAMILIES -->
 <section class="stp" data-title="Car families">
-  <div class="eyebrow">Step 3 · PCA and k-means</div>
-  <h2>Which cars are strong?</h2>
-  <p class="why"><b>Why:</b> “some teams simply have better cars”. Seven team statistics say almost the same thing, so we summarise them (PCA) and group the cars (k-means).</p>
+  <div class="eyebrow">Step 3 · k-means clustering</div>
+  <h2>Which cars are strong, and when?</h2>
+  <p class="why"><b>Why:</b> “some teams simply have better cars”. We describe each car by two numbers, its points per race and its mechanical-failure rate, and let k-means group the cars. Nobody tells it the team or the season.</p>
   <div class="grid2">
-    <div class="panel"><figure><figcaption>PCA: variance explained by each component</figcaption><div id="cPcaVar"></div>
-      <p class="small" style="margin:4px 0 0" id="pcaLine"></p></figure></div>
-    <div class="panel"><span class="try">Try it</span>
+    <div class="panel"><span class="try">Try it: choose k</span>
       <div class="sl" style="grid-template-columns:auto 1fr"><label for="kSlider">Number of families k = <b id="kVal" style="font-size:18px;color:var(--ink)">3</b></label><input type="range" id="kSlider" min="2" max="8" value="3"></div>
       <div class="grid2" style="gap:8px"><div id="cFam"></div><div id="cSil"></div></div>
       <p class="small" style="margin:4px 0 0" id="kNote"></p></div>
+    <div class="panel"><span class="try">Try it: click a square</span>
+      <figure><figcaption>The family of each team, season by season (k = 3)</figcaption>
+      <div class="heat" id="famHeat" style="margin-top:6px"></div>
+      <div class="legend" style="margin-top:6px"><span><i style="background:var(--a)"></i>top car</span><span><i style="background:var(--grey)"></i>midfield</span><span><i style="background:var(--b)"></i>unreliable car</span></div></figure>
+      <div class="live" style="margin-top:8px" id="famSel"></div></div>
   </div>
   <div class="take" style="margin-top:12px"><b class="t">Takeaway</b><span id="t3"></span></div>
 </section>
@@ -264,20 +278,16 @@ footer{padding:14px 0 28px;color:var(--muted);font-size:13px}
 </section>
 
 <!-- ============================================================ 5 CHECK -->
-<section class="stp" data-title="Other models">
+<section class="stp" data-title="Five models">
   <div class="eyebrow">Step 5 · model comparison</div>
-  <h2>Would another model do better?</h2>
-  <p class="why"><b>Why:</b> to check model A, we gave the same data to ten other models of the course. Each has a setting to tune.</p>
+  <h2>Five models, one lesson from each</h2>
+  <p class="why"><b>Why:</b> we compare model A with four other models of the course on the same unseen races. Each one is kept because it teaches us something different.</p>
   <div class="grid2">
-    <div class="panel"><span class="try">Try it: tune a model</span>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:4px" id="tuneBtns"></div>
-      <div class="sl" style="grid-template-columns:auto 1fr"><label for="tuneSl" id="tuneLab"></label><input type="range" id="tuneSl" min="0" max="10" value="0"></div>
-      <div id="tuneChart"></div>
-      <div class="legend"><span><i style="background:var(--grey)"></i>races it trained on</span><span><i style="background:var(--a)"></i>races it has never seen</span></div>
-      <div class="live" style="margin-top:6px" id="tuneLive"></div></div>
-    <div class="panel"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><b>Pairs in the right order, unseen races</b>
+    <div class="panel"><span class="try">Try it: click a model</span>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><b class="small">Pairs in the right order, unseen races</b>
         <span><button class="btn2 on" id="lb1">2020–25</button> <button class="btn2" id="lb2">2026</button></span></div>
-      <div id="lbRows" style="margin-top:8px"></div></div>
+      <div id="lbRows"></div></div>
+    <div class="panel" id="mDetail"></div>
   </div>
   <div class="take" style="margin-top:12px"><b class="t">Takeaway</b><span id="t5"></span></div>
   <details style="margin-top:12px"><summary>Same question as a classification: will he score points? (confusion matrix, ROC)</summary>
@@ -286,24 +296,9 @@ footer{padding:14px 0 28px;color:var(--muted);font-size:13px}
     <p class="small" style="margin:6px 0 0" id="thrNote"></p></details>
 </section>
 
-<!-- ============================================================ 6 MATTERS -->
-<section class="stp" data-title="What matters">
-  <div class="eyebrow">Step 6 · interpretation</div>
-  <h2>What matters beyond the grid?</h2>
-  <p class="why"><b>Why:</b> our professor suggested a random forest with feature importance. We shuffle one feature at a time and see how much the forecast gets worse.</p>
-  <div class="grid2">
-    <div class="panel"><figure><figcaption>Pairs lost when a feature is shuffled (percentage points)</figcaption><div id="cImp" style="margin-top:6px"></div></figure></div>
-    <div class="panel"><span class="try">Try it: walk the decision tree</span>
-      <p class="small">Think of a driver and answer the tree's questions.</p>
-      <div id="treePath" class="small"></div>
-      <div class="live" style="margin-top:6px" id="treeQ"></div></div>
-  </div>
-  <div class="take" style="margin-top:12px"><b class="t">Takeaway</b><span id="t6"></span></div>
-</section>
-
 <!-- ============================================================ 7 SEASON -->
 <section class="stp" data-title="2026">
-  <div class="eyebrow">Step 7 · the real test</div>
+  <div class="eyebrow">Step 6 · the real test</div>
   <h2>The 2026 season, race by race</h2>
   <p class="why"><b>Why:</b> the strongest test is the future. Each 2026 race was predicted before its start, with the earlier races only.</p>
   <div class="grid2">
@@ -321,7 +316,7 @@ footer{padding:14px 0 28px;color:var(--muted);font-size:13px}
 
 <!-- ============================================================ 8 TRACKS -->
 <section class="stp" data-title="Tracks">
-  <div class="eyebrow">Step 8 · the decision rule</div>
+  <div class="eyebrow">Step 7 · the decision rule</div>
   <h2>Which tracks follow the grid?</h2>
   <p class="why"><b>Why:</b> “Monaco is very grid dependent”. We replayed 310 races of 2011–2025 and measured, track by track, whether model A or the grid is better.</p>
   <div class="grid2">
@@ -339,7 +334,7 @@ footer{padding:14px 0 28px;color:var(--muted);font-size:13px}
 
 <!-- ============================================================ 9 REPLAY -->
 <section class="stp" data-title="Replay">
-  <div class="eyebrow">Step 9 · try it yourself</div>
+  <div class="eyebrow">Step 8 · try it yourself</div>
   <h2>Replay any Grand Prix since 2011</h2>
   <p class="why">Model A's forecast uses the races before it only. Which forecast was closer to the real result?</p>
   <div class="controls">
@@ -512,7 +507,7 @@ footer{padding:14px 0 28px;color:var(--muted);font-size:13px}
       `<div class="mini"><div class="small">Grid${mark(gPick)}</div><b class="gb" style="font-size:19px">${surname(gPick.driver)}</b><div class="small">P${gPick.grid} vs P${(gPick === x ? y : x).grid}</div></div>` +
       `<div class="mini"><div class="small">Really ahead</div><b style="font-size:19px">${real}</b><div class="small">${both ? `P${realPick.finish} vs P${(realPick === x ? y : x).finish}` : "not scored"}</div></div>`;
   }
-  function gotoRace(id) { const r = PAST.find(x => x.id === id); if (!r) return; $("year").value = r.year; fillRaces(r.year, r.id); showRace(); go(9); }
+  function gotoRace(id) { const r = PAST.find(x => x.id === id); if (!r) return; $("year").value = r.year; fillRaces(r.year, r.id); showRace(); go(steps.length - 1); }
   $("year").onchange = () => { fillRaces($("year").value); showRace(); };
   $("race").onchange = showRace; $("dx").onchange = duel; $("dy").onchange = duel;
   const start = PAST.find(r => r.year === 2026 && r.gp === "São Paulo") || PAST[PAST.length - 1];
@@ -567,13 +562,7 @@ footer{padding:14px 0 28px;color:var(--muted);font-size:13px}
   $("gmA").onclick = () => { gOrder = top5.map(d => [Math.random(), d]).sort((a, b) => a[0] - b[0]).map(x => x[1]); drawGame(); };
   drawGame();
 
-  // ================================================================ 3 PCA + k-means
-  const P = ML.pca; let cum = 0; const cumPts = P.explained.map((v, i) => [i + 1, cum += v]);
-  plot("cPcaVar", {h: 300, label: "explained variance", x: {min: 0.4, max: 7.6, ticks: [1, 2, 3, 4, 5, 6, 7], title: "Principal component"}, y: {min: 0, max: 100, title: "Variance explained (%)"},
-    bars: P.explained.map((v, i) => ({x: i + 1, y: v, w: 36, color: i < 2 ? "var(--a)" : "var(--grey)"})), lines: [{color: "var(--ink)", pts: cumPts, dots: true, width: 1.8}],
-    texts: [{x: 1, y: P.explained[0] / 2, anchor: "middle", text: P.explained[0].toFixed(0) + "%", color: "#fff", bold: true}, {x: 2, y: P.explained[1], dy: -6, anchor: "middle", text: P.explained[1].toFixed(0) + "%", color: "var(--a)", bold: true},
-            {x: 2, y: cumPts[1][1], dy: 20, dx: 12, text: `${cumPts[1][1].toFixed(0)}% with two`, bold: true, color: "var(--ink)"}]});
-  set("pcaLine", `Component 1 = <b>performance</b> (points, top-10, podiums). Component 2 = <b>reliability</b> (mechanical failures).`);
+  // ================================================================ 3 k-means: families, and where each team is season by season
   const K = ML.kmeans, kc = K.curve, bestK = kc.reduce((a, b) => b.silhouette > a.silhouette ? b : a), fam = Object.fromEntries(K.families.map(f => [f.family[0], f]));
   const KP = K.points, wsum = KP.reduce((t, p) => t + p[3], 0), wm = j => KP.reduce((t, p) => t + p[3] * p[j], 0) / wsum;
   const mu = [wm(0), wm(1)], sd = [0, 1].map(j => Math.sqrt(KP.reduce((t, p) => t + p[3] * (p[j] - mu[j]) ** 2, 0) / wsum));
@@ -609,7 +598,21 @@ footer{padding:14px 0 28px;color:var(--muted);font-size:13px}
       (k === 3 ? `Top cars (${fam.t.points.toFixed(1)} pts, ${fam.t.fail_pct}% failures), midfield (${fam.m.points.toFixed(1)} pts), unreliable cars (${fam.u.fail_pct}% failures).` : ""));
   }
   $("kSlider").oninput = e => drawK(+e.target.value); drawK(3);
-  set("t3", `Seven statistics are really two ideas: how <b>fast</b> and how <b>reliable</b> a car is (${cumPts[1][1].toFixed(0)}% of the variance). Three families: top cars finish in the top 10 in <b>${fam.t.top10_pct}%</b> of their starts, midfield ${fam.m.top10_pct}%, unreliable cars ${fam.u.top10_pct}%. Model A is told the family of each car.`);
+  const FS = ML.families_by_season, FN = {t: "top car", m: "midfield", u: "unreliable car"}, FCL = {t: "fT", m: "fM", u: "fU"};
+  let famPick = "mclaren|2016";
+  function drawHeat() {
+    $("famHeat").style.gridTemplateColumns = `minmax(92px, 150px) repeat(${FS.years.length}, 1fr)`;
+    set("famHeat", `<span></span>` + FS.years.map(y => `<span class="yr">${String(y).slice(2)}</span>`).join("") + FS.teams.map(t => `<span class="tn" title="${t.name}">${t.name}</span>` +
+      FS.years.map(y => { const c = FS.cells[t.id + "|" + y]; return c ? `<button class="${FCL[c.f]} ${famPick === t.id + "|" + y ? "sel" : ""}" data-c="${t.id}|${y}" title="${t.name} ${y}: ${FN[c.f]}" aria-label="${t.name} ${y}: ${FN[c.f]}"></button>` : `<span class="f0"></span>`; }).join("")).join(""));
+    const [tid, y] = famPick.split("|"), c = FS.cells[famPick], t = FS.teams.find(x => x.id === tid);
+    set("famSel", `<b>${t.name}, ${y}</b>: <b style="color:${c.f === "t" ? "var(--a)" : c.f === "u" ? "var(--b)" : "var(--ink2)"}">${FN[c.f]}</b> in ${c.share}% of its ${c.n} races` +
+      ` <span class="small">(top ${c.t} · midfield ${c.m} · unreliable ${c.u})</span>`);
+  }
+  $("famHeat").addEventListener("click", e => { const b = e.target.closest("button[data-c]"); if (b) { famPick = b.dataset.c; drawHeat(); } });
+  if (!FS.cells[famPick]) famPick = Object.keys(FS.cells)[0];
+  drawHeat();
+  const uy = FS.unreliable_by_year;
+  set("t3", `k-means was never told the team or the season, yet a team stays in <b>the same family for ${FS.mean_dominant_pct}% of a season's races</b> on average, and the map retells F1 history: Mercedes turns blue in 2013, McLaren turns orange with its Honda engine (2015–17), Red Bull in 2017–18. <b>Unreliable cars appear at rule changes</b>: ${uy[2014]}% of cars in 2014 and ${uy[2026]}% in 2026, against ${uy[2021]}–${uy[2022]}% in 2021–22. The family is real information, so model A is told it.`);
 
   // ================================================================ 4 model A simulator
   const MA = ML.modelA, RAW = MA.raw, KEYS = ["grid", "quali_gap", "practice_gap", "car_perf", "tier_top", "tier_unrel"];
@@ -664,36 +667,71 @@ footer{padding:14px 0 28px;color:var(--muted);font-size:13px}
   set("t4", `${surname(V.driver)} started ${ord(V.grid)}, but his fast practice lap and strong team lift his score: the full model, with simulated retirements, ranked him ${ord(V.rank)} (9th by score alone) and he finished ${ord(V.finish)}. The model can <b>correct the grid</b> when a fast car starts at the back. Try it: put every weight except the grid at 0 and model A becomes the grid.`);
   set("paramNote", `Weights learned on the ${MA.races} races before São Paulo 2026 (penalty λ = ${MA.lambda}, chosen by cross-validation). Here drivers are ordered by score; the full model also simulates the race 10,000 times with retirements (each driver retires with probability = his team's failure rate + ${MA.crash_pct}%).`);
 
-  // ================================================================ 5 tuning + leaderboard
-  const T = ML.tuning, TUN = {
-    tree: {name: "Decision tree", lab: "Tree depth", t: T.tree, fmt: v => v, flexHigh: true, x: {min: 0.5, max: 12.5, ticks: [1, 2, 4, 6, 8, 10, 12], title: "Tree depth"}},
-    knn: {name: "KNN", lab: "Neighbours k", t: T.knn, fmt: v => v, flexHigh: false, x: {min: 4, max: 500, log: true, ticks: [5, 10, 20, 50, 100, 200, 400], title: "Number of neighbours k"}},
-    boost: {name: "Gradient boosting", lab: "Number of trees", t: T.boosting, fmt: v => v, flexHigh: true, x: {min: 8, max: 1000, log: true, ticks: [10, 25, 50, 100, 200, 400, 800], title: "Number of trees"}}};
-  let tuneKey = "tree";
-  $("tuneBtns").innerHTML = Object.keys(TUN).map(k => `<button class="btn2" data-t="${k}">${TUN[k].name}</button>`).join("");
-  function drawTune(i) {
-    const c = TUN[tuneKey], t = c.t, r = range(t.train.concat(t.cv), 0.1), x = t.x[i], bi = t.x.indexOf(t.best);
-    plot("tuneChart", {h: 250, label: "validation curve", x: c.x, y: {min: Math.floor(r[0]), max: Math.ceil(r[1]), title: "Pairs right (%)"},
-      lines: [{color: "var(--grey)", pts: t.x.map((v, j) => [v, t.train[j]]), dots: true}, {color: "var(--a)", pts: t.x.map((v, j) => [v, t.cv[j]]), dots: true, width: 2.6}],
-      marks: [{x, y: t.cv[i], color: "var(--ink)", r: 9}, {x, y: t.train[i], color: "var(--ink)", r: 9}]});
-    set("tuneLab", `${c.lab} = <b style="font-size:18px;color:var(--ink)">${x}</b>`);
-    const flex = c.flexHigh ? i > bi : i < bi;
-    set("tuneLive", `Trained races <b>${t.train[i].toFixed(1)}%</b> · unseen races <b class="ga">${t.cv[i].toFixed(1)}%</b><br>` +
-      (i === bi ? `<span class="ok">Best on unseen races: the setting we use.</span>` : flex ? `<span class="ko">Overfitting:</span> it learns its training races by heart and predicts new ones worse.` : `<b>Too simple:</b> it misses part of the signal.`));
-    document.querySelectorAll("#tuneBtns button").forEach(b => b.classList.toggle("on", b.dataset.t === tuneKey));
-  }
-  function setTune(k) { tuneKey = k; const t = TUN[k].t; $("tuneSl").max = t.x.length - 1; $("tuneSl").value = t.x.indexOf(t.best); drawTune(+$("tuneSl").value); }
-  $("tuneBtns").addEventListener("click", e => { const b = e.target.closest("button"); if (b) setTune(b.dataset.t); });
-  $("tuneSl").oninput = e => drawTune(+e.target.value); setTune("tree");
-  function drawLB(key) {
-    const rows = [...ML.models].sort((a, b) => b[key] - a[key]), lo = Math.min(...rows.map(m => m[key])) - 1.2, hi = Math.max(...rows.map(m => m[key])) + 0.3;
+  // ================================================================ 5 five models, one lesson each
+  const T = ML.tuning, IMP = ML.importance, at = (t, x, k) => t[k][t.x.indexOf(x)];
+  const LESSON = {"Softmax ranking (model A)": "an order and probabilities", "Logistic regression": "the effect of each feature", "KNN": "bias against variance",
+                  "Decision tree": "rules anyone can read", "Random forest": "which features matter", "Grid rule": "the baseline to beat"};
+  let lbKey = "t1", mSel = "Softmax ranking (model A)", tnode = ML.tree, tpath = [];
+  function drawLB() {
+    const rows = [...ML.models].sort((a, b) => b[lbKey] - a[lbKey]), lo = Math.min(...rows.map(m => m[lbKey])) - 1.2, hi = Math.max(...rows.map(m => m[lbKey])) + 0.3;
     set("lbRows", rows.map(m => { const g = m.key === "Grid rule", a = /model A/.test(m.key), c = g ? "var(--b)" : a ? "var(--a)" : "var(--grey)";
-      return `<div class="hbar ${g || a ? "me" : ""}"><span class="lab" title="${m.setting}">${g ? "Model B: the grid" : a ? "Model A" : m.name}</span><span class="trk"><i style="left:0;width:${100 * (m[key] - lo) / (hi - lo)}%;background:${c}"></i></span><span class="val" style="color:${g || a ? c : "inherit"}">${m[key].toFixed(1)}%</span></div>`; }).join(""));
-    $("lb1").classList.toggle("on", key === "t1"); $("lb2").classList.toggle("on", key === "t2");
+      return `<button class="mcard ${m.key === mSel ? "on" : ""}" data-m="${m.key}"><span class="sc" style="color:${g || a ? c : "inherit"}">${m[lbKey].toFixed(1)}%</span><b class="n">${g ? "Model B: the grid" : a ? "Model A: softmax ranking" : m.name}</b>` +
+        ` <span class="small">· ${LESSON[m.key]}</span><span class="trk"><i style="width:${100 * (m[lbKey] - lo) / (hi - lo)}%;background:${c}"></i></span></button>`; }).join(""));
+    $("lb1").classList.toggle("on", lbKey === "t1"); $("lb2").classList.toggle("on", lbKey === "t2");
   }
-  $("lb1").onclick = () => drawLB("t1"); $("lb2").onclick = () => drawLB("t2"); drawLB("t1");
-  const learned = ML.models.filter(m => m.key !== "Grid rule"), t1s = learned.map(m => m.t1);
-  set("t5", `All eleven learned models beat the grid, and they are within <b>${(Math.max(...t1s) - Math.min(...t1s)).toFixed(1)} points</b> of each other: linear regression (13 numbers) does as well as a random forest (thousands of nodes). <b>The information matters more than the algorithm.</b> We keep model A: six weights we can read, and it gives probabilities.`);
+  const bars = (rows, lo, hi, fmt) => { const pos = v => 100 * (v - lo) / (hi - lo), z = pos(0);
+    return rows.map(r => `<div class="hbar" style="grid-template-columns:132px 1fr 48px"><span class="lab">${r.label}</span><span class="trk"><i style="left:${Math.min(z, pos(r.v))}%;width:${Math.abs(pos(r.v) - z)}%;background:${r.c}"></i><u style="left:${z}%"></u></span><span class="val">${fmt(r.v)}</span></div>`).join(""); };
+  function tuner(key, lab, xo, flexHigh) {                    // slider on a setting: training score against unseen score
+    const t = T[key], bi = t.x.indexOf(t.best);
+    return {html: `<div class="sl" style="grid-template-columns:auto 1fr"><label for="tuneSl" id="tuneLab"></label><input type="range" id="tuneSl" min="0" max="${t.x.length - 1}" value="${bi}"></div><div id="tuneChart"></div>` +
+        `<div class="legend"><span><i style="background:var(--grey)"></i>races it trained on</span><span><i style="background:var(--a)"></i>races it has never seen</span></div><div class="live" style="margin-top:6px" id="tuneLive"></div>`,
+      draw(i) { const r = range(t.train.concat(t.cv), 0.1), x = t.x[i];
+        plot("tuneChart", {h: 220, label: "validation curve", x: xo, y: {min: Math.floor(r[0]), max: Math.ceil(r[1]), title: "Pairs right (%)"},
+          lines: [{color: "var(--grey)", pts: t.x.map((v, j) => [v, t.train[j]]), dots: true}, {color: "var(--a)", pts: t.x.map((v, j) => [v, t.cv[j]]), dots: true, width: 2.6}],
+          marks: [{x, y: t.cv[i], color: "var(--ink)", r: 9}, {x, y: t.train[i], color: "var(--ink)", r: 9}]});
+        set("tuneLab", `${lab} = <b style="font-size:18px;color:var(--ink)">${x}</b>`);
+        const flex = flexHigh ? i > bi : i < bi;
+        set("tuneLive", `Trained races <b>${t.train[i].toFixed(1)}%</b> · unseen races <b class="ga">${t.cv[i].toFixed(1)}%</b> · ` +
+          (i === bi ? `<span class="ok">best on unseen races: the setting we use.</span>` : flex ? `<span class="ko">overfitting</span>: it learns its training races by heart.` : `<b>too simple</b>: it misses part of the signal.`)); },
+      start: bi}; }
+  function drawTree() {
+    if (!$("treeQ")) return;
+    set("treePath", tpath.length ? tpath.join(" → ") : "Think of a driver and answer.");
+    if (tnode.leaf) set("treeQ", `Drivers like this one finish on average <b class="ga" style="font-size:22px">${tnode.finish.toFixed(1)}</b> <span class="small">(${num(tnode.n)} past starts)</span> <button class="btn2" id="treeAgain">Again</button>`);
+    else { const u = /gap/.test(tnode.key) ? "%" : ""; set("treeQ", `<b style="font-size:17px">${tnode.feature} ≤ ${tnode.thr}${u} ?</b> &nbsp;<button data-a="yes" style="padding:5px 14px">Yes</button> <button data-a="no" class="btn2" style="padding:5px 14px;font-size:inherit">No</button>`); }
+  }
+  function drawModel() {
+    const m = byKey(mSel), g = byKey("Grid rule"), head = (title, learn) => `<h3 style="margin-bottom:2px">${title}</h3><p class="small" style="margin-bottom:8px">${m.setting} · learns ${m.learned}</p><div class="take" style="margin-bottom:10px"><b class="t">What we learn</b>${learn}</div>`;
+    let h = "", after = null;
+    if (mSel === "Grid rule") h = head("Model B: the grid rule", `The bar to clear: <b>${g.t1}%</b> on 2020–2025 and <b>${g.t2}%</b> in 2026, with no learning at all. Every other model is judged by how far it gets above this.`);
+    else if (/model A/.test(mSel)) h = head("Model A: softmax ranking", `It predicts a <b>whole order with probabilities</b> (to win, to score, to beat a rival), from only six weights that can be read. This is the model we use for the forecasts.`) +
+      bars(ML.modelA.params.slice(0, 4).map(p => ({label: p.label.replace(" (%)", "").replace(" per race", ""), v: p.theta, c: p.theta > 0 ? "var(--a)" : "var(--b)"})), -0.6, 0.6, v => sg(v)) +
+      `<p class="small" style="margin-top:6px">Weights (per standard deviation). A worse grid slot or a slower lap lowers the score; a stronger team raises it. Play with them in step 4.</p>`;
+    else if (mSel === "Logistic regression") { const L = ML.logistic.coef, top = L[0];
+      h = head("Logistic regression: will he score points?", `Each coefficient gives the <b>direction and size</b> of a feature's effect. One standard deviation further back on the grid multiplies the odds of scoring by <b>${top.odds}</b>.`) +
+        bars(L.slice(0, 7).map(r => ({label: r.feature, v: r.coef, c: r.coef > 0 ? "var(--a)" : "var(--b)"})), -0.85, 0.85, v => sg(v)) +
+        `<p class="small" style="margin-top:6px">Coefficients on standardised features (the seven largest of twelve). The team statistics share the weight between them because they are correlated: the reason model A keeps only a few features.</p>`; }
+    else if (mSel === "KNN") { const tn = tuner("knn", "Neighbours k", {min: 4, max: 500, log: true, ticks: [5, 10, 20, 50, 100, 200, 400], title: "Number of neighbours k"}, false);
+      h = head("k-nearest neighbours", `<b>Bias against variance.</b> With k = 5 it scores ${at(T.knn, 5, "train")}% on its training races but only ${at(T.knn, 5, "cv")}% on unseen ones, below the grid. Races are noisy: it needs about 200 similar past starts to average out the luck.`) + tn.html; after = tn; }
+    else if (mSel === "Decision tree") { const tn = tuner("tree", "Tree depth", {min: 0.5, max: 12.5, ticks: [1, 2, 4, 6, 8, 10, 12], title: "Tree depth"}, true);
+      h = head("Decision tree", `<b>Rules anyone can read</b>: the grid first, then the qualifying gap for the front runners and the team's strength further back. Deeper than 4 questions, it overfits.`) +
+        `<div class="live" style="margin-bottom:8px"><div class="small" id="treePath"></div><div id="treeQ" style="margin-top:4px"></div></div>` + tn.html; after = tn; }
+    else if (mSel === "Random forest") { const imax = IMP[0].pp;
+      h = head("Random forest", `<b>Which features matter</b> (permutation importance, as our professor suggested). After the grid come the qualifying gap and the team's strength; the other statistics add almost nothing.`) +
+        bars(IMP.slice(0, 8).map(r => ({label: r.feature, v: r.pp, c: r.pp > 0.4 ? "var(--a)" : "var(--grey)"})), -0.2, imax * 1.05, v => v.toFixed(2)) +
+        `<p class="small" style="margin-top:6px">Percentage points of pairs lost on 2020–2025 when one feature is shuffled among the drivers of each race.</p>`; }
+    set("mDetail", h);
+    if (after) { $("tuneSl").oninput = e => after.draw(+e.target.value); after.draw(after.start); }
+    if (mSel === "Decision tree") { tnode = ML.tree; tpath = []; drawTree(); }
+  }
+  $("lbRows").addEventListener("click", e => { const b = e.target.closest("[data-m]"); if (b) { mSel = b.dataset.m; drawLB(); drawModel(); } });
+  $("mDetail").addEventListener("click", e => { const b = e.target.closest("#treeQ button"); if (!b) return;
+    if (b.id === "treeAgain") { tnode = ML.tree; tpath = []; } else { const u = /gap/.test(tnode.key) ? "%" : ""; tpath.push(`${tnode.feature} ${b.dataset.a === "yes" ? "≤" : ">"} ${tnode.thr}${u}`); tnode = tnode[b.dataset.a]; }
+    drawTree(); });
+  $("lb1").onclick = () => { lbKey = "t1"; drawLB(); }; $("lb2").onclick = () => { lbKey = "t2"; drawLB(); };
+  drawLB(); drawModel();
+  const learned = ML.models.filter(m => m.key !== "Grid rule"), t1s = learned.map(m => m.t1), gridM = byKey("Grid rule");
+  set("t5", `All five learned models beat the grid on unseen races (${Math.min(...t1s).toFixed(1)}–${Math.max(...t1s).toFixed(1)}% against ${gridM.t1}%), and they are within <b>${(Math.max(...t1s) - Math.min(...t1s)).toFixed(1)} points</b> of each other: <b>the information matters more than the algorithm</b>. We keep model A for the forecasts: six weights we can read, and it gives probabilities.`);
   // classification (in details)
   const C = ML.classification, RC = {grid: "var(--b)", A: "var(--a)"};
   function drawCls(t) {
@@ -712,23 +750,6 @@ footer{padding:14px 0 28px;color:var(--muted);font-size:13px}
   }
   $("thr").oninput = e => drawCls(+e.target.value); drawCls(50);
   set("rocLegend", ["grid", "A"].map(k => `<span><i style="background:${RC[k]}"></i>${k === "grid" ? "Grid" : "Model A"}: AUC ${C[k].auc.toFixed(3)}</span>`).join(""));
-
-  // ================================================================ 6 importance + tree walk
-  const IMP = ML.importance, imax = IMP[0].pp, ipos = v => 100 * (v + 0.3) / (imax * 1.05 + 0.3);
-  set("cImp", IMP.map(r => `<div class="hbar" style="grid-template-columns:140px 1fr 46px"><span class="lab">${r.feature}</span><span class="trk"><i style="left:${Math.min(ipos(0), ipos(r.pp))}%;width:${Math.abs(ipos(r.pp) - ipos(0))}%;background:${r.pp > 0.4 ? "var(--a)" : "var(--grey)"}"></i><u style="left:${ipos(0)}%"></u></span><span class="val">${r.pp.toFixed(2).replace("-", "−")}</span></div>`).join(""));
-  let tnode = ML.tree, tpath = [];
-  function drawTree() {
-    set("treePath", tpath.length ? tpath.join(" → ") : "Start");
-    if (!tnode) { set("treeQ", "Tree not available."); return; }
-    if (tnode.leaf) set("treeQ", `<div class="small">Drivers like this one finish on average</div><div class="big ga">${tnode.finish.toFixed(1)}</div><div class="small">(${num(tnode.n)} past starts; retirements count as last)</div><button class="btn2" id="treeAgain" style="margin-top:8px">Start again</button>`);
-    else { const u = /gap/.test(tnode.key) ? "%" : ""; set("treeQ", `<div style="font-weight:700;font-size:19px;margin-bottom:8px">${tnode.feature} ≤ ${tnode.thr}${u} ?</div><button data-a="yes">Yes</button> <button data-a="no" class="btn2" style="padding:9px 16px;font-size:inherit">No</button>`); }
-  }
-  $("treeQ").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
-    if (b.id === "treeAgain") { tnode = ML.tree; tpath = []; } else { const u = /gap/.test(tnode.key) ? "%" : ""; tpath.push(`${tnode.feature} ${b.dataset.a === "yes" ? "≤" : ">"} ${tnode.thr}${u}`); tnode = tnode[b.dataset.a]; }
-    drawTree(); });
-  drawTree();
-  const ip = k => IMP.find(r => r.feature === k).pp;
-  set("t6", `The grid matters most (${ip("Grid position").toFixed(2)}), then the <b>qualifying gap</b> (${ip("Qualifying gap").toFixed(2)}) and the <b>strength of the team</b> (${ip("Team points").toFixed(2)}). The other statistics add almost nothing, as PCA said. This is why model A uses only the grid, the two lap gaps, team points and the car family.`);
 
   // ================================================================ 7 season
   if (S) {

@@ -53,11 +53,7 @@ def run():
                    "lr": {k: round(float(v), 2) if k != "n" else int(v) for k, v in E["lr"].items()},
                    "corr_grid_quali": round(E["corr"]["grid"]["quali_gap"], 2)}
 
-    # ---------------------------------------------------------------- 2. PCA and k-means
-    P = X["pca"]
-    out["pca"] = {"n": P["n"], "features": [LAB12[f].replace("Team ", "").capitalize() for f in P["features"]],
-                  "explained": [r1(v) for v in P["explained"]],
-                  "pc1": [round(-v, 2) for v in P["loadings_pc1"]], "pc2": [round(v, 2) for v in P["loadings_pc2"]]}
+    # ---------------------------------------------------------------- 2. k-means car families (PCA removed after the feedback of 15 Nov)
     A1 = PAR["model_A_before_sao_paulo"]
     KP = pd.read_csv(ML / "kmeans_before_sao_paulo.csv")
     pts = KP.groupby(["team_points", "team_mech_dnf", "family"]).size().reset_index(name="n")       # unique dots only
@@ -65,22 +61,25 @@ def run():
                      "points": [[round(float(r.team_points), 1), r1(r.team_mech_dnf), r.family[0], int(r.n)] for r in pts.itertuples()],
                      "families": [{"family": f["family"], "points": round(f["team_points"], 1), "fail_pct": round(100 * f["mech_failure_rate"]),
                                    "top10_pct": round(100 * f["top10_rate"]), "team_races": f["team_races"]} for f in A1["families"]]}
-    try:                                              # PCA scores of every team-race, coloured by car family (needs the data)
-        from sklearn.decomposition import PCA
-        from sklearn.preprocessing import StandardScaler
-        from .data import TEAM_STATS
-        from .ml_benchmark import load
-        from .model import CarProfile
-        d = load(); hist = d[d.year <= 2025]
-        teams = hist.drop_duplicates(["raceId", "team"]).reset_index(drop=True)
-        Z = PCA(2).fit_transform(StandardScaler().fit_transform(teams[TEAM_STATS]))
-        prof = CarProfile().fit(d[(d.year < 2026) | ((d.year == 2026) & (d["round"] < 20))])   # the families used for São Paulo 2026
-        tier = prof.transform(teams).tier.map({0: "top", 1: "midfield", 2: "unreliable"}).to_numpy()
-        sgn = -1 if np.corrcoef(Z[:, 0], teams["team_points"])[0, 1] < 0 else 1       # PC1 pointing towards stronger cars
-        take = np.random.default_rng(SEED).choice(len(Z), size=min(1200, len(Z)), replace=False)
-        out["pca"]["scores"] = [[round(float(sgn * Z[i, 0]), 2), round(float(Z[i, 1]), 2), str(tier[i])[0]] for i in take]
-    except Exception as e:                            # the page then simply hides that chart
-        print("PCA scores skipped:", type(e).__name__, e)
+    # which family is each team in, season by season? (the professor's question)
+    TEAMS = {"ferrari": "Ferrari", "red-bull": "Red Bull", "mercedes": "Mercedes", "mclaren": "McLaren", "alpine": "Alpine (Renault, Lotus)",
+             "williams": "Williams", "aston-martin": "Aston Martin (Force India)", "haas": "Haas", "audi": "Audi (Sauber)",
+             "racing-bulls": "Racing Bulls (Toro Rosso)", "caterham": "Caterham", "manor": "Manor (Virgin, Marussia)", "hrt": "HRT",
+             "cadillac": "Cadillac", "sauber": "Sauber"}
+    KP["top"] = KP.family == "top"
+    order = KP.groupby("team").top.sum().sort_values(ascending=False).index.tolist()
+    years = sorted(KP.year.unique().tolist())
+    cells = {}
+    for (team, year), g in KP.groupby(["team", "year"]):
+        vc = g.family.value_counts()
+        cells[f"{team}|{year}"] = {"f": vc.idxmax()[0], "share": round(100 * vc.max() / len(g)), "n": int(len(g)),
+                                   "t": int(vc.get("top", 0)), "m": int(vc.get("midfield", 0)), "u": int(vc.get("unreliable", 0))}
+    dom = KP.groupby(["team", "year"]).family.agg(lambda x: x.value_counts(normalize=True).max())
+    ys = KP.groupby("year").family.value_counts(normalize=True).unstack().fillna(0)
+    out["families_by_season"] = {"teams": [{"id": t, "name": TEAMS.get(t, t)} for t in order if KP[KP.team == t].year.nunique() >= 2], "years": years,
+                                 "cells": cells, "team_seasons": int(len(dom)), "mean_dominant_pct": round(100 * float(dom.mean())),
+                                 "stable_pct": round(100 * float((dom >= 0.75).mean())),
+                                 "unreliable_by_year": {int(y): round(100 * float(ys.loc[y].get("unreliable", 0))) for y in years}}
 
     # ---------------------------------------------------------------- 3. model A: parameters and worked example
     keys = [("grid", "grid", "Grid position"), ("quali_gap", "quali_gap", "Qualifying gap (%)"), ("practice_gap", "practice_gap", "Practice gap (%)"),
@@ -125,16 +124,13 @@ def run():
     BF = PAR["benchmark_fitted_before_2026"]["fitted"]
     INFO = [("Grid rule", "Model B: grid rule", "–", "finishing order = starting order", "0"),
             ("Softmax ranking (model A)", "Model A: softmax ranking", "S7, S10", "6 features, penalty λ = 1, 10,000 simulations", "6 weights"),
-            ("Linear regression", "Linear regression", "S2–3", "least squares", "13 numbers"),
-            ("Ridge", "Ridge", "S4", "λ = 3.2", "13 numbers"),
-            ("Lasso", "Lasso", "S4", "λ = 0.01", f"13 numbers ({BF['Lasso']['nonzero'] + 1} not zero)"),
             ("Logistic regression", "Logistic regression", "S6–7", "C = 1/λ = 0.03", "13 numbers"),
             ("KNN", "k-nearest neighbours", "S14–15", "k = 200, Euclidean distance", "nothing: it stores the starts"),
             ("Decision tree", "Decision tree", "S16", "depth 4, leaves ≥ 20 starts", f"{BF['Decision tree']['learned']} nodes"),
-            ("Random forest", "Random forest", "S17", "300 trees, leaves ≥ 50, ⅓ of features per split", f"{BF['Random forest']['learned']:,} nodes"),
-            ("Gradient boosting", "Gradient boosting", "S17", "100 trees of depth 4, learning rate 0.03", f"{BF['Gradient boosting']['learned']:,} nodes"),
-            ("Kernel ridge (RBF)", "Kernel ridge (RBF)", "S19–21", "λ = 1, γ = 0.03", f"{BF['Kernel ridge (RBF)']['learned']:,} weights"),
-            ("Neural network (MLP)", "Neural network (MLP)", "S22–26", "64 + 32 ReLU units, early stopping", f"{BF['Neural network (MLP)']['learned']:,} weights")]
+            ("Random forest", "Random forest", "S17", "300 trees, leaves ≥ 50, ⅓ of features per split", f"{BF['Random forest']['learned']:,} nodes")]
+    lc = BF["Logistic regression"]["coef"]
+    out["logistic"] = {"intercept": round(BF["Logistic regression"]["intercept"], 2),
+                       "coef": [{"feature": LAB12[k], "coef": round(v, 2), "odds": round(float(np.exp(v)), 2)} for k, v in sorted(lc.items(), key=lambda kv: -abs(kv[1]))]}
 
     def cvbest(name):
         M = model_file(name)
